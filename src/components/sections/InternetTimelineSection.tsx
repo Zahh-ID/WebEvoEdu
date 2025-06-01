@@ -54,6 +54,7 @@ export function InternetTimelineSection() {
     
     const ctx = gsap.context(() => {
       if (scrollContainerRef.current && sectionPinRef.current) {
+        // Calculate the total scrollable width
         const scrollableWidth = scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth;
 
         if (scrollableWidth > 0) {
@@ -63,22 +64,14 @@ export function InternetTimelineSection() {
             ease: "none", // Linear ease for direct scroll mapping
             scrollTrigger: {
               trigger: sectionPinRef.current,
-              pin: sectionPinRef.current,
+              pin: sectionPinRef.current, // Pin the section itself
               pinType: "transform", // Important for compatibility with overflow:hidden
-              scrub: 0.5, // Adjust for smoothness, 1 is direct link
+              scrub: 1, // Increased for smoother scrubbing
               start: "top top",
-              end: () => `+=${scrollableWidth * 0.8}`, // Vertical scroll distance
+              end: () => `+=${scrollableWidth * 1}`, // Vertical scroll distance matches scrollable width
               invalidateOnRefresh: true,
-              // markers: true, // Uncomment for debugging main pin
             },
           });
-
-          // Individual card animations are removed to make the strip scroll as a single unit.
-          // If individual card intro animations are desired later, they should be very subtle 
-          // and not interfere with the main scrolling strip illusion.
-          // For example, a simple fade-in for the entire container or very quick fades for cards
-          // as they enter the viewport could be considered.
-
         }
       }
     }, sectionPinRef); 
@@ -95,7 +88,6 @@ export function InternetTimelineSection() {
         {timelineData.map((item, index) => (
           <div
             key={item.id}
-            // .timeline-card-item class is kept for potential future use if individual animations are re-added
             className="timeline-card-item flex-shrink-0 w-80 sm:w-96 snap-start" 
           >
             <TimelineCard item={item} index={index} />

@@ -8,54 +8,50 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 export function HeroSection() {
-  const heroRef = useRef<HTMLDivElement>(null);
+  const heroContentRef = useRef<HTMLDivElement>(null); // Ganti nama ref agar lebih jelas
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
-      if (heroRef.current && sectionRef.current) {
+      if (heroContentRef.current && sectionRef.current) {
         // Animasi masuk awal untuk konten hero
-        gsap.set(heroRef.current, { opacity: 0, y: 20 });
-        gsap.to(heroRef.current, { 
-          opacity: 1, 
-          y: 0, 
-          duration: 0.8, 
-          ease: "power3.out", 
-          delay: 0.3 
-        });
-        
-        gsap.set(heroRef.current.querySelectorAll('h1, p, div > .inline-flex'), { opacity: 0, y: 20 });
-        gsap.to(heroRef.current.querySelectorAll('h1, p, div > .inline-flex'),
-          { 
+        // Menggunakan heroContentRef untuk animasi stagger
+        const heroElements = heroContentRef.current.querySelectorAll('h1, p, div.space-x-4');
+        gsap.set(heroElements, { opacity: 0, y: 20 });
+        gsap.to(heroElements, { 
             opacity: 1, 
             y: 0, 
-            duration: 0.6, 
+            duration: 0.7, 
             stagger: 0.2, 
             ease: "power2.out",
-            delay: 0.5 
-          }
-        );
-
+            delay: 0.3,
+            scrollTrigger: { // Tambahkan ScrollTrigger di sini jika ingin animasi keluar saat scroll up
+              trigger: sectionRef.current,
+              start: "top 80%", // Sesuaikan trigger point
+              toggleActions: "play pause resume reverse", // Diperbarui
+            }
+        });
+        
         // Animasi parallax untuk konten hero saat scroll
-        gsap.to(heroRef.current, {
-          yPercent: -30, // Konten akan bergerak ke atas 30% dari tingginya sendiri
+        gsap.to(heroContentRef.current, { // Targetkan heroContentRef untuk parallax
+          yPercent: -30,
           ease: "none",
           scrollTrigger: {
-            trigger: sectionRef.current, // Memicu berdasarkan section hero secara keseluruhan
-            start: "top top", // Mulai animasi ketika bagian atas section mencapai bagian atas viewport
-            end: "bottom top", // Akhiri animasi ketika bagian bawah section mencapai bagian atas viewport
-            scrub: 0.5, // Membuat animasi terkait langsung dengan scrollbar dengan sedikit smoothing
+            trigger: sectionRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: 0.5,
           }
         });
       }
-    }, sectionRef); // Menggunakan sectionRef sebagai scope untuk context GSAP
+    }, sectionRef);
     return () => ctx.revert();
   }, []);
 
   return (
     <section id="hero" ref={sectionRef} className="relative min-h-screen flex items-center justify-center text-center overflow-hidden px-4">
-      <div ref={heroRef} className="z-10"> 
+      <div ref={heroContentRef} className="z-10"> {/* Ref ini untuk konten yang akan dianimasikan dan parallax */}
         <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-headline font-bold mb-6">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary-foreground/80">
             Web Evolusioner

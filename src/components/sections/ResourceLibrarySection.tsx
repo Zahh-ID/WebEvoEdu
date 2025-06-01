@@ -17,7 +17,7 @@ const ResourceCard: React.FC<{ item: ResourceItem, index: number }> = ({ item })
   return (
     <Card 
       className={cn(
-        "bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full resource-card-item",
+        "bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full resource-card-item", // resource-card-item tetap ada untuk seleksi GSAP
         "border-border hover:border-accent"
       )}
     >
@@ -71,9 +71,9 @@ export function ResourceLibrarySection() {
             duration: 0.6, 
             ease: 'power2.out',
             scrollTrigger: {
-              trigger: sectionContentRef.current,
+              trigger: sectionContentRef.current, // Trigger dari kontainer
               start: "top 80%",
-              toggleActions: "play none none none",
+              toggleActions: "play pause resume reverse", // Diperbarui
             }
           });
         }

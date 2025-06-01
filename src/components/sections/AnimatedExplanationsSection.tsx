@@ -19,19 +19,22 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
     let cardTween: gsap.core.Tween | null = null;
     let contentTweens: gsap.core.Tween[] = [];
 
+    // Animasi untuk kartu utama saat item berubah
     if (cardRef.current) {
       gsap.set(cardRef.current, { opacity: 0, y: 30, scale: 0.95 }); 
       cardTween = gsap.to(cardRef.current, {
         opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power2.out", delay: 0.1,
         onComplete: () => {
+          // Animasi untuk konten di dalam kartu setelah kartu muncul
           if (contentRef.current) {
             const animatedElements = [
-              Array.from(contentRef.current.querySelectorAll('h3')),
-              Array.from(contentRef.current.querySelectorAll('.concept-card-item')),
-              Array.from(contentRef.current.querySelectorAll('.tech-list-item')),
-              Array.from(contentRef.current.querySelectorAll('.impact-paragraph')),
-              Array.from(contentRef.current.querySelectorAll('.placeholder-anim'))
-            ].flat().filter(el => el) as HTMLElement[];
+              contentRef.current.querySelector('div.flex.items-center.gap-4.mb-4'), // Header Icon and Title container
+              ...Array.from(contentRef.current.querySelectorAll('h3')),
+              ...Array.from(contentRef.current.querySelectorAll('.concept-card-item')),
+              ...Array.from(contentRef.current.querySelectorAll('.tech-list-item')),
+              ...Array.from(contentRef.current.querySelectorAll('.impact-paragraph')),
+              contentRef.current.querySelector('.placeholder-anim')
+            ].filter(el => el) as HTMLElement[];
 
             gsap.set(animatedElements, { opacity: 0, y: 15 });
             contentTweens = animatedElements.map((el, index) => 
@@ -40,7 +43,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
                 y: 0, 
                 duration: 0.4, 
                 ease: 'power1.out', 
-                delay: 0.1 + (index * 0.05), 
+                delay: 0.1 + (index * 0.05), // Staggering
               })
             );
           }
@@ -51,19 +54,21 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
     return () => {
       cardTween?.kill();
       contentTweens.forEach(tween => tween.kill());
+      // Reset properti GSAP saat komponen unmount atau item berubah
       if (cardRef.current) gsap.set(cardRef.current, { clearProps: "all" });
       if (contentRef.current) {
          const animatedElements = [
-              Array.from(contentRef.current.querySelectorAll('h3')),
-              Array.from(contentRef.current.querySelectorAll('.concept-card-item')),
-              Array.from(contentRef.current.querySelectorAll('.tech-list-item')),
-              Array.from(contentRef.current.querySelectorAll('.impact-paragraph')),
-              Array.from(contentRef.current.querySelectorAll('.placeholder-anim'))
+              contentRef.current.querySelector('div.flex.items-center.gap-4.mb-4'),
+              ...Array.from(contentRef.current.querySelectorAll('h3')),
+              ...Array.from(contentRef.current.querySelectorAll('.concept-card-item')),
+              ...Array.from(contentRef.current.querySelectorAll('.tech-list-item')),
+              ...Array.from(contentRef.current.querySelectorAll('.impact-paragraph')),
+              contentRef.current.querySelector('.placeholder-anim')
             ].flat().filter(el => el) as HTMLElement[];
         gsap.set(animatedElements, { clearProps: "all" });
       }
     };
-  }, [item]); 
+  }, [item]); // Efek ini dijalankan ulang setiap kali 'item' berubah (tab aktif)
 
   return (
     <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full"> 
@@ -150,9 +155,9 @@ export function AnimatedExplanationsSection() {
             duration: 0.5,
             ease: 'power2.out',
             scrollTrigger: {
-              trigger: tabsRef.current,
+              trigger: tabsRef.current, // Trigger dari kontainer tabs
               start: "top 80%",
-              toggleActions: "play none none none",
+              toggleActions: "play pause resume reverse", // Diperbarui
             }
           });
         }
@@ -167,13 +172,16 @@ export function AnimatedExplanationsSection() {
             stagger: 0.15,
             ease: 'power2.out',
             scrollTrigger: {
-              trigger: tabsRef.current,
-              start: "top 75%",
-              toggleActions: "play none none none",
+              trigger: tabsRef.current, // Trigger dari kontainer tabs
+              start: "top 75%", // Sedikit setelah tabsListContainer
+              toggleActions: "play pause resume reverse", // Diperbarui
             },
-            delay: 0.2 
+            delay: 0.2 // Delay setelah tabsListContainer (jika diperlukan)
           });
         }
+        // Animasi untuk TabsContent tidak diatur scroll-triggered di sini
+        // karena mereka dikontrol oleh TabsTrigger yang mengaktifkannya.
+        // Animasi di dalam ExplanationDetailCard akan menangani kemunculan konten saat tab aktif.
       }
     }, tabsRef);
     return () => ctx.revert();
@@ -188,8 +196,8 @@ export function AnimatedExplanationsSection() {
               key={item.id} 
               value={item.id} 
               className={cn(
-                "py-3 text-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg tab-trigger-item w-full",
-                item.colorClass
+                "py-3 text-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg tab-trigger-item w-full", // Ditambahkan w-full
+                item.colorClass // Mungkin perlu disesuaikan jika ingin warna berbeda untuk state non-active
               )}
             >
               {item.id.toUpperCase()}
@@ -198,6 +206,7 @@ export function AnimatedExplanationsSection() {
         </TabsList>
         {explanationsData.map((item) => (
           <TabsContent key={item.id} value={item.id}>
+            {/* ExplanationDetailCard akan menangani animasi internalnya sendiri saat 'item' berubah */}
             <ExplanationDetailCard item={item} />
           </TabsContent>
         ))}

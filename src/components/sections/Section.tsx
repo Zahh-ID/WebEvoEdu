@@ -30,9 +30,9 @@ export const Section: React.FC<SectionProps> = ({ id, title, children, className
           y: 0,
           duration: 0.6,
           scrollTrigger: {
-            trigger: sectionRef.current,
+            trigger: sectionRef.current, // Menggunakan sectionRef untuk trigger
             start: "top 85%",
-            toggleActions: "play none none none",
+            toggleActions: "play pause resume reverse", // Diperbarui
           }
         });
       }
@@ -42,15 +42,15 @@ export const Section: React.FC<SectionProps> = ({ id, title, children, className
           opacity: 1,
           y: 0,
           duration: 0.6,
-          delay: 0.2,
+          delay: 0.2, // Sedikit delay setelah judul
           scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-            toggleActions: "play none none none",
+            trigger: sectionRef.current, // Menggunakan sectionRef untuk trigger
+            start: "top 80%", // Sedikit berbeda dari judul
+            toggleActions: "play pause resume reverse", // Diperbarui
           }
         });
       }
-    }, sectionRef);
+    }, sectionRef); // Scope context ke sectionRef
     return () => ctx.revert();
   }, []);
 
@@ -58,14 +58,14 @@ export const Section: React.FC<SectionProps> = ({ id, title, children, className
     <section id={id} className={cn("py-16 md:py-24 overflow-hidden", className)} ref={sectionRef}>
       <div className={cn("container mx-auto px-4 md:px-6", containerClassName)}>
         <h2 ref={titleRef} className={cn(
-          "text-4xl md:text-5xl font-headline font-bold text-center mb-12 md:mb-16 text-primary-foreground", // Dihapus: opacity-0
+          "text-4xl md:text-5xl font-headline font-bold text-center mb-12 md:mb-16 text-primary-foreground",
           titleClassName
           )}
+          // style={{opacity: 0}} // GSAP akan menangani ini
         >
           {title}
         </h2>
-        {/* Dihapus: opacity-0 */}
-        <div ref={childrenRef}> 
+        <div ref={childrenRef} /* style={{opacity:0}} */> {/* GSAP akan menangani ini */}
           {children}
         </div>
       </div>

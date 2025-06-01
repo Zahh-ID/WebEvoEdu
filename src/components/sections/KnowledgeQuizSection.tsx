@@ -25,7 +25,7 @@ export function KnowledgeQuizSection() {
   const [quizStarted, setQuizStarted] = useState<boolean>(false);
   const { toast } = useToast();
   
-  const cardRef = useRef<HTMLDivElement>(null);
+  const sectionCardRef = useRef<HTMLDivElement>(null); // Mengganti nama cardRef agar lebih spesifik
   const startScreenRef = useRef<HTMLDivElement>(null);
   const quizInterfaceRef = useRef<HTMLDivElement>(null);
   const feedbackAlertRef = useRef<HTMLDivElement>(null);
@@ -33,57 +33,68 @@ export function KnowledgeQuizSection() {
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
+    // Animasi untuk kartu utama section
     const ctx = gsap.context(() => {
-      if (cardRef.current) {
-        gsap.set(cardRef.current, { opacity: 0, y: 50 });
-        gsap.to(cardRef.current, {
+      if (sectionCardRef.current) {
+        gsap.set(sectionCardRef.current, { opacity: 0, y: 50 });
+        gsap.to(sectionCardRef.current, {
           opacity: 1, y: 0, duration: 0.6, ease: 'power2.out',
           scrollTrigger: {
-            trigger: cardRef.current, start: "top 85%", toggleActions: "play none none none",
+            trigger: sectionCardRef.current, 
+            start: "top 85%", 
+            toggleActions: "play pause resume reverse", // Diperbarui
           }
         });
       }
-    }, cardRef);
+    }, sectionCardRef); // Scope ke sectionCardRef
     return () => ctx.revert();
-  }, []);
+  }, []); // Hanya dijalankan sekali saat mount untuk section card
 
   // Animation for Start Screen
   useEffect(() => {
-    if (!quizStarted && startScreenRef.current) {
-      gsap.set(startScreenRef.current, { opacity: 0, y: 20 });
-      gsap.to(startScreenRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.2 });
-    } else if (startScreenRef.current) {
-      gsap.set(startScreenRef.current, { opacity: 0, y: 20 }); // Hide if not active
+    if (startScreenRef.current) {
+      if (!quizStarted) {
+        gsap.set(startScreenRef.current, { opacity: 0, y: 20 });
+        gsap.to(startScreenRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.2 });
+      } else {
+        gsap.to(startScreenRef.current, { opacity: 0, y: -20, duration: 0.3, onComplete: () => gsap.set(startScreenRef.current, {display: 'none'}) });
+      }
     }
   }, [quizStarted]);
 
   // Animation for Quiz Interface
   useEffect(() => {
-    if (quizStarted && !quizComplete && quizInterfaceRef.current) {
-      gsap.set(quizInterfaceRef.current, { opacity: 0, y: 20 });
-      gsap.to(quizInterfaceRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.1 });
-    } else if (quizInterfaceRef.current) {
-      gsap.set(quizInterfaceRef.current, { opacity: 0, y: 20 }); // Hide if not active
+    if (quizInterfaceRef.current) {
+      if (quizStarted && !quizComplete) {
+        gsap.set(quizInterfaceRef.current, { display:'block', opacity: 0, y: 20 });
+        gsap.to(quizInterfaceRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.1 });
+      } else {
+         gsap.to(quizInterfaceRef.current, { opacity: 0, y: -20, duration: 0.3, onComplete: () => gsap.set(quizInterfaceRef.current, {display: 'none'}) });
+      }
     }
-  }, [quizStarted, quizComplete, currentQuestion]); // Re-animate if question changes (might need refinement if too flashy)
+  }, [quizStarted, quizComplete, currentQuestion]);
 
   // Animation for Feedback Alert
   useEffect(() => {
-    if (feedback && feedbackAlertRef.current) {
-      gsap.set(feedbackAlertRef.current, { opacity: 0, scale: 0.9 });
-      gsap.to(feedbackAlertRef.current, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.7)' });
-    } else if (!feedback && feedbackAlertRef.current) {
-        gsap.set(feedbackAlertRef.current, { opacity: 0 }); // Hide if no feedback
+    if (feedbackAlertRef.current) {
+        if (feedback) {
+            gsap.set(feedbackAlertRef.current, { display: 'block', opacity: 0, scale: 0.9 });
+            gsap.to(feedbackAlertRef.current, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.7)' });
+        } else {
+            gsap.to(feedbackAlertRef.current, { opacity: 0, scale: 0.9, duration: 0.3, onComplete: () => gsap.set(feedbackAlertRef.current, {display: 'none'}) });
+        }
     }
   }, [feedback]);
 
   // Animation for Quiz Complete Screen
   useEffect(() => {
-    if (quizComplete && quizCompleteRef.current) {
-      gsap.set(quizCompleteRef.current, { opacity: 0, y: 20 });
-      gsap.to(quizCompleteRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.1 });
-    } else if (quizCompleteRef.current) {
-      gsap.set(quizCompleteRef.current, { opacity: 0, y: 20 }); // Hide if not active
+    if (quizCompleteRef.current) {
+        if (quizComplete) {
+            gsap.set(quizCompleteRef.current, { display: 'block', opacity: 0, y: 20 });
+            gsap.to(quizCompleteRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.1 });
+        } else {
+            gsap.to(quizCompleteRef.current, { opacity: 0, y: -20, duration: 0.3, onComplete: () => gsap.set(quizCompleteRef.current, {display: 'none'}) });
+        }
     }
   }, [quizComplete]);
 
@@ -114,8 +125,7 @@ export function KnowledgeQuizSection() {
   const handleSubmitAnswer = async (hintRequested: boolean = false) => {
     if (!currentQuestion && !hintRequested) return;
     setIsLoading(true);
-    // Don't clear feedback immediately, let new feedback replace it or disappear if no new feedback
-    // setFeedback(null); 
+    // setFeedback(null); // Jangan hapus feedback langsung
 
     const input: WebEvolutionQuizInput = {
       question: currentQuestion,
@@ -133,22 +143,22 @@ export function KnowledgeQuizSection() {
         isCorrect: response.isCorrect,
         hintGiven: hintRequested || !!response.hint,
       };
-      // Ensure quizHistory is updated before setting new feedback that might depend on it
       setQuizHistory(prev => [...prev, newHistoryItem]);
 
 
       if (response.quizComplete) {
         setQuizComplete(true);
-        setCurrentQuestion(''); // Clear question for complete state
-        // Set feedback for completion AFTER quizComplete is true
-        const completionMessage = response.isCorrect ? "Kuis Selesai! Jawaban terakhir Anda Benar!" : "Kuis Selesai!";
+        setCurrentQuestion(''); 
+        const completionMessage = response.isCorrect !== false ? "Kuis Selesai! Jawaban terakhir Anda Benar!" : "Kuis Selesai!";
+        // Cek apakah response.isCorrect null atau undefined sebelum menampilkannya
+        const feedbackType = response.isCorrect === true ? 'correct' : (response.isCorrect === false ? 'incorrect' : 'info');
+
         setFeedback({
-            type: response.isCorrect ? 'correct' : 'info', 
+            type: feedbackType, 
             message: completionMessage,
-            explanation: response.explanation || (feedback?.explanation) // Preserve previous explanation if new one is missing
+            explanation: response.explanation || (feedback?.explanation) 
         });
       } else {
-        // Handle feedback for non-completion cases
         if (response.hint) {
             setFeedback({ type: 'hint', message: response.hint });
         } else if (response.isCorrect !== undefined) {
@@ -158,9 +168,9 @@ export function KnowledgeQuizSection() {
             explanation: response.explanation,
             });
         } else {
-            setFeedback(null); // No specific feedback, clear previous
+            setFeedback(null); 
         }
-        setCurrentQuestion(response.question); // Set next question
+        setCurrentQuestion(response.question); 
       }
       setUserAnswer(''); 
 
@@ -185,15 +195,14 @@ export function KnowledgeQuizSection() {
       case 'correct': return <CheckCircleIcon className="h-5 w-5 text-green-500" />;
       case 'incorrect': return <XCircleIcon className="h-5 w-5 text-red-500" />;
       case 'hint': return <LightbulbIcon className="h-5 w-5 text-yellow-500" />;
-      default: return <LightbulbIcon className="h-5 w-5 text-blue-500" />; // For 'info'
+      default: return <LightbulbIcon className="h-5 w-5 text-blue-500" />; 
     }
   };
 
   return (
     <Section id="quiz" title="Uji Pengetahuan Web Anda" className="bg-gradient-to-br from-background to-secondary/30">
-      <Card ref={cardRef} className="max-w-2xl mx-auto bg-card/80 backdrop-blur-sm shadow-2xl border-border">
-        {!quizStarted && (
-          <div ref={startScreenRef} style={{opacity: 0}}>
+      <Card ref={sectionCardRef} className="max-w-2xl mx-auto bg-card/80 backdrop-blur-sm shadow-2xl border-border">
+        <div ref={startScreenRef} style={{display: quizStarted ? 'none' : 'block', opacity:0}}>
             <CardContent className="pt-6 text-center">
               <p className="text-lg text-muted-foreground mb-6">Siap menjelajahi kedalaman evolusi web? Uji pengetahuan Anda dengan kuis bertenaga AI kami!</p>
               <Button size="lg" onClick={startQuiz} disabled={isLoading} className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
@@ -201,39 +210,35 @@ export function KnowledgeQuizSection() {
                 Mulai Kuis
               </Button>
             </CardContent>
-          </div>
-        )}
+        </div>
 
-        {quizStarted && !quizComplete && (
-          <div ref={quizInterfaceRef} style={{opacity: 0}}>
+        <div ref={quizInterfaceRef} style={{display: (quizStarted && !quizComplete) ? 'block' : 'none', opacity:0}}>
             <CardHeader>
               <CardTitle className="text-2xl font-headline text-primary-foreground/90">{currentQuestion || "Memuat pertanyaan..."}</CardTitle>
               <CardDescription className="text-muted-foreground">Masukkan jawaban Anda di bawah atau minta petunjuk.</CardDescription>
             </CardHeader>
             <CardContent>
-              {feedback && (
-                <div ref={feedbackAlertRef} style={{opacity:0}}>
+              <div ref={feedbackAlertRef} style={{display: feedback ? 'block' : 'none', opacity:0}}>
                   <Alert className={cn(
                     "mb-6 border-2",
-                    feedback.type === 'correct' && "border-green-500/50 bg-green-500/10",
-                    feedback.type === 'incorrect' && "border-red-500/50 bg-red-500/10",
-                    feedback.type === 'hint' && "border-yellow-500/50 bg-yellow-500/10",
-                    feedback.type === 'info' && "border-blue-500/50 bg-blue-500/10"
+                    feedback?.type === 'correct' && "border-green-500/50 bg-green-500/10",
+                    feedback?.type === 'incorrect' && "border-red-500/50 bg-red-500/10",
+                    feedback?.type === 'hint' && "border-yellow-500/50 bg-yellow-500/10",
+                    feedback?.type === 'info' && "border-blue-500/50 bg-blue-500/10"
                   )}>
                     <div className="flex items-center gap-2">
                       {renderFeedbackIcon()}
                       <AlertTitle className={cn(
                          "font-semibold",
-                         feedback.type === 'correct' && "text-green-400",
-                         feedback.type === 'incorrect' && "text-red-400",
-                         feedback.type === 'hint' && "text-yellow-400",
-                         feedback.type === 'info' && "text-blue-400"
-                      )}>{feedback.message}</AlertTitle>
+                         feedback?.type === 'correct' && "text-green-400",
+                         feedback?.type === 'incorrect' && "text-red-400",
+                         feedback?.type === 'hint' && "text-yellow-400",
+                         feedback?.type === 'info' && "text-blue-400"
+                      )}>{feedback?.message}</AlertTitle>
                     </div>
-                    {feedback.explanation && <AlertDescription className="mt-2 text-muted-foreground">{feedback.explanation}</AlertDescription>}
+                    {feedback?.explanation && <AlertDescription className="mt-2 text-muted-foreground">{feedback.explanation}</AlertDescription>}
                   </Alert>
-                </div>
-              )}
+              </div>
               <form onSubmit={handleFormSubmit} className="space-y-4">
                 <Input
                   type="text"
@@ -245,17 +250,17 @@ export function KnowledgeQuizSection() {
                 />
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Button type="submit" disabled={isLoading || !userAnswer.trim()} className="flex-1 font-semibold bg-accent hover:bg-accent/90 text-accent-foreground">
-                    {isLoading && !(feedback?.type === 'hint' && hintRequested) ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    {isLoading && !hintRequestedForSubmit ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                     Kirim Jawaban
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => handleSubmitAnswer(true)}
+                    onClick={() => { setHintRequestedForSubmit(true); handleSubmitAnswer(true);}}
                     disabled={isLoading}
                     className="flex-1 font-semibold border-primary text-primary hover:bg-primary/10 hover:text-primary"
                   >
-                    {isLoading && feedback?.type === 'hint' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LightbulbIcon className="mr-2 h-4 w-4" />}
+                    {isLoading && hintRequestedForSubmit ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LightbulbIcon className="mr-2 h-4 w-4" />}
                     Dapatkan Petunjuk
                   </Button>
                 </div>
@@ -264,11 +269,9 @@ export function KnowledgeQuizSection() {
             <CardFooter className="text-xs text-muted-foreground">
               <p>Kuis didukung oleh AI. Pertanyaan dan petunjuk menyesuaikan dengan perjalanan belajar Anda.</p>
             </CardFooter>
-          </div>
-        )}
+        </div>
 
-        {quizComplete && (
-           <div ref={quizCompleteRef} style={{opacity:0}}>
+        <div ref={quizCompleteRef} style={{display: quizComplete ? 'block' : 'none', opacity:0}}>
             <CardContent className="pt-6 text-center">
                 <CardTitle className="text-3xl font-headline mb-4 text-primary">
                     {feedback?.type === 'correct' ? "Selamat, Kuis Selesai!" : "Kuis Selesai!"}
@@ -281,9 +284,15 @@ export function KnowledgeQuizSection() {
                 Main Lagi
                 </Button>
             </CardContent>
-           </div>
-        )}
+        </div>
       </Card>
     </Section>
   );
 }
+
+// State tambahan untuk membedakan loading hint vs loading jawaban
+let hintRequestedForSubmit = false;
+const setHintRequestedForSubmit = (val: boolean) => {
+    hintRequestedForSubmit = val;
+}
+

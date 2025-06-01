@@ -27,7 +27,7 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
       className={cn(
         "w-full bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1",
         EraColors[item.era],
-        "border-l-4" // Tetap pertahankan border kiri sebagai indikator default
+        "border-l-4"
       )}
     >
       <CardHeader className="flex flex-row items-start gap-4">
@@ -54,18 +54,17 @@ export function InternetTimelineSection() {
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       if (sectionRef.current) {
-        // Animasi untuk garis linimasa tengah
         if (timelineLineRef.current) {
           gsap.set(timelineLineRef.current, { scaleY: 0, transformOrigin: 'top center' });
           gsap.to(timelineLineRef.current, {
             scaleY: 1,
-            duration: 1, // Durasi untuk garis tumbuh
+            duration: 1,
             ease: 'power2.out',
             scrollTrigger: {
               trigger: sectionRef.current,
-              start: "top 60%", // Mulai animasi garis sedikit lebih awal
-              end: "bottom 80%", // Selesaikan animasi garis sebelum akhir section
-              scrub: 0.5, // Buat animasi garis terkait dengan scroll
+              start: "top 60%",
+              end: "bottom 80%",
+              scrub: 0.5, // Scrub akan otomatis menangani reverse saat scroll up
             }
           });
         }
@@ -73,16 +72,13 @@ export function InternetTimelineSection() {
         const cards = gsap.utils.toArray('.timeline-card-item') as HTMLElement[];
         if (cards.length > 0) {
           cards.forEach((card, index) => {
-            const isEven = index % 2 === 0;
-            // Untuk layout desktop, kartu genap (yang seharusnya di kiri jika tidak ada flex-row-reverse) akan muncul dari kiri
-            // Kartu ganjil akan muncul dari kanan
-            // Menggunakan className untuk menentukan arah karena flex-row-reverse
-            const slideFromX = card.classList.contains('md:flex-row-reverse') ? -100 : 100;
-             // Jika di mobile, semua muncul dari bawah atau sedikit dari samping
-            const initialX = window.innerWidth < 768 ? 0 : slideFromX;
-            const initialY = window.innerWidth < 768 ? 50 : 0;
+            const isDesktop = window.innerWidth >= 768;
+            // Untuk layout desktop, kartu genap (flex-row-reverse) akan muncul dari kiri (-100)
+            // Kartu ganjil akan muncul dari kanan (100)
+            const slideFromX = isDesktop ? (card.classList.contains('md:flex-row-reverse') ? -100 : 100) : 0;
+            const initialY = isDesktop ? 0 : 50;
 
-            gsap.set(card, { opacity: 0, x: initialX, y: initialY, scale: 0.95 });
+            gsap.set(card, { opacity: 0, x: slideFromX, y: initialY, scale: 0.95 });
             gsap.to(card, {
               opacity: 1,
               x: 0,
@@ -93,9 +89,9 @@ export function InternetTimelineSection() {
               scrollTrigger: {
                 trigger: card,
                 start: "top 85%", 
-                toggleActions: "play none none none",
+                toggleActions: "play pause resume reverse", // Diperbarui
               },
-              delay: 0.1 + (index * 0.1) // Stagger kecil antar kartu
+              delay: 0.1 + (index * 0.1)
             });
           });
         }
@@ -106,15 +102,15 @@ export function InternetTimelineSection() {
           gsap.to(dots, {
             scale: 1,
             opacity: 0.8, 
-            stagger: 0.2, // Stagger tetap dari sebelumnya
+            stagger: 0.2,
             duration: 0.4,
             ease: 'back.out(1.7)',
             scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top 70%", // Sesuaikan dengan trigger kartu
-              toggleActions: "play none none none",
+              trigger: sectionRef.current, // Trigger berdasarkan section, bukan dots individual
+              start: "top 70%",
+              toggleActions: "play pause resume reverse", // Diperbarui
             },
-            delay: 0.4 // Delay setelah kartu pertama mulai muncul
+            delay: 0.4
           });
         }
       }
@@ -125,11 +121,10 @@ export function InternetTimelineSection() {
   return (
     <Section id="timeline" title="Perjalanan Melalui Evolusi Web">
       <div className="relative max-w-3xl mx-auto" ref={sectionRef}>
-        {/* Garis linimasa tengah, sekarang dengan ref */}
         <div 
           ref={timelineLineRef} 
           className="absolute left-1/2 top-0 bottom-0 w-1 bg-border -translate-x-1/2 hidden md:block"
-          style={{ transformOrigin: 'top center' }} // Ditambahkan untuk GSAP scaleY
+          style={{ transformOrigin: 'top center' }}
         />
         
         <div className="space-y-8">
@@ -138,18 +133,14 @@ export function InternetTimelineSection() {
               key={item.id} 
               className={cn(
                 "md:flex items-start relative timeline-card-item", 
-                // Kartu dengan index genap akan memiliki flex-row-reverse, menempatkan konten teks di kiri dan "spacer" di kanan (untuk desktop)
                 index % 2 === 0 ? "md:flex-row-reverse" : "" 
               )}
             >
-              {/* Div ini berfungsi sebagai spacer di sisi berlawanan dari kartu untuk layout desktop */}
               <div className="md:w-1/2 hidden md:block">
               </div>
-              {/* Kontainer untuk kartu itu sendiri */}
               <div className="md:w-1/2 md:px-8">
                  <TimelineCard item={item} index={index} />
               </div>
-              {/* Titik di linimasa */}
               <div className="absolute left-1/2 top-1/2 w-4 h-4 bg-primary rounded-full border-4 border-background -translate-x-1/2 -translate-y-1/2 hidden md:block timeline-dot" /> 
             </div>
           ))}

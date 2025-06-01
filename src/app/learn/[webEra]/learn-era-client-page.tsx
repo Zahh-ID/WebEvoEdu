@@ -70,19 +70,26 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
             toggleActions: "play pause resume reverse",
           },
         });
+        
+        const childrenSelector = '.card-title-anim, .card-desc-anim, .concept-item-anim, .tech-item-anim, .impact-text-anim, .casestudy-text-anim, .placeholder-text-anim';
+        const childrenElements = card.querySelectorAll(childrenSelector);
 
-        gsap.from(card.querySelectorAll('.card-title-anim, .card-desc-anim, .concept-item-anim, .tech-item-anim, .impact-text-anim, .casestudy-text-anim, .placeholder-text-anim'), {
-          opacity: 0,
-          y: 25,
-          duration: 0.4,
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: card,
-            start: "top 80%",
-            toggleActions: "play pause resume reverse",
-          },
-          delay: 0.3,
-        });
+        if (childrenElements.length > 0) {
+          gsap.set(childrenElements, { opacity: 0, y: 20 }); // Initial state
+
+          gsap.to(childrenElements, { // Animate to final state
+            opacity: 1,
+            y: 0,
+            duration: 0.4,
+            stagger: 0.1,
+            scrollTrigger: {
+              trigger: card,
+              start: "top 80%", 
+              toggleActions: "play pause resume reverse",
+            },
+            delay: 0.2, 
+          });
+        }
       });
 
       gsap.from(contentRef.current.querySelector('.final-button-anim'), {
@@ -178,7 +185,7 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
                         </div>
                       </div>
                       {concept.examples && concept.examples.length > 0 && (
-                        <div className="mb-3"> {/* Removed mt-auto from here */}
+                        <div className="mb-3">
                           <h4 className="text-sm sm:text-md font-semibold text-muted-foreground/80 mb-2 group-hover:text-accent-foreground/90">Contoh Aplikasi/Platform Utama:</h4>
                           <ul className="list-disc list-inside text-muted-foreground space-y-1 pl-4 group-hover:text-accent-foreground/80">
                             {concept.examples.map(example => (
@@ -276,3 +283,4 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
     </div>
   );
 }
+

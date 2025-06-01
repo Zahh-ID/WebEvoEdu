@@ -59,14 +59,14 @@ export function InternetTimelineSection() {
         if (scrollableWidth > 0) {
           gsap.to(scrollContainerRef.current, {
             scrollLeft: scrollableWidth,
-            ease: "none",
+            ease: "none", // Linear ease for direct scroll control
             scrollTrigger: {
               trigger: sectionPinRef.current,
               pin: sectionPinRef.current,
               pinType: "transform", 
-              scrub: 0.2, // Adjusted for more direct "flow"
+              scrub: 1.5, // Increased scrub for smoother, slower following
               start: "top top",
-              end: () => `+=${scrollableWidth * 1}`, 
+              end: () => `+=${scrollableWidth * 1.2}`, // Increased multiplier for slower horizontal scroll relative to vertical
               invalidateOnRefresh: true,
             },
           });

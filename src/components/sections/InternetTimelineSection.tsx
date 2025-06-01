@@ -48,7 +48,6 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
 export function InternetTimelineSection() {
   const sectionPinRef = useRef<HTMLElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  // No longer animating individual cards with separate ScrollTriggers
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -56,30 +55,30 @@ export function InternetTimelineSection() {
     let st: ScrollTrigger | undefined;
 
     const setupGsap = () => {
-      st?.kill();
+      st?.kill(); // Kill previous ScrollTrigger instance if exists
       if (scrollContainerRef.current) {
-        gsap.set(scrollContainerRef.current, { clearProps: "willChange" });
+        // Clear any existing inline styles/transforms set by GSAP
+        gsap.set(scrollContainerRef.current, { clearProps: "all" });
       }
 
       if (scrollContainerRef.current && sectionPinRef.current) {
         const scrollableWidth = scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth;
-
+        
         if (scrollableWidth > 0) {
           gsap.set(scrollContainerRef.current, { willChange: "scroll-position" });
-          
+
           st = ScrollTrigger.create({
             trigger: sectionPinRef.current,
             pin: sectionPinRef.current,
-            pinType: "transform", // Important for compatibility with overflow:hidden on parent
-            scrub: 0.5, // Smooth connection between vertical scroll and horizontal animation
+            pinType: "transform", 
+            scrub: true, // Changed from 0.5 to true for direct linking
             start: "top top",
-            end: "+=200%", // Scroll horizontally over 2x viewport height of vertical scroll
-            invalidateOnRefresh: true,
+            end: "+=200%", 
             animation: gsap.to(scrollContainerRef.current, {
               scrollLeft: scrollableWidth,
               ease: "none", 
             }),
-            // markers: true, // Uncomment for debugging
+            invalidateOnRefresh: true,
           });
         }
       }
@@ -91,6 +90,7 @@ export function InternetTimelineSection() {
         resizeTimeout = setTimeout(setupGsap, 250); 
     };
 
+    // Initial setup after a short delay to ensure layout is stable
     const initialSetupTimeout = setTimeout(setupGsap, 100);
 
     window.addEventListener('resize', debouncedSetupGsap);
@@ -99,9 +99,10 @@ export function InternetTimelineSection() {
       clearTimeout(initialSetupTimeout);
       clearTimeout(resizeTimeout);
       window.removeEventListener('resize', debouncedSetupGsap);
-      st?.kill();
+      st?.kill(); // Cleanup ScrollTrigger on component unmount
+      // Optionally clear GSAP's inline styles from the element
       if (scrollContainerRef.current) {
-        gsap.set(scrollContainerRef.current, { clearProps: "willChange" });
+        gsap.set(scrollContainerRef.current, { clearProps: "all" });
       }
     };
   }, []); 
@@ -115,8 +116,7 @@ export function InternetTimelineSection() {
         {timelineData.map((item, index) => (
           <div
             key={item.id}
-            // Width classes for the cards - make them larger
-            className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem]" 
+            className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem]"
           >
             <TimelineCard item={item} index={index} />
           </div>

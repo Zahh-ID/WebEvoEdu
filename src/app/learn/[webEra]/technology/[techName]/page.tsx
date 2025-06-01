@@ -10,7 +10,7 @@ import { Footer } from '@/components/layout/Footer';
 import ParticleBackground from '@/components/layout/ParticleBackground';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeftIcon, BinaryIcon, InfoIcon } from 'lucide-react';
+import { ArrowLeftIcon, LightbulbIcon, HelpCircleIcon } from 'lucide-react'; // Mengganti BinaryIcon dengan LightbulbIcon atau HelpCircleIcon
 import { cn } from '@/lib/utils';
 
 // Slugify function (consistent with the one in [webEra]/page.tsx)
@@ -33,7 +33,6 @@ function getEraData(eraId: string): ExplanationContent | undefined {
 }
 
 // Helper function to find the original technology name and its era data
-// This is a simple lookup; in a real app, you might have a dedicated data source for technologies
 function getTechnologyDetails(eraId: string, techSlug: string): { era: ExplanationContent; techNameOriginal: string | null } | null {
   const era = getEraData(eraId);
   if (!era || !era.technologies) return null;
@@ -62,8 +61,8 @@ export async function generateMetadata({ params }: { params: { webEra: string; t
   const eraName = techDetails?.era.title || params.webEra.toUpperCase();
 
   return {
-    title: `Teknologi: ${technologyName} (${eraName})`,
-    description: `Pelajari lebih lanjut tentang teknologi ${technologyName} dalam konteks ${eraName}.`,
+    title: `Pelajari Teknologi: ${technologyName} (${eraName})`,
+    description: `Penjelasan sederhana mengenai teknologi ${technologyName} dalam konteks ${eraName}.`,
   };
 }
 
@@ -71,7 +70,6 @@ export default async function TechnologyDetailPage({ params }: { params: { webEr
   const techDetails = getTechnologyDetails(params.webEra, params.techName);
 
   if (!techDetails || !techDetails.era) {
-    // Fallback if era data is not found (should not happen with generateStaticParams)
     return (
       <div className="flex flex-col min-h-screen">
         <ParticleBackground />
@@ -99,7 +97,8 @@ export default async function TechnologyDetailPage({ params }: { params: { webEr
 
   const { era, techNameOriginal } = techDetails;
   const displayTechName = techNameOriginal || params.techName.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-  const { Icon: EraIcon } = era;
+  // Menggunakan LightbulbIcon untuk ikon header
+  const HeaderTechIcon = LightbulbIcon;
 
 
   return (
@@ -117,39 +116,79 @@ export default async function TechnologyDetailPage({ params }: { params: { webEr
             </Button>
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4">
                <div className={cn("p-3 rounded-lg bg-accent/20 self-start", era.colorClass)}>
-                <BinaryIcon className="w-10 h-10 sm:w-12 sm:h-12" /> {/* Specific Icon for Technology Page */}
+                <HeaderTechIcon className="w-10 h-10 sm:w-12 sm:h-12" /> 
               </div>
               <div>
                 <h1 className={cn("text-3xl sm:text-4xl md:text-5xl font-headline font-bold", era.colorClass)}>{displayTechName}</h1>
-                <p className="text-lg sm:text-xl text-muted-foreground mt-1">Detail Teknologi dari Era: {era.title}</p>
+                <p className="text-lg sm:text-xl text-muted-foreground mt-1">Memahami Teknologi dari Era: {era.title}</p>
               </div>
             </div>
           </div>
 
           <Card className="bg-card/80 backdrop-blur-sm shadow-xl">
             <CardHeader>
-              <CardTitle className="text-2xl font-headline text-primary-foreground/90">
-                <InfoIcon className="inline-block mr-3 w-7 h-7 text-accent" />
-                Tentang {displayTechName}
+              <CardTitle className="text-2xl font-headline text-primary-foreground/90 flex items-center">
+                <HelpCircleIcon className="inline-block mr-3 w-7 h-7 text-accent" /> 
+                Mengenal {displayTechName} Lebih Dekat
               </CardTitle>
+              <CardDescription className="text-muted-foreground">Penjelasan ini disederhanakan agar mudah dipahami oleh siapa saja.</CardDescription>
             </CardHeader>
-            <CardContent className="min-h-[200px] flex flex-col justify-center items-center">
-              <p className="text-xl text-muted-foreground text-center mb-4">
-                Konten mendalam mengenai teknologi <strong className={cn(era.colorClass)}>{displayTechName}</strong> akan segera hadir.
-              </p>
-              <p className="text-sm text-muted-foreground/80 text-center">
-                Saat ini kami sedang mempersiapkan materi pembelajaran terbaik untuk Anda.
-              </p>
-              <div className="mt-8 p-4 border border-dashed border-border/50 rounded-lg text-center text-muted-foreground/70 w-full max-w-md">
-                <p className="font-semibold">Contoh Bahasan yang Akan Datang:</p>
-                <ul className="text-xs mt-2 list-disc list-inside">
-                    <li>Definisi dan Konsep Dasar</li>
-                    <li>Sejarah dan Evolusi {displayTechName}</li>
-                    <li>Peran dalam era {era.title}</li>
-                    <li>Kelebihan dan Kekurangan</li>
-                    <li>Studi Kasus Implementasi</li>
-                </ul>
+            <CardContent className="space-y-8 text-base sm:text-lg">
+              
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-primary-foreground/85">1. Apa Itu {displayTechName}? (Versi Sederhana)</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Bayangkan {displayTechName} seperti <strong className={cn(era.colorClass)}>[Analogi Sederhana untuk {displayTechName}]</strong>. 
+                  Pada dasarnya, {displayTechName} adalah sebuah <strong className={cn(era.colorClass)}>[Jenis Teknologi: misal, aturan, bahasa, alat, sistem]</strong> yang memungkinkan komputer atau internet untuk <strong className={cn(era.colorClass)}>[Fungsi Utama Sederhana dari {displayTechName}]</strong>. 
+                  Di era {era.title}, peran utamanya adalah untuk <strong className={cn(era.colorClass)}>[Peran Singkat {displayTechName} di Era Tersebut]</strong>.
+                </p>
+                <p className="mt-3 text-sm text-accent/80 italic">
+                  (Tim kami sedang menyiapkan penjelasan yang lebih mendalam namun tetap mudah dicerna mengenai definisi dasar {displayTechName} dan cara kerjanya secara umum.)
+                </p>
               </div>
+
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-primary-foreground/85">2. Mengapa {displayTechName} Penting di Era {era.title}?</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Kehadiran {displayTechName} sangat krusial bagi perkembangan {era.title}. Tanpa teknologi ini, hal-hal seperti <strong className={cn(era.colorClass)}>[Contoh Dampak Jika {displayTechName} Tidak Ada di Era Itu]</strong> mungkin tidak akan pernah terwujud atau akan sangat berbeda. 
+                  {displayTechName} memberikan kontribusi besar dalam <strong className={cn(era.colorClass)}>[Manfaat Utama 1 dari {displayTechName} untuk Era {era.title}]</strong> dan <strong className={cn(era.colorClass)}>[Manfaat Utama 2 dari {displayTechName} untuk Era {era.title}]</strong>.
+                </p>
+                <p className="mt-3 text-sm text-accent/80 italic">
+                  (Analisis lebih lanjut mengenai kontribusi spesifik {displayTechName} terhadap fitur, kemampuan, dan karakteristik utama dari era {era.title} akan segera ditambahkan.)
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-primary-foreground/85">3. Contoh Penggunaan Sehari-hari (di Era {era.title})</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Mungkin Anda tidak sadar, tetapi jika Anda hidup atau membayangkan menggunakan internet di era {era.title}, Anda akan sering bertemu {displayTechName}. 
+                  Contohnya, ketika Anda <strong className={cn(era.colorClass)}>[Aktivitas Umum Pengguna Internet di Era {era.title}]</strong>, {displayTechName} bekerja di belakang layar untuk <strong className={cn(era.colorClass)}>[Bagaimana {displayTechName} Terlibat dalam Aktivitas Tersebut]</strong>.
+                </p>
+                 <p className="mt-3 text-sm text-accent/80 italic">
+                  (Kami akan menambahkan ilustrasi atau studi kasus sederhana yang menunjukkan bagaimana {displayTechName} digunakan dalam skenario yang relatable pada masanya.)
+                </p>
+              </div>
+
+              {/* Bagian Keterbatasan bisa ditambahkan jika relevan untuk semua teknologi, atau disesuaikan */}
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-primary-foreground/85">4. Apakah Ada Tantangan atau Keterbatasan?</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Setiap teknologi, termasuk {displayTechName} pada era {era.title}, tentu memiliki sisi lain. Beberapa tantangan atau keterbatasannya saat itu mungkin adalah <strong className={cn(era.colorClass)}>[Keterbatasan Umum 1 dari {displayTechName}]</strong> atau <strong className={cn(era.colorClass)}>[Keterbatasan Umum 2 dari {displayTechName}]</strong>. 
+                  Keterbatasan inilah yang seringkali mendorong inovasi untuk menciptakan teknologi yang lebih baik di era berikutnya.
+                </p>
+                 <p className="mt-3 text-sm text-accent/80 italic">
+                  (Diskusi mengenai tantangan, batasan, atau bahkan dampak negatif (jika ada) dari {displayTechName} pada era tersebut, dan bagaimana hal itu memicu evolusi.)
+                </p>
+              </div>
+              
+              <div className="mt-10 pt-6 border-t border-border/50 text-center">
+                <p className="text-lg text-primary font-semibold mb-3">Konten Ini Masih dalam Pengembangan!</p>
+                <p className="text-muted-foreground">
+                  Kami berkomitmen untuk menyediakan penjelasan yang paling akurat, jelas, dan mudah dipahami untuk Anda mengenai <strong className={cn(era.colorClass)}>{displayTechName}</strong>. 
+                  Tim kami sedang bekerja keras untuk melengkapi semua detail. Terima kasih atas kesabaran Anda!
+                </p>
+              </div>
+
             </CardContent>
           </Card>
 
@@ -168,3 +207,4 @@ export default async function TechnologyDetailPage({ params }: { params: { webEr
     </div>
   );
 }
+

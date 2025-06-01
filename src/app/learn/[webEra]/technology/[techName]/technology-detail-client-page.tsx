@@ -98,7 +98,7 @@ export default function TechnologyDetailClientPage({ params, techDetails }: Tech
               <p className="text-muted-foreground mb-6">Maaf, detail untuk teknologi ini tidak dapat ditemukan.</p>
               <Button asChild variant="outline">
                 <Link href="/">
-                  <ArrowLeftIcon className="mr-2 h-4 w-4" />
+                  <ArrowLeftIcon className="mr-2 h-5 w-5" />
                   Kembali ke Beranda
                 </Link>
               </Button>
@@ -124,7 +124,7 @@ export default function TechnologyDetailClientPage({ params, techDetails }: Tech
           <div className="mb-12">
             <Button variant="outline" asChild className="mb-8 page-title-anim">
               <Link href={`/learn/${era.id}`}>
-                <ArrowLeftIcon className="mr-2 h-4 w-4" />
+                <ArrowLeftIcon className="mr-2 h-5 w-5" />
                 Kembali ke Pembelajaran {era.title}
               </Link>
             </Button>
@@ -208,7 +208,7 @@ export default function TechnologyDetailClientPage({ params, techDetails }: Tech
           <div className="text-center mt-16 mb-8 final-button-anim">
             <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10 hover:text-primary">
               <Link href={`/learn/${era.id}`}>
-                <ArrowLeftIcon className="mr-2 h-4 w-4" />
+                <ArrowLeftIcon className="mr-2 h-5 w-5" />
                 Jelajahi Teknologi Lain di {era.title}
               </Link>
             </Button>

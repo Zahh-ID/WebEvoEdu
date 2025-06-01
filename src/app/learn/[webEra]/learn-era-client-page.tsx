@@ -123,7 +123,7 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
               <p className="text-muted-foreground mb-6">Maaf, detail pembelajaran untuk era ini tidak dapat ditemukan.</p>
               <Button asChild variant="outline">
                 <Link href="/">
-                  <ArrowLeftIcon className="mr-2 h-4 w-4" />
+                  <ArrowLeftIcon className="mr-2 h-5 w-5" />
                   Kembali ke Beranda
                 </Link>
               </Button>
@@ -146,7 +146,7 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
           <div className="mb-12">
             <Button variant="outline" asChild className="mb-8 page-title-anim">
               <Link href="/#concepts">
-                <ArrowLeftIcon className="mr-2 h-4 w-4" />
+                <ArrowLeftIcon className="mr-2 h-5 w-5" />
                 Kembali ke Konsep Web
               </Link>
             </Button>

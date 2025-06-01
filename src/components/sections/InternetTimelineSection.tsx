@@ -9,9 +9,9 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const EraColors = {
-  Web1: 'border-blue-500/50 hover:border-blue-500',
-  Web2: 'border-purple-500/50 hover:border-purple-500',
-  Web3: 'border-green-500/50 hover:border-green-500',
+  Web1: 'border-blue-500/70 hover:border-blue-500',
+  Web2: 'border-purple-500/70 hover:border-purple-500',
+  Web3: 'border-green-500/70 hover:border-green-500',
 };
 
 const EraTextColors = {
@@ -23,11 +23,10 @@ const EraTextColors = {
 const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }) => {
   const { Icon } = item;
   return (
-    <Card 
+    <Card
       className={cn(
-        "w-full bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1",
-        EraColors[item.era],
-        "border-l-4"
+        "w-full h-full bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 border-2", // Added border-2, removed border-l-4
+        EraColors[item.era]
       )}
     >
       <CardHeader className="flex flex-row items-start gap-4">
@@ -47,104 +46,53 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
 };
 
 export function InternetTimelineSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const timelineLineRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null); // Ref for the main section
+  const scrollContainerRef = useRef<HTMLDivElement>(null); // Ref for the horizontal scroll container
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
-      if (sectionRef.current) {
-        if (timelineLineRef.current) {
-          gsap.set(timelineLineRef.current, { scaleY: 0, transformOrigin: 'top center' });
-          gsap.to(timelineLineRef.current, {
-            scaleY: 1,
-            duration: 1,
+      if (scrollContainerRef.current) {
+        const cards = gsap.utils.toArray('.timeline-card-item') as HTMLElement[];
+        cards.forEach((card, index) => {
+          gsap.set(card, { opacity: 0, x: 200, scale: 0.95 }); // Start from the right
+          gsap.to(card, {
+            opacity: 1,
+            x: 0,
+            scale: 1,
+            duration: 0.6,
             ease: 'power2.out',
             scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top 60%",
-              end: "bottom 80%",
-              scrub: 0.5, // Scrub akan otomatis menangani reverse saat scroll up
-            }
-          });
-        }
-
-        const cards = gsap.utils.toArray('.timeline-card-item') as HTMLElement[];
-        if (cards.length > 0) {
-          cards.forEach((card, index) => {
-            const isDesktop = window.innerWidth >= 768;
-            // Untuk layout desktop, kartu genap (flex-row-reverse) akan muncul dari kiri (-100)
-            // Kartu ganjil akan muncul dari kanan (100)
-            const slideFromX = isDesktop ? (card.classList.contains('md:flex-row-reverse') ? -100 : 100) : 0;
-            const initialY = isDesktop ? 0 : 50;
-
-            gsap.set(card, { opacity: 0, x: slideFromX, y: initialY, scale: 0.95 });
-            gsap.to(card, {
-              opacity: 1,
-              x: 0,
-              y: 0,
-              scale: 1,
-              duration: 0.7,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: card,
-                start: "top 85%", 
-                toggleActions: "play pause resume reverse", // Diperbarui
-              },
-              delay: 0.1 + (index * 0.1)
-            });
-          });
-        }
-        
-        const dots = sectionRef.current.querySelectorAll('.timeline-dot');
-        if (dots.length > 0) {
-          gsap.set(dots, { scale: 0, opacity: 0 }); 
-          gsap.to(dots, {
-            scale: 1,
-            opacity: 0.8, 
-            stagger: 0.2,
-            duration: 0.4,
-            ease: 'back.out(1.7)',
-            scrollTrigger: {
-              trigger: sectionRef.current, // Trigger berdasarkan section, bukan dots individual
-              start: "top 70%",
-              toggleActions: "play pause resume reverse", // Diperbarui
+              trigger: card,
+              scroller: scrollContainerRef.current, // Set scroller to the horizontal container
+              start: "left 90%", // Trigger when card's left is 90% in view
+              end: "right 10%",   // For reversing animation
+              toggleActions: "play pause resume reverse",
+              horizontal: true, // Crucial for horizontal scroll
+              // markers: true, // Uncomment for debugging ScrollTrigger
             },
-            delay: 0.4
+            delay: index * 0.1 // Stagger animation slightly
           });
-        }
+        });
       }
-    }, sectionRef);
+    }, sectionRef); // Scope GSAP context to the main section
     return () => ctx.revert();
   }, []);
 
   return (
     <Section id="timeline" title="Perjalanan Melalui Evolusi Web">
-      <div className="relative max-w-3xl mx-auto" ref={sectionRef}>
-        <div 
-          ref={timelineLineRef} 
-          className="absolute left-1/2 top-0 bottom-0 w-1 bg-border -translate-x-1/2 hidden md:block"
-          style={{ transformOrigin: 'top center' }}
-        />
-        
-        <div className="space-y-8">
-          {timelineData.map((item, index) => (
-            <div 
-              key={item.id} 
-              className={cn(
-                "md:flex items-start relative timeline-card-item", 
-                index % 2 === 0 ? "md:flex-row-reverse" : "" 
-              )}
-            >
-              <div className="md:w-1/2 hidden md:block">
-              </div>
-              <div className="md:w-1/2 md:px-8">
-                 <TimelineCard item={item} index={index} />
-              </div>
-              <div className="absolute left-1/2 top-1/2 w-4 h-4 bg-primary rounded-full border-4 border-background -translate-x-1/2 -translate-y-1/2 hidden md:block timeline-dot" /> 
-            </div>
-          ))}
-        </div>
+      <div 
+        ref={scrollContainerRef} 
+        className="flex flex-nowrap overflow-x-auto space-x-6 md:space-x-8 py-4 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide snap-x snap-mandatory"
+      >
+        {timelineData.map((item, index) => (
+          <div
+            key={item.id}
+            className="timeline-card-item flex-shrink-0 w-80 sm:w-96 snap-start" // Define width for each card
+          >
+            <TimelineCard item={item} index={index} />
+          </div>
+        ))}
       </div>
     </Section>
   );

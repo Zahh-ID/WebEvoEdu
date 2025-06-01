@@ -97,9 +97,9 @@
   body {
     @apply bg-transparent text-foreground font-body antialiased; /* Updated bg-background to bg-transparent */
   }
-  html {
-    scroll-behavior: smooth;
-  }
+  /* html {
+    scroll-behavior: smooth; 
+  } */ /* Dinonaktifkan untuk mencegah konflik dengan GSAP saat navigasi anchor */
 }
 
 /* Utility to hide scrollbars */

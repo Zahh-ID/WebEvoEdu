@@ -86,7 +86,7 @@ export function InternetTimelineSection() {
         {timelineData.map((item, index) => (
           <div
             key={item.id}
-            className="timeline-card-item flex-shrink-0 w-80 sm:w-96 snap-start" 
+            className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem] snap-start"  // Lebar kartu diubah di sini
           >
             <TimelineCard item={item} index={index} />
           </div>

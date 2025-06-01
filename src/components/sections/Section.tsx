@@ -1,7 +1,8 @@
 
 "use client";
+import React from 'react'; // Added this line
 import { cn } from "@/lib/utils";
-import type React from "react";
+import type { ReactNode } from "react"; // Corrected to 'react'
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -9,65 +10,71 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 interface SectionProps {
   id: string;
   title: string;
-  children: React.ReactNode;
+  children: ReactNode; // Corrected to ReactNode
   className?: string;
   titleClassName?: string;
   containerClassName?: string;
 }
 
-export const Section: React.FC<SectionProps> = ({ id, title, children, className, titleClassName, containerClassName }) => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const childrenRef = useRef<HTMLDivElement>(null);
+export const Section = React.forwardRef<HTMLElement, SectionProps>(
+  ({ id, title, children, className, titleClassName, containerClassName }, ref) => {
+    const titleRef = useRef<HTMLHeadingElement>(null);
+    const childrenRef = useRef<HTMLDivElement>(null);
+    const internalSectionRef = useRef<HTMLElement>(null); // For animations if no ref is passed
 
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    const ctx = gsap.context(() => {
-      if (titleRef.current) {
-        gsap.set(titleRef.current, { opacity: 0, y: 50 }); // Diperbarui dari y: 30
-        gsap.to(titleRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 85%",
-            toggleActions: "play pause resume reverse",
-          }
-        });
-      }
-      if (childrenRef.current) {
-        gsap.set(childrenRef.current, { opacity: 0, y: 50 }); // Diperbarui dari y: 30
-        gsap.to(childrenRef.current, { 
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          delay: 0.2,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-            toggleActions: "play pause resume reverse",
-          }
-        });
-      }
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
+    useEffect(() => {
+      gsap.registerPlugin(ScrollTrigger);
+      const currentSectionRef = (ref || internalSectionRef) as React.RefObject<HTMLElement>;
 
-  return (
-    <section id={id} className={cn("py-16 md:py-24 overflow-hidden", className)} ref={sectionRef}>
-      <div className={cn("container mx-auto px-4 md:px-6", containerClassName)}>
-        <h2 ref={titleRef} className={cn(
-          "text-4xl md:text-5xl font-headline font-bold text-center mb-12 md:mb-16 text-primary-foreground",
-          titleClassName
-          )}
-        >
-          {title}
-        </h2>
-        <div ref={childrenRef}>
-          {children}
+      const ctx = gsap.context(() => {
+        if (titleRef.current) {
+          gsap.set(titleRef.current, { opacity: 0, y: 50 });
+          gsap.to(titleRef.current, {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            scrollTrigger: {
+              trigger: currentSectionRef.current,
+              start: "top 85%",
+              toggleActions: "play pause resume reverse",
+            }
+          });
+        }
+        // Ensure childrenRef.current exists before animating
+        if (childrenRef.current && currentSectionRef.current) { 
+            gsap.set(childrenRef.current, { opacity: 0, y: 50 });
+            gsap.to(childrenRef.current, {
+                opacity: 1,
+                y: 0,
+                duration: 0.6,
+                delay: 0.2, // Keep delay to ensure title animates first if desired
+                scrollTrigger: {
+                trigger: currentSectionRef.current,
+                start: "top 80%", // Adjusted start slightly to ensure trigger
+                toggleActions: "play pause resume reverse",
+                }
+            });
+        }
+      }, currentSectionRef);
+      return () => ctx.revert();
+    }, [ref]); // Add ref to dependency array
+
+    return (
+      <section id={id} className={cn("py-16 md:py-24 overflow-hidden", className)} ref={ref || internalSectionRef}>
+        <div className={cn("container mx-auto px-4 md:px-6", containerClassName)}>
+          <h2 ref={titleRef} className={cn(
+            "text-4xl md:text-5xl font-headline font-bold text-center mb-12 md:mb-16 text-primary-foreground",
+            titleClassName
+            )}
+          >
+            {title}
+          </h2>
+          <div ref={childrenRef}>
+            {children}
+          </div>
         </div>
-      </div>
-    </section>
-  );
-};
+      </section>
+    );
+  }
+);
+Section.displayName = 'Section';

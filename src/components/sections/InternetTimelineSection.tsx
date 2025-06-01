@@ -25,7 +25,7 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
   return (
     <Card
       className={cn(
-        "w-full h-full bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 border-2", // Added border-2, removed border-l-4
+        "w-full h-full bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 border-2",
         EraColors[item.era]
       )}
     >
@@ -46,16 +46,35 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
 };
 
 export function InternetTimelineSection() {
-  const sectionRef = useRef<HTMLDivElement>(null); // Ref for the main section
-  const scrollContainerRef = useRef<HTMLDivElement>(null); // Ref for the horizontal scroll container
+  const sectionPinRef = useRef<HTMLElement>(null); 
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
+    
     const ctx = gsap.context(() => {
-      if (scrollContainerRef.current) {
+      if (scrollContainerRef.current && sectionPinRef.current) {
+        const scrollableWidth = scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth;
+
+        if (scrollableWidth > 0) {
+          gsap.to(scrollContainerRef.current, {
+            scrollLeft: scrollableWidth,
+            ease: "none", // Linear animation for direct scroll mapping
+            scrollTrigger: {
+              trigger: sectionPinRef.current, // The <section> element to pin
+              pin: true,           // Pin the section
+              scrub: 1,            // Smooth scrubbing (1 for direct link, can be 0.5 for smoother)
+              start: "top top",    // Start pinning when the top of sectionPinRef hits top of viewport
+              end: () => `+=${scrollableWidth * 0.8}`, // Vertical scroll distance for full horizontal scroll. Multiplier can be tuned.
+              invalidateOnRefresh: true, // Recalculate on resize/refresh
+            },
+          });
+        }
+
+        // Individual card animations (triggered by horizontal scroll within scrollContainerRef)
         const cards = gsap.utils.toArray('.timeline-card-item') as HTMLElement[];
         cards.forEach((card, index) => {
-          gsap.set(card, { opacity: 0, x: 200, scale: 0.95 }); // Start from the right
+          gsap.set(card, { opacity: 0, x: 200, scale: 0.95 }); 
           gsap.to(card, {
             opacity: 1,
             x: 0,
@@ -64,21 +83,23 @@ export function InternetTimelineSection() {
             ease: 'power2.out',
             scrollTrigger: {
               trigger: card,
-              scroller: scrollContainerRef.current, // Set scroller to the horizontal container
-              start: "left 90%", // Trigger when card's left is 90% in view
-              toggleActions: "play none none none", // Play once and then do nothing
-              horizontal: true, // Crucial for horizontal scroll
+              scroller: scrollContainerRef.current, 
+              start: "left 90%", 
+              toggleActions: "play none none none", 
+              horizontal: true, 
             },
-            delay: index * 0.1 // Stagger animation slightly
+            delay: index * 0.05 
           });
         });
       }
-    }, sectionRef); // Scope GSAP context to the main section
+    }, sectionPinRef); // Scope GSAP context to the main section that will be pinned
+    
     return () => ctx.revert();
   }, []);
 
   return (
-    <Section id="timeline" title="Perjalanan Melalui Evolusi Web">
+    // Pass the ref to the Section component
+    <Section ref={sectionPinRef} id="timeline" title="Perjalanan Melalui Evolusi Web">
       <div 
         ref={scrollContainerRef} 
         className="flex flex-nowrap overflow-x-auto space-x-6 md:space-x-8 py-4 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide snap-x snap-mandatory"
@@ -86,7 +107,7 @@ export function InternetTimelineSection() {
         {timelineData.map((item, index) => (
           <div
             key={item.id}
-            className="timeline-card-item flex-shrink-0 w-80 sm:w-96 snap-start" // Define width for each card
+            className="timeline-card-item flex-shrink-0 w-80 sm:w-96 snap-start" 
           >
             <TimelineCard item={item} index={index} />
           </div>

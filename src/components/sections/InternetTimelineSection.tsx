@@ -7,7 +7,6 @@ import { cn } from '@/lib/utils';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// Moved from Section component context, as we are customizing layout here
 const sectionTitleText = "Perjalanan Melalui Evolusi Web";
 
 const EraColors = {
@@ -48,12 +47,11 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
 };
 
 export function InternetTimelineSection() {
-  const sectionRef = useRef<HTMLElement>(null); // Ref for the entire section
-  const titleRef = useRef<HTMLHeadingElement>(null); // Ref for the title H2
-  const pinElementRef = useRef<HTMLDivElement>(null); // Ref for the element to be pinned (wrapper around cards)
-  const scrollContainerRef = useRef<HTMLDivElement>(null); // Ref for the horizontally scrolling card container
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const pinElementRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // GSAP animation for the title (standard fade-in/slide-up)
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     if (titleRef.current) {
@@ -63,25 +61,19 @@ export function InternetTimelineSection() {
           opacity: 1, y: 0, duration: 0.6, ease: 'power2.out',
           scrollTrigger: {
             trigger: titleRef.current,
-            start: "top 85%", // Animate when title is 85% from top of viewport
+            start: "top 85%",
             toggleActions: "play pause resume reverse",
           }
         }
       );
     }
-  }, []);
 
-  // GSAP animation for horizontal scroll
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    
     let st: ScrollTrigger | undefined;
     let resizeTimeout: NodeJS.Timeout;
 
     const setupGsap = () => {
-      st?.kill(); 
+      st?.kill();
       if (scrollContainerRef.current) {
-        // Ensure will-change is applied for performance hint
         gsap.set(scrollContainerRef.current, { clearProps: "all", willChange: "scroll-position" });
       }
 
@@ -90,18 +82,23 @@ export function InternetTimelineSection() {
         
         if (scrollableWidth > 0) {
           st = ScrollTrigger.create({
-            trigger: pinElementRef.current, // Trigger pinning when this element enters viewport
-            pin: pinElementRef.current, // Pin this element
+            trigger: pinElementRef.current,
+            pin: pinElementRef.current,
             pinType: "transform",
             scrub: true, 
-            start: "top top", // Start pinning when top of pinElementRef hits top of viewport
-            end: () => `+=${scrollableWidth * 1}`, // Entire horizontal scroll maps to vertical scroll distance = scrollableWidth
+            start: "top top", 
+            end: () => `+=${scrollableWidth * 1}`, 
             animation: gsap.to(scrollContainerRef.current, {
               scrollLeft: scrollableWidth,
-              ease: "none", 
+              ease: "none",
             }),
             invalidateOnRefresh: true,
           });
+        } else {
+          // Ensure no pin if not scrollable
+           if (pinElementRef.current) {
+             ScrollTrigger.killAll(); // Kills all ScrollTriggers, might be too broad, but ensures pin is gone
+           }
         }
       }
     };
@@ -111,6 +108,7 @@ export function InternetTimelineSection() {
         resizeTimeout = setTimeout(setupGsap, 250); 
     };
 
+    // Delay initial setup slightly to ensure layout is stable
     const initialSetupTimeout = setTimeout(setupGsap, 100);
     window.addEventListener('resize', debouncedSetupGsap);
     
@@ -134,21 +132,22 @@ export function InternetTimelineSection() {
         >
           {sectionTitleText}
         </h2>
-        {/* This div will be pinned, containing the scrollable cards */}
-        <div ref={pinElementRef}> 
-          <div
-            ref={scrollContainerRef}
-            className="flex flex-nowrap overflow-x-auto space-x-6 md:space-x-8 py-4 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide"
-          >
-            {timelineData.map((item, index) => (
-              <div
-                key={item.id}
-                className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem]"
-              >
-                <TimelineCard item={item} index={index} />
-              </div>
-            ))}
-          </div>
+      </div>
+      {/* This div will be pinned, containing the scrollable cards */}
+      <div ref={pinElementRef}> 
+        <div
+          ref={scrollContainerRef}
+          className="flex flex-nowrap overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide"
+          style={{ willChange: 'scroll-position' }}
+        >
+          {timelineData.map((item, index) => (
+            <div
+              key={item.id}
+              className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem]"
+            >
+              <TimelineCard item={item} index={index} />
+            </div>
+          ))}
         </div>
       </div>
     </section>

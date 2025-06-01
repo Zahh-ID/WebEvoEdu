@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useEffect, useRef } from 'react';
 import { timelineData, type TimelineEvent } from '@/data/timeline-data';
@@ -6,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { cn } from '@/lib/utils';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Section } from './Section';
 
 const sectionTitleText = "Perjalanan Melalui Evolusi Web";
 
@@ -48,34 +48,26 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
 
 export function InternetTimelineSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
   const pinElementRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-    if (titleRef.current) {
-      gsap.fromTo(titleRef.current,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1, y: 0, duration: 0.6, ease: 'power2.out',
-          scrollTrigger: {
-            trigger: titleRef.current,
-            start: "top 85%",
-            toggleActions: "play pause resume reverse",
-          }
-        }
-      );
-    }
 
     let st: ScrollTrigger | undefined;
     let resizeTimeout: NodeJS.Timeout;
 
     const setupGsap = () => {
-      st?.kill();
+      st?.kill(); // Kill existing ScrollTrigger instance before re-creating
+
       if (scrollContainerRef.current) {
         gsap.set(scrollContainerRef.current, { clearProps: "all", willChange: "scroll-position" });
       }
+      if (pinElementRef.current) {
+        gsap.set(pinElementRef.current, { clearProps: "transform" }); // Clear pin-related transforms
+      }
+      
+      ScrollTrigger.refresh(); // Refresh ScrollTrigger to ensure calculations are up-to-date
 
       if (pinElementRef.current && scrollContainerRef.current) {
         const scrollableWidth = scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth;
@@ -87,17 +79,22 @@ export function InternetTimelineSection() {
             pinType: "transform",
             scrub: true, 
             start: "top top", 
-            end: () => `+=${scrollableWidth * 1}`, 
+            end: "+=100%", // Entire horizontal scroll over 100% of viewport height
             animation: gsap.to(scrollContainerRef.current, {
               scrollLeft: scrollableWidth,
-              ease: "none",
+              ease: "none", // Linear movement
             }),
             invalidateOnRefresh: true,
           });
         } else {
-          // Ensure no pin if not scrollable
+           // If not scrollable, ensure no pin is active by killing all related triggers
+           // This can happen if the window is resized very wide
            if (pinElementRef.current) {
-             ScrollTrigger.killAll(); // Kills all ScrollTriggers, might be too broad, but ensures pin is gone
+             ScrollTrigger.getAll().forEach(trigger => {
+               if (trigger.trigger === pinElementRef.current) {
+                 trigger.kill();
+               }
+             });
            }
         }
       }
@@ -120,24 +117,18 @@ export function InternetTimelineSection() {
       if (scrollContainerRef.current) {
         gsap.set(scrollContainerRef.current, { clearProps: "transform,willChange" });
       }
+      if (pinElementRef.current) {
+        gsap.set(pinElementRef.current, { clearProps: "transform" });
+      }
     };
   }, []); 
 
   return (
-    <section ref={sectionRef} id="timeline" className="py-16 md:py-24 overflow-hidden">
-      <div className="container mx-auto px-4 md:px-6">
-        <h2 
-          ref={titleRef} 
-          className="text-4xl md:text-5xl font-headline font-bold text-center mb-12 md:mb-16 text-primary-foreground"
-        >
-          {sectionTitleText}
-        </h2>
-      </div>
-      {/* This div will be pinned, containing the scrollable cards */}
+    <Section ref={sectionRef} id="timeline" title={sectionTitleText} animateChildren={false}>
       <div ref={pinElementRef}> 
         <div
           ref={scrollContainerRef}
-          className="flex flex-nowrap overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide"
+          className="flex flex-nowrap overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 py-4 scrollbar-hide"
           style={{ willChange: 'scroll-position' }}
         >
           {timelineData.map((item, index) => (
@@ -150,6 +141,6 @@ export function InternetTimelineSection() {
           ))}
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

@@ -35,7 +35,7 @@ export function KnowledgeQuizSection() {
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       if (sectionCardRef.current) {
-        gsap.set(sectionCardRef.current, { opacity: 0, y: 50 });
+        gsap.set(sectionCardRef.current, { opacity: 0, y: 30 }); // Adjusted y from 50 to 30
         gsap.to(sectionCardRef.current, {
           opacity: 1, y: 0, duration: 0.6, ease: 'power2.out',
           scrollTrigger: {

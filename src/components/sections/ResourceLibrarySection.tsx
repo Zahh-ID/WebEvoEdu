@@ -62,7 +62,7 @@ export function ResourceLibrarySection() {
       if (sectionContentRef.current) {
         const cards = sectionContentRef.current.querySelectorAll('.resource-card-item');
         if (cards.length > 0) {
-          gsap.set(cards, { opacity: 0, y: 50, scale: 0.9 }); 
+          gsap.set(cards, { opacity: 0, y: 30, scale: 0.95 }); // Adjusted y from 50 to 30, scale from 0.9 to 0.95
           gsap.to(cards, { 
             opacity: 1,
             y: 0,

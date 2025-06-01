@@ -17,12 +17,12 @@ export function Footer() {
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       if (footerRef.current) {
-        gsap.set(footerRef.current, { opacity: 0, y: 40 }); // Diperbarui dari y: 20
+        gsap.set(footerRef.current, { opacity: 0, y: 40 });
         gsap.to(footerRef.current, {
           opacity: 1,
           y: 0,
           duration: 0.5,
-          ease: 'power1.out',
+          ease: 'power2.out', // Changed from power1.out to power2.out
           scrollTrigger: {
             trigger: footerRef.current,
             start: "top 95%", 

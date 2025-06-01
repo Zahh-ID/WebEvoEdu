@@ -29,11 +29,12 @@ export const Section = React.forwardRef<HTMLElement, SectionProps>(
 
       const ctx = gsap.context(() => {
         if (titleRef.current && currentSectionRef.current) {
-          gsap.set(titleRef.current, { opacity: 0, y: 50 });
+          gsap.set(titleRef.current, { opacity: 0, y: 30 }); // Adjusted y from 50 to 30
           gsap.to(titleRef.current, {
             opacity: 1,
             y: 0,
             duration: 0.6,
+            ease: 'power2.out', // Added ease
             scrollTrigger: {
               trigger: currentSectionRef.current,
               start: "top 85%",
@@ -44,12 +45,13 @@ export const Section = React.forwardRef<HTMLElement, SectionProps>(
         
         if (childrenRef.current && currentSectionRef.current) {
           if (animateChildren) {
-            gsap.set(childrenRef.current, { opacity: 0, y: 50 });
+            gsap.set(childrenRef.current, { opacity: 0, y: 30 }); // Adjusted y from 50 to 30
             gsap.to(childrenRef.current, {
                 opacity: 1,
                 y: 0,
                 duration: 0.6,
                 delay: 0.2,
+                ease: 'power2.out', // Added ease
                 scrollTrigger: {
                 trigger: currentSectionRef.current,
                 start: "top 80%",

@@ -37,13 +37,13 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
               contentRef.current.querySelector('.placeholder-anim')
             ].filter(el => el) as HTMLElement[];
 
-            gsap.set(animatedElements, { opacity: 0, y: 25 }); 
+            gsap.set(animatedElements, { opacity: 0, y: 20 }); // Adjusted y from 25 to 20
             contentTweens = animatedElements.map((el, index) => 
               gsap.to(el, { 
                 opacity: 1, 
                 y: 0, 
                 duration: 0.4, 
-                ease: 'power1.out', 
+                ease: 'power2.out', // Changed from power1.out
                 delay: 0.1 + (index * 0.05),
               })
             );

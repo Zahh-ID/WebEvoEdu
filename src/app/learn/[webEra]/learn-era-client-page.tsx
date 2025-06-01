@@ -178,7 +178,7 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
                         </div>
                       </div>
                       {concept.examples && concept.examples.length > 0 && (
-                        <div className="mt-auto mb-3">
+                        <div className="mb-3"> {/* Removed mt-auto from here */}
                           <h4 className="text-sm sm:text-md font-semibold text-muted-foreground/80 mb-2 group-hover:text-accent-foreground/90">Contoh Aplikasi/Platform Utama:</h4>
                           <ul className="list-disc list-inside text-muted-foreground space-y-1 pl-4 group-hover:text-accent-foreground/80">
                             {concept.examples.map(example => (
@@ -276,4 +276,3 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
     </div>
   );
 }
-

@@ -25,7 +25,7 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
   return (
     <Card
       className={cn(
-        "w-full h-full bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 border-2",
+        "w-full h-full bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 border-2", // Removed transform hover:-translate-y-1
         EraColors[item.era]
       )}
     >
@@ -59,7 +59,7 @@ export function InternetTimelineSection() {
         if (scrollableWidth > 0) {
           gsap.to(scrollContainerRef.current, {
             scrollLeft: scrollableWidth,
-            ease: "none",
+            ease: "none", // Linear scroll for smooth control
             scrollTrigger: {
               trigger: sectionPinRef.current,
               pin: true,
@@ -73,25 +73,30 @@ export function InternetTimelineSection() {
 
         const cards = gsap.utils.toArray('.timeline-card-item') as HTMLElement[];
         cards.forEach((card, index) => {
-          const initialY = index % 2 === 0 ? -15 : 15; // Sedikit variasi Y awal
-          const initialX = 150; // Jarak geser horizontal
+          const initialY = index % 2 === 0 ? -20 : 20; // Vertical alternation
 
-          gsap.set(card, { opacity: 0, x: initialX, y: initialY }); 
-          gsap.to(card, {
-            opacity: 1,
-            x: 0,
-            y: 0,
-            duration: 0.5, // Durasi geser
-            ease: 'power2.out',
+          const tl = gsap.timeline({
             scrollTrigger: {
               trigger: card,
-              scroller: scrollContainerRef.current,
-              start: "left 90%", // Mulai animasi saat 10% kartu terlihat dari kanan
-              toggleActions: "play none none none",
+              scroller: scrollContainerRef.current, // Scroll based on the horizontal container
               horizontal: true,
-            },
-            delay: index * 0.1 // Penundaan untuk efek berurutan
+              scrub: 0.8, // Smooth scrubbing
+              start: "left right", // Animation starts when left of card hits right of viewport
+              end: "right left",   // Animation ends when right of card hits left of viewport
+              // markers: true, // Uncomment for debugging
+            }
           });
+
+          // Card Entry, Middle (Stable), and Exit Animation
+          tl.fromTo(card,
+            { xPercent: 100, opacity: 0, y: initialY }, // Start from 100% to its right, invisible, with y-offset
+            { xPercent: 0, opacity: 1, y: 0, ease: 'power2.out', duration: 1 } // Animate to center, full opacity, y to 0
+          )
+          .to(card, {}, ">0.5") // Add a pause in the middle (0.5 relative duration units)
+                                // The card will be stable at xPercent:0, opacity:1, y:0 during this phase
+          .to(card,
+            { xPercent: -100, opacity: 0, y: initialY, ease: 'power2.in', duration: 1 } // Animate to 100% to its left, invisible, y to initialY (or -initialY for different effect)
+          );
         });
       }
     }, sectionPinRef); 
@@ -108,7 +113,7 @@ export function InternetTimelineSection() {
         {timelineData.map((item, index) => (
           <div
             key={item.id}
-            className="timeline-card-item flex-shrink-0 w-80 sm:w-96 snap-start"
+            className="timeline-card-item flex-shrink-0 w-80 sm:w-96 snap-start" // Ensure cards don't shrink
           >
             <TimelineCard item={item} index={index} />
           </div>

@@ -10,12 +10,26 @@ import { Footer } from '@/components/layout/Footer';
 import ParticleBackground from '@/components/layout/ParticleBackground';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeftIcon, CheckCircle2 as CheckCircle2Icon } from 'lucide-react'; // Renamed to avoid conflict
+import { ArrowLeftIcon, BinaryIcon, ArrowRightCircleIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // Function to get data for a specific web era
 function getEraData(era: string): ExplanationContent | undefined {
   return explanationsData.find(e => e.id === era);
+}
+
+// Slugify function
+function slugify(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, '-') // Replace spaces with -
+    .replace(/\([^)]*\)/g, '') // Remove text inside parentheses
+    .replace(/[^\w-]+/g, '') // Remove all non-word chars
+    .replace(/--+/g, '-') // Replace multiple - with single -
+    .replace(/^-+/, '') // Trim - from start of text
+    .replace(/-+$/, '') // Trim - from end of text
+    .trim();
 }
 
 export async function generateStaticParams() {
@@ -126,15 +140,25 @@ export default async function LearnWebEraPage({ params }: { params: { webEra: st
             <Card className="mb-12 bg-card/80 backdrop-blur-sm shadow-xl border-t-4" style={{ borderColor: `hsl(var(--${eraData.id === 'web1' ? 'blue' : eraData.id === 'web2' ? 'purple' : 'green'}-500))` }}>
               <CardHeader>
                 <CardTitle className="text-2xl font-headline text-primary-foreground/90">Teknologi Inti yang Mendasari</CardTitle>
+                <CardDescription className="text-muted-foreground">Klik pada setiap teknologi untuk mempelajari lebih lanjut.</CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
-                  {eraData.technologies.map(tech => (
-                    <li key={tech} className="flex items-start p-3 bg-background/30 rounded-md border border-border/30">
-                      <CheckCircle2Icon className={cn("w-5 h-5 mr-3 mt-0.5 flex-shrink-0", eraData.colorClass)} />
-                      <span className="text-muted-foreground text-sm sm:text-base">{tech}</span>
-                    </li>
-                  ))}
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {eraData.technologies.map(tech => {
+                    const techSlug = slugify(tech);
+                    return (
+                      <li key={techSlug} className="p-0">
+                        <Link 
+                          href={`/learn/${eraData.id}/technology/${techSlug}`} 
+                          className="flex items-center p-3 bg-background/40 rounded-lg border border-border/40 hover:bg-accent/10 hover:border-accent transition-all duration-200 w-full group shadow-sm hover:shadow-md"
+                        >
+                          <BinaryIcon className={cn("w-5 h-5 mr-3 flex-shrink-0 group-hover:scale-110 transition-transform", eraData.colorClass)} />
+                          <span className="text-muted-foreground group-hover:text-accent-foreground text-sm sm:text-base flex-grow">{tech}</span>
+                          <ArrowRightCircleIcon className="w-5 h-5 ml-2 text-accent/60 group-hover:text-accent transition-colors duration-200 opacity-70 group-hover:opacity-100" />
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
                  <p className="mt-6 text-xs sm:text-sm text-accent/70 italic">
                    {/* Placeholder: Analisis mendalam tentang peran masing-masing teknologi dalam membentuk era {eraData.title}, termasuk keterbatasan dan inovasi yang dibawanya. */}

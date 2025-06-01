@@ -2,7 +2,7 @@
 "use client";
 
 import Link from 'next/link';
-import type { ExplanationContent } from '@/data/explanations-data';
+import type { ExplanationContent, KeyConcept } from '@/data/explanations-data';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import ParticleBackground from '@/components/layout/ParticleBackground';
@@ -13,10 +13,11 @@ import { cn } from '@/lib/utils';
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { getIconComponent } from '@/lib/icon-utils';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Slugify function for technology links (moved here if needed by client, or ensure tech slugs are pre-generated)
+// Slugify function for technology links
 function slugify(text: string): string {
   return text
     .toString()
@@ -45,12 +46,12 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
     const ctx = gsap.context(() => {
       gsap.from(contentRef.current.querySelectorAll('.page-title-anim, .page-subtitle-anim'), {
         opacity: 0,
-        y: 40, // Increased from 30
+        y: 40,
         duration: 0.6,
         stagger: 0.15,
         delay: 0.2,
         scrollTrigger: {
-          trigger: contentRef.current.querySelector('.page-title-anim'), // Trigger on first element
+          trigger: contentRef.current.querySelector('.page-title-anim'), 
           start: "top 90%",
           toggleActions: "play pause resume reverse",
         }
@@ -61,7 +62,7 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
         gsap.from(card, {
           opacity: 0,
           y: 50,
-          scale: 0.9, // Increased from 0.95
+          scale: 0.9, 
           duration: 0.5,
           scrollTrigger: {
             trigger: card,
@@ -72,7 +73,7 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
 
         gsap.from(card.querySelectorAll('.card-title-anim, .card-desc-anim, .concept-item-anim, .tech-item-anim, .impact-text-anim, .casestudy-text-anim'), {
           opacity: 0,
-          y: 25, // Increased from 20
+          y: 25, 
           duration: 0.4,
           stagger: 0.1,
           scrollTrigger: {
@@ -127,7 +128,7 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
     );
   }
 
-  const { Icon: EraIcon } = eraData;
+  const EraIcon = getIconComponent(eraData.iconName);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -159,7 +160,7 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
             </CardHeader>
             <CardContent className="space-y-8">
               {eraData.keyConcepts.map((concept, index) => {
-                const { Icon: ConceptIcon } = concept;
+                const ConceptIcon = getIconComponent(concept.iconName);
                 return (
                   <div key={index} className="p-4 sm:p-6 bg-background/50 rounded-lg border border-border/50 shadow-md concept-item-anim">
                     <div className="flex items-center gap-3 mb-3">

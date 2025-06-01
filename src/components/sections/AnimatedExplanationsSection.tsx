@@ -11,9 +11,10 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { getIconComponent } from '@/lib/icon-utils';
 
 const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item }) => {
-  const { Icon: SectionIcon } = item;
+  const SectionIcon = getIconComponent(item.iconName);
   const cardRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -100,7 +101,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
           <h3 className="text-xl font-semibold mb-3 text-primary-foreground/90">Konsep Kunci</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {item.keyConcepts.map(concept => {
-              const { Icon: ConceptIcon } = concept;
+              const ConceptIcon = getIconComponent(concept.iconName);
               return (
                 <div key={concept.title} className="p-4 bg-background/50 rounded-lg border border-border/50 concept-card-item h-full">
                   <div className="flex items-center gap-2 mb-1">
@@ -220,11 +221,9 @@ export function AnimatedExplanationsSection() {
               value={item.id} 
               className={cn(
                 "py-3 text-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg tab-trigger-item w-full",
-                // item.colorClass // Ini untuk teks, bukan background trigger aktif
                  item.id === 'web1' && 'data-[state=active]:bg-blue-600 data-[state=active]:text-white focus-visible:ring-blue-500',
                  item.id === 'web2' && 'data-[state=active]:bg-purple-600 data-[state=active]:text-white focus-visible:ring-purple-500',
                  item.id === 'web3' && 'data-[state=active]:bg-green-600 data-[state=active]:text-white focus-visible:ring-green-500',
-                 // Fallback or default active style if needed
                  !(item.id === 'web1' || item.id === 'web2' || item.id === 'web3') && 'data-[state=active]:bg-primary'
 
               )}
@@ -242,6 +241,3 @@ export function AnimatedExplanationsSection() {
     </Section>
   );
 }
-
-
-    

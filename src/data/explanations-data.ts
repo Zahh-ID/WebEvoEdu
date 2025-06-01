@@ -1,14 +1,21 @@
 
 import type { LucideIcon } from 'lucide-react';
-import { DatabaseIcon, UsersIcon, Share2Icon, AppWindowIcon, ShieldCheckIcon, CogIcon, MessageSquareIcon, ShoppingCartIcon, VoteIcon, LightbulbIcon, FilmIcon, MusicIcon, NewspaperIcon, SearchIcon, CloudIcon } from 'lucide-react';
+// Import specific icons only for type checking if needed, or rely on string names directly.
+// We are moving to icon names (strings) for serialization.
 
+export interface KeyConcept {
+  title: string;
+  description: string;
+  iconName: string; // Changed from Icon: LucideIcon
+  examples?: string[];
+}
 export interface ExplanationContent {
   id: 'web1' | 'web2' | 'web3';
   title: string;
   subtitle: string;
-  Icon: LucideIcon;
-  keyConcepts: { title: string; description: string; Icon: LucideIcon; examples?: string[] }[];
-  technologies?: string[]; // Dijadikan opsional
+  iconName: string; // Changed from Icon: LucideIcon
+  keyConcepts: KeyConcept[];
+  technologies?: string[];
   impact: string;
   colorClass: string;
 }
@@ -18,24 +25,24 @@ export const explanationsData: ExplanationContent[] = [
     id: 'web1',
     title: 'Web1: Fondasi Statis',
     subtitle: 'Era konten hanya-baca dan konektivitas dasar, di mana internet berfungsi sebagai ensiklopedia digital raksasa, memberikan akses informasi satu arah.',
-    Icon: DatabaseIcon,
+    iconName: 'DatabaseIcon',
     keyConcepts: [
       {
         title: 'Konten Statis & Hanya-Baca',
         description: 'Situs web utamanya terdiri dari halaman HTML statis dengan interaktivitas minimal. Pengguna hanya bisa membaca informasi yang disajikan, mirip brosur digital.',
-        Icon: NewspaperIcon,
+        iconName: 'NewspaperIcon',
         examples: ['Halaman profil perusahaan sederhana', 'Arsip berita online statis', 'Direktori tautan (link directories)', 'Dokumentasi online awal'],
       },
       {
         title: 'Interaksi Pengguna Terbatas',
         description: 'Interaksi utama adalah mengklik hyperlink untuk navigasi. Pembuatan konten sangat terbatas pada individu dengan keahlian teknis (HTML), dan umpan balik pengguna jarang terjadi.',
-        Icon: UsersIcon,
+        iconName: 'UsersIcon',
         examples: ['Mengklik tautan antar halaman', 'Mengisi formulir kontak sederhana (jarang dan lambat diproses)'],
       },
       {
         title: 'Desentralisasi Awal & Akses Terbatas',
         description: 'Secara teknis, web awal lebih terdesentralisasi karena banyak individu atau institusi menghosting server mereka sendiri. Namun, akses internet belum meluas dan kecepatan koneksi (dial-up) sangat lambat.',
-        Icon: Share2Icon,
+        iconName: 'Share2Icon',
         examples: ['Situs web personal yang dihosting sendiri', 'Situs departemen universitas', 'Halaman web hobi individu'],
       },
     ],
@@ -47,28 +54,27 @@ export const explanationsData: ExplanationContent[] = [
     id: 'web2',
     title: 'Web2: Web Interaktif & Sosial',
     subtitle: 'Transformasi internet menjadi platform partisipatif, di mana pengguna tidak hanya mengonsumsi tetapi juga aktif menciptakan dan berbagi konten, didukung oleh aplikasi yang lebih dinamis.',
-    Icon: UsersIcon,
+    iconName: 'UsersIcon',
     keyConcepts: [
       {
         title: 'Konten Buatan Pengguna (User-Generated Content)',
         description: 'Pengguna menjadi pusat dari pembuatan konten. Platform memfasilitasi berbagi teks, gambar, video, dan ulasan secara mudah.',
-        Icon: MessageSquareIcon,
+        iconName: 'MessageSquareIcon',
         examples: ['Media Sosial (Facebook, Twitter, Instagram)', 'Platform Blogging (WordPress, Blogger)', 'Berbagi Video (YouTube)', 'Situs Wiki Kolaboratif (Wikipedia)', 'Forum & Komunitas Online'],
       },
       {
         title: 'Aplikasi Web Dinamis & Interaktif',
         description: 'Situs web berevolusi menjadi aplikasi yang kaya fitur dan responsif, seringkali menyerupai aplikasi desktop dalam fungsionalitasnya.',
-        Icon: AppWindowIcon,
+        iconName: 'AppWindowIcon',
         examples: ['Email berbasis Web (Gmail)', 'Peta Interaktif (Google Maps)', 'Alat Produktivitas Online (Google Docs, Sheets)', 'Platform E-commerce (Amazon, Tokopedia)', 'Layanan Streaming (Netflix, Spotify)'],
       },
       {
         title: 'Platform Terpusat & Ekonomi Data',
         description: 'Munculnya perusahaan teknologi besar yang menyediakan platform dominan, seringkali dengan model bisnis berbasis iklan yang memanfaatkan data pengguna.',
-        Icon: CloudIcon, // Mengganti CogIcon dengan CloudIcon untuk lebih merepresentasikan platform
+        iconName: 'CloudIcon',
         examples: ['Mesin Pencari & Ekosistemnya (Google Search, Ads)', 'Jejaring Sosial Utama', 'Pasar Aplikasi Seluler (Apple App Store, Google Play Store)', 'Layanan Cloud Computing (AWS, Azure, GCP sebagai pendukung platform-platform ini)'],
       },
     ],
-    // Daftar 'technologies' sengaja dihilangkan/dikosongkan untuk Web2 sesuai permintaan
     impact: 'Web2 secara fundamental mengubah cara kita berkomunikasi, berkolaborasi, berbelanja, belajar, dan berhibur. Ini melahirkan ekonomi digital baru, fenomena media sosial, e-commerce skala besar, dan "gig economy". Namun, Web2 juga memunculkan isu signifikan terkait privasi data, monopoli platform, dan penyebaran misinformasi.',
     colorClass: 'text-purple-400 focus:ring-purple-500',
   },
@@ -76,30 +82,30 @@ export const explanationsData: ExplanationContent[] = [
     id: 'web3',
     title: 'Web3: Web Terdesentralisasi & Milik Pengguna',
     subtitle: 'Visi internet masa depan yang lebih terbuka, transparan, cerdas, dan bertujuan mengembalikan kepemilikan serta kontrol data kepada pengguna melalui teknologi terdesentralisasi.',
-    Icon: Share2Icon,
+    iconName: 'Share2Icon',
     keyConcepts: [
       {
         title: 'Desentralisasi & Tanpa Perantara Kepercayaan (Trustless)',
         description: 'Menggunakan teknologi blockchain dan jaringan peer-to-peer untuk mengurangi ketergantungan pada otoritas pusat. Transaksi dan interaksi diverifikasi secara kriptografis.',
-        Icon: Share2Icon,
+        iconName: 'Share2Icon',
         examples: ['Keuangan Terdesentralisasi (DeFi) - Pinjaman, Pertukaran Aset', 'Pasar NFT Terdesentralisasi', 'Jaringan Penyimpanan Terdistribusi (IPFS, Arweave)'],
       },
       {
         title: 'Kepemilikan & Kontrol Pengguna atas Data & Aset Digital',
         description: 'Pengguna memiliki kedaulatan lebih besar atas data pribadi dan aset digital mereka, yang dapat direpresentasikan sebagai token kripto atau NFT.',
-        Icon: ShieldCheckIcon,
+        iconName: 'ShieldCheckIcon',
         examples: ['Dompet Kripto (MetaMask, Trust Wallet)', 'Identitas Terdesentralisasi (DID)', 'Kepemilikan Item Game sebagai NFT', 'Royalti Otomatis untuk Kreator'],
       },
       {
         title: 'Web Semantik & Integrasi AI',
         description: 'Data di web menjadi lebih terstruktur dan dapat dipahami oleh mesin, memungkinkan aplikasi yang lebih cerdas, personalisasi, dan agen AI otonom.',
-        Icon: LightbulbIcon,
+        iconName: 'LightbulbIcon',
         examples: ['Asisten AI yang Berinteraksi dengan Smart Contract', 'Mesin Pencari Terdesentralisasi yang Memahami Konteks', 'Personalisasi Berbasis Preferensi yang Dikontrol Pengguna'],
       },
       {
         title: 'Organisasi Otonom Terdesentralisasi (DAO)',
         description: 'Komunitas dapat mengatur diri dan membuat keputusan kolektif melalui mekanisme pemungutan suara berbasis token di blockchain.',
-        Icon: VoteIcon,
+        iconName: 'VoteIcon',
         examples: ['DAO Pengelola Protokol DeFi', 'DAO Investasi Kolektif (Venture DAO)', 'DAO Komunitas untuk Proyek Kreatif atau Sosial'],
       }
     ],

@@ -63,7 +63,7 @@ export function InternetTimelineSection() {
             scrollTrigger: {
               trigger: sectionPinRef.current,
               pin: true,
-              scrub: 0.5, // Membuat scrub lebih halus
+              scrub: 0.5, 
               start: "top top",
               end: () => `+=${scrollableWidth * 0.8}`, 
               invalidateOnRefresh: true,
@@ -73,23 +73,24 @@ export function InternetTimelineSection() {
 
         const cards = gsap.utils.toArray('.timeline-card-item') as HTMLElement[];
         cards.forEach((card, index) => {
-          const initialY = index % 2 === 0 ? -20 : 20; // Posisi Y awal bergantian
-          gsap.set(card, { opacity: 0, x: 250, y: initialY, scale: 0.9 }); // Sedikit lebih jauh dari kanan dan skala awal lebih kecil
+          const initialY = index % 2 === 0 ? -15 : 15; // Sedikit variasi Y awal
+          const initialX = 150; // Jarak geser horizontal
+
+          gsap.set(card, { opacity: 0, x: initialX, y: initialY }); 
           gsap.to(card, {
             opacity: 1,
             x: 0,
-            y: 0, // Kembali ke y:0
-            scale: 1,
-            duration: 0.7, // Durasi sedikit lebih lama
+            y: 0,
+            duration: 0.5, // Durasi geser
             ease: 'power2.out',
             scrollTrigger: {
               trigger: card,
               scroller: scrollContainerRef.current,
-              start: "left 85%", // Titik trigger sedikit lebih awal
+              start: "left 90%", // Mulai animasi saat 10% kartu terlihat dari kanan
               toggleActions: "play none none none",
               horizontal: true,
             },
-            delay: index * 0.1 // Penundaan sedikit lebih besar untuk efek berurutan yang lebih jelas
+            delay: index * 0.1 // Penundaan untuk efek berurutan
           });
         });
       }

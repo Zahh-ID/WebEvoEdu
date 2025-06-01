@@ -1,3 +1,4 @@
+
 import type { LucideIcon } from 'lucide-react';
 import { GlobeIcon, UsersIcon, NetworkIcon, CpuIcon, BrainIcon, ZapIcon } from 'lucide-react';
 
@@ -16,7 +17,7 @@ export const timelineData: TimelineEvent[] = [
     era: 'Web1',
     year: '1989-1999',
     title: 'Web Statis: Era Informasi Satu Arah',
-    description: 'Web1, dikenal sebagai generasi awal internet, didominasi oleh situs web yang dibangun dengan HTML statis. Ini berarti halaman web bersifat "hanya-baca", mirip dengan brosur digital. Konten disajikan tanpa banyak perubahan, dan interaksi pengguna sangat terbatas, umumnya hanya berupa navigasi melalui hyperlink untuk berpindah antar halaman.',
+    description: 'Web1, dikenal sebagai generasi awal internet, didominasi oleh situs web yang dibangun dengan HyperText Markup Language (HTML) statis. Ini berarti halaman web bersifat "hanya-baca", mirip dengan brosur digital. Konten disajikan tanpa banyak perubahan, dan interaksi pengguna sangat terbatas, umumnya hanya berupa navigasi melalui hyperlink untuk berpindah antar halaman.',
     Icon: GlobeIcon,
   },
   {
@@ -24,7 +25,7 @@ export const timelineData: TimelineEvent[] = [
     era: 'Web1',
     year: 'Teknologi Kunci',
     title: 'Fondasi Protokol Inti',
-    description: 'Web1 dibangun di atas teknologi dasar seperti HTML (HyperText Markup Language) untuk struktur konten, HTTP (HyperText Transfer Protocol) untuk komunikasi antara server dan peramban, serta URL (Uniform Resource Locator) sebagai alamat unik halaman web. Peramban awal seperti Mosaic dan Netscape Navigator menjadi gerbang utama untuk mengakses informasi ini.',
+    description: 'Web1 dibangun di atas teknologi dasar seperti HyperText Markup Language (HTML) untuk struktur konten, HyperText Transfer Protocol (HTTP) untuk komunikasi antara server dan peramban, serta Uniform Resource Locator (URL) sebagai alamat unik halaman web. Peramban awal seperti Mosaic dan Netscape Navigator menjadi gerbang utama untuk mengakses informasi ini.',
     Icon: NetworkIcon,
   },
   {
@@ -40,7 +41,7 @@ export const timelineData: TimelineEvent[] = [
     era: 'Web2',
     year: 'Teknologi Kunci',
     title: 'Membangun Konten Dinamis dan Aplikasi Kaya Fitur',
-    description: 'Teknologi seperti AJAX (Asynchronous JavaScript and XML) memungkinkan pembaruan halaman tanpa reload penuh, menciptakan pengalaman yang lebih responsif. Kerangka kerja JavaScript (seperti jQuery, kemudian Angular, React, Vue) mempermudah pembuatan aplikasi web yang kompleks dan interaktif. Bahasa pemrograman sisi server (PHP, Ruby, Python, Java) menangani logika bisnis dan manajemen data.',
+    description: 'Teknologi seperti Asynchronous JavaScript and XML (AJAX) memungkinkan pembaruan halaman tanpa reload penuh, menciptakan pengalaman yang lebih responsif. Kerangka kerja JavaScript (seperti jQuery, kemudian Angular, React, Vue) mempermudah pembuatan aplikasi web yang kompleks dan interaktif. Bahasa pemrograman sisi server (PHP, Ruby, Python, Java) menangani logika bisnis dan manajemen data.',
     Icon: CpuIcon,
   },
   {
@@ -55,8 +56,8 @@ export const timelineData: TimelineEvent[] = [
     id: 'web3-tech',
     era: 'Web3',
     year: 'Teknologi Kunci',
-    title: 'Paradigma Baru: Blockchain, AI, dan Ekonomi Digital',
-    description: 'Web3 didukung oleh teknologi seperti Blockchain (misalnya, Ethereum) sebagai buku besar terdistribusi, mata uang kripto untuk transaksi digital, NFT (Non-Fungible Tokens) untuk kepemilikan aset digital unik, DAO (Decentralized Autonomous Organizations) untuk tata kelola komunitas, dan kontrak pintar (smart contracts) untuk otomatisasi perjanjian. Integrasi AI/ML dan solusi penyimpanan terdesentralisasi seperti IPFS (InterPlanetary File System) juga memainkan peran penting dalam membentuk ekosistem Web3.',
+    title: 'Paradigma Baru: Blockchain, Kecerdasan Buatan, dan Ekonomi Digital',
+    description: 'Web3 didukung oleh teknologi seperti Blockchain (misalnya, Ethereum) sebagai buku besar terdistribusi, mata uang kripto untuk transaksi digital, Non-Fungible Tokens (Token yang Tidak Dapat Dipertukarkan) untuk kepemilikan aset digital unik, Decentralized Autonomous Organizations atau Organisasi Otonom Terdesentralisasi untuk tata kelola komunitas, dan kontrak pintar (smart contracts) untuk otomatisasi perjanjian. Integrasi Kecerdasan Buatan/Pembelajaran Mesin (Artificial Intelligence/Machine Learning) dan solusi penyimpanan terdesentralisasi seperti InterPlanetary File System (IPFS) juga memainkan peran penting dalam membentuk ekosistem Web3.',
     Icon: BrainIcon,
   },
 ];

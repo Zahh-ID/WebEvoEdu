@@ -46,7 +46,7 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
 };
 
 export function InternetTimelineSection() {
-  const sectionPinRef = useRef<HTMLElement>(null); 
+  const sectionPinRef = useRef<HTMLElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,55 +59,55 @@ export function InternetTimelineSection() {
         if (scrollableWidth > 0) {
           gsap.to(scrollContainerRef.current, {
             scrollLeft: scrollableWidth,
-            ease: "none", // Linear animation for direct scroll mapping
+            ease: "none",
             scrollTrigger: {
-              trigger: sectionPinRef.current, // The <section> element to pin
-              pin: true,           // Pin the section
-              scrub: 1,            // Smooth scrubbing (1 for direct link, can be 0.5 for smoother)
-              start: "top top",    // Start pinning when the top of sectionPinRef hits top of viewport
-              end: () => `+=${scrollableWidth * 0.8}`, // Vertical scroll distance for full horizontal scroll. Multiplier can be tuned.
-              invalidateOnRefresh: true, // Recalculate on resize/refresh
+              trigger: sectionPinRef.current,
+              pin: true,
+              scrub: 0.5, // Membuat scrub lebih halus
+              start: "top top",
+              end: () => `+=${scrollableWidth * 0.8}`, 
+              invalidateOnRefresh: true,
             },
           });
         }
 
-        // Individual card animations (triggered by horizontal scroll within scrollContainerRef)
         const cards = gsap.utils.toArray('.timeline-card-item') as HTMLElement[];
         cards.forEach((card, index) => {
-          gsap.set(card, { opacity: 0, x: 200, scale: 0.95 }); 
+          const initialY = index % 2 === 0 ? -20 : 20; // Posisi Y awal bergantian
+          gsap.set(card, { opacity: 0, x: 250, y: initialY, scale: 0.9 }); // Sedikit lebih jauh dari kanan dan skala awal lebih kecil
           gsap.to(card, {
             opacity: 1,
             x: 0,
+            y: 0, // Kembali ke y:0
             scale: 1,
-            duration: 0.6,
+            duration: 0.7, // Durasi sedikit lebih lama
             ease: 'power2.out',
             scrollTrigger: {
               trigger: card,
-              scroller: scrollContainerRef.current, 
-              start: "left 90%", 
-              toggleActions: "play none none none", 
-              horizontal: true, 
+              scroller: scrollContainerRef.current,
+              start: "left 85%", // Titik trigger sedikit lebih awal
+              toggleActions: "play none none none",
+              horizontal: true,
             },
-            delay: index * 0.05 
+            delay: index * 0.1 // Penundaan sedikit lebih besar untuk efek berurutan yang lebih jelas
           });
         });
       }
-    }, sectionPinRef); // Scope GSAP context to the main section that will be pinned
+    }, sectionPinRef); 
     
     return () => ctx.revert();
   }, []);
 
   return (
-    // Pass the ref to the Section component
     <Section ref={sectionPinRef} id="timeline" title="Perjalanan Melalui Evolusi Web">
-      <div 
-        ref={scrollContainerRef} 
+      <div
+        ref={scrollContainerRef}
         className="flex flex-nowrap overflow-x-auto space-x-6 md:space-x-8 py-4 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide snap-x snap-mandatory"
       >
         {timelineData.map((item, index) => (
           <div
             key={item.id}
-            className="timeline-card-item flex-shrink-0 w-80 sm:w-96 snap-start" 
+            className="timeline-card-item flex-shrink-0 w-80 sm:w-96 snap-start"
           >
             <TimelineCard item={item} index={index} />
           </div>

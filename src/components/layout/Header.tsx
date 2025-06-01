@@ -6,11 +6,11 @@ import { cn } from '@/lib/utils';
 import * as React from 'react';
 
 const navItems = [
-  { name: 'Timeline', href: '#timeline' },
-  { name: 'Concepts', href: '#concepts' },
-  { name: 'Architecture', href: '#architecture' },
-  { name: 'Quiz', href: '#quiz' },
-  { name: 'Resources', href: '#resources' },
+  { name: 'Linimasa', href: '#timeline' },
+  { name: 'Konsep', href: '#concepts' },
+  { name: 'Arsitektur', href: '#architecture' },
+  { name: 'Kuis', href: '#quiz' },
+  { name: 'Sumber Daya', href: '#resources' },
 ];
 
 export function Header() {
@@ -35,7 +35,7 @@ export function Header() {
         <Link href="/" className="flex items-center gap-2 group">
           <RocketIcon className="h-8 w-8 text-primary group-hover:animate-pulse" />
           <span className="text-2xl font-headline font-bold text-primary-foreground group-hover:text-primary transition-colors">
-            Evolutionary Web
+            Web Evolusioner
           </span>
         </Link>
         <nav className="hidden md:flex items-center space-x-2 lg:space-x-4">
@@ -46,7 +46,7 @@ export function Header() {
           ))}
         </nav>
         <div className="md:hidden">
-          {/* Mobile menu button can be added here */}
+          {/* Tombol menu mobile bisa ditambahkan di sini */}
         </div>
       </div>
     </header>

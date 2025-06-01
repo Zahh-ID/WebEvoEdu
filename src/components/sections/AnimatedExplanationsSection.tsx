@@ -24,7 +24,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
-          <h3 className="text-xl font-semibold mb-3 text-primary-foreground/90">Key Concepts</h3>
+          <h3 className="text-xl font-semibold mb-3 text-primary-foreground/90">Konsep Kunci</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {item.keyConcepts.map(concept => {
               const { Icon: ConceptIcon } = concept;
@@ -41,7 +41,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
           </div>
         </div>
         <div>
-          <h3 className="text-xl font-semibold mb-2 text-primary-foreground/90">Core Technologies</h3>
+          <h3 className="text-xl font-semibold mb-2 text-primary-foreground/90">Teknologi Inti</h3>
           <ul className="list-inside list-disc space-y-1 text-muted-foreground">
             {item.technologies.map(tech => (
               <li key={tech} className="flex items-center">
@@ -51,12 +51,12 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
           </ul>
         </div>
         <div>
-          <h3 className="text-xl font-semibold mb-2 text-primary-foreground/90">Impact & Vision</h3>
+          <h3 className="text-xl font-semibold mb-2 text-primary-foreground/90">Dampak & Visi</h3>
           <p className="text-muted-foreground">{item.impact}</p>
         </div>
-        {/* Placeholder for future animations */}
+        {/* Placeholder untuk animasi masa depan */}
         <div className="mt-6 p-4 border border-dashed border-border rounded-lg text-center text-muted-foreground">
-          <p>Future animation placeholder for {item.title}</p>
+          <p>Placeholder animasi masa depan untuk {item.title}</p>
         </div>
       </CardContent>
     </Card>
@@ -65,7 +65,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
 
 export function AnimatedExplanationsSection() {
   return (
-    <Section id="concepts" title="Understanding Web Eras" className="bg-background/30">
+    <Section id="concepts" title="Memahami Era Web" className="bg-background/30">
       <Tabs defaultValue="web1" className="w-full max-w-4xl mx-auto">
         <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border mb-8">
           {explanationsData.map((item) => (

@@ -47,9 +47,9 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item, 
 
 export function InternetTimelineSection() {
   return (
-    <Section id="timeline" title="Journey Through the Web's Evolution">
+    <Section id="timeline" title="Perjalanan Melalui Evolusi Web">
       <div className="relative max-w-3xl mx-auto">
-        {/* Central line for the timeline */}
+        {/* Garis tengah untuk linimasa */}
         <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-border -translate-x-1/2 hidden md:block" />
         
         <div className="space-y-8">
@@ -62,12 +62,12 @@ export function InternetTimelineSection() {
               )}
             >
               <div className="md:w-1/2">
-                {/* Placeholder for alignment, or content for one side */}
+                {/* Placeholder untuk penyejajaran, atau konten untuk satu sisi */}
               </div>
               <div className="md:w-1/2 md:px-8">
                  <TimelineCard item={item} index={index} />
               </div>
-               {/* Dot on the timeline */}
+               {/* Titik pada linimasa */}
                <div className="absolute left-1/2 top-1/2 w-4 h-4 bg-primary rounded-full border-4 border-background -translate-x-1/2 -translate-y-1/2 hidden md:block" />
             </div>
           ))}

@@ -3,42 +3,42 @@ import React from 'react';
 import Image from 'next/image';
 import { Section } from './Section';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CuboidIcon, LayersIcon, GitForkIcon } from 'lucide-react'; // Example icons
+import { CuboidIcon, LayersIcon, GitForkIcon } from 'lucide-react'; // Contoh ikon
 import { cn } from '@/lib/utils';
 
 const modelData = [
   {
     id: 'web1',
-    title: 'Web1 Architecture: Simple & Direct',
-    description: 'Characterized by client-server architecture. Users request static HTML files from a web server.',
+    title: 'Arsitektur Web1: Sederhana & Langsung',
+    description: 'Dicirikan oleh arsitektur klien-server. Pengguna meminta file HTML statis dari server web.',
     Icon: CuboidIcon,
     imageUrl: 'https://placehold.co/600x400.png',
-    aiHint: 'simple network diagram',
+    aiHint: 'diagram jaringan sederhana',
     colorClass: 'border-blue-500/70 text-blue-400',
   },
   {
     id: 'web2',
-    title: 'Web2 Architecture: Complex & Centralized',
-    description: 'Three-tier architecture (client, application server, database) enabling dynamic content and user interaction, often hosted on centralized cloud platforms.',
+    title: 'Arsitektur Web2: Kompleks & Terpusat',
+    description: 'Arsitektur tiga tingkat (klien, server aplikasi, basis data) yang memungkinkan konten dinamis dan interaksi pengguna, seringkali dihosting di platform cloud terpusat.',
     Icon: LayersIcon,
     imageUrl: 'https://placehold.co/600x400.png',
-    aiHint: 'cloud architecture diagram',
+    aiHint: 'diagram arsitektur cloud',
     colorClass: 'border-purple-500/70 text-purple-400',
   },
   {
     id: 'web3',
-    title: 'Web3 Architecture: Decentralized & Distributed',
-    description: 'Peer-to-peer networks, blockchain for state management, decentralized storage (IPFS), and smart contracts forming the backend.',
+    title: 'Arsitektur Web3: Terdesentralisasi & Terdistribusi',
+    description: 'Jaringan peer-to-peer, blockchain untuk manajemen state, penyimpanan terdesentralisasi (IPFS), dan kontrak pintar yang membentuk backend.',
     Icon: GitForkIcon,
     imageUrl: 'https://placehold.co/600x400.png',
-    aiHint: 'decentralized network p2p',
+    aiHint: 'jaringan terdesentralisasi p2p',
     colorClass: 'border-green-500/70 text-green-400',
   },
 ];
 
 export function ThreeDModelsSection() {
   return (
-    <Section id="architecture" title="Visualizing Web Architectures">
+    <Section id="architecture" title="Memvisualisasikan Arsitektur Web">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {modelData.map((model, index) => {
           const { Icon } = model;
@@ -66,14 +66,14 @@ export function ThreeDModelsSection() {
                 <div className="w-full aspect-video bg-background/30 rounded-md overflow-hidden mb-4 border border-border">
                   <Image
                     src={model.imageUrl}
-                    alt={`${model.title} placeholder`}
+                    alt={`Placeholder ${model.title}`}
                     width={600}
                     height={400}
                     className="object-cover w-full h-full"
                     data-ai-hint={model.aiHint}
                   />
                 </div>
-                <p className="text-sm text-accent text-center">3D model visualization coming soon!</p>
+                <p className="text-sm text-accent text-center">Visualisasi model 3D segera hadir!</p>
               </CardContent>
             </Card>
           );

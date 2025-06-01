@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'Evolutionary Web',
-  description: 'Explore the evolution of the internet from Web1 to Web3.',
+  title: 'Web Evolusioner',
+  description: 'Jelajahi evolusi internet dari Web1 hingga Web3.',
 };
 
 export default function RootLayout({
@@ -13,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // Apply dark class to html for consistency if needed, or rely on :root
-    <html lang="en" className="dark">
+    // Terapkan kelas gelap ke html untuk konsistensi jika diperlukan, atau andalkan :root
+    <html lang="id" className="dark">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

@@ -9,50 +9,50 @@ export interface ExplanationContent {
   keyConcepts: { title: string; description: string; Icon: LucideIcon }[];
   technologies: string[];
   impact: string;
-  colorClass: string; // For styling tabs or cards
+  colorClass: string; // Untuk styling tab atau kartu
 }
 
 export const explanationsData: ExplanationContent[] = [
   {
     id: 'web1',
-    title: 'Web1: The Static Foundation',
-    subtitle: 'The era of read-only content and basic connectivity.',
+    title: 'Web1: Fondasi Statis',
+    subtitle: 'Era konten hanya-baca dan konektivitas dasar.',
     Icon: DatabaseIcon,
     keyConcepts: [
-      { title: 'Static Content', description: 'Websites primarily consisted of static HTML pages with limited interactivity.', Icon: AppWindowIcon },
-      { title: 'Read-Only Web', description: 'Users were mainly consumers of information, not creators.', Icon: UsersIcon },
-      { title: 'Decentralized (Initially)', description: 'Early web was more decentralized, with individuals hosting servers.', Icon: Share2Icon },
+      { title: 'Konten Statis', description: 'Situs web utamanya terdiri dari halaman HTML statis dengan interaktivitas terbatas.', Icon: AppWindowIcon },
+      { title: 'Web Hanya-Baca', description: 'Pengguna utamanya adalah konsumen informasi, bukan pencipta.', Icon: UsersIcon },
+      { title: 'Terdesentralisasi (Awalnya)', description: 'Web awal lebih terdesentralisasi, dengan individu yang menghosting server.', Icon: Share2Icon },
     ],
-    technologies: ['HTML', 'HTTP', 'URLs', 'Early Browsers (Mosaic, Netscape)'],
-    impact: 'Laid the groundwork for global information sharing and online presence.',
+    technologies: ['HTML', 'HTTP', 'URL', 'Peramban Awal (Mosaic, Netscape)'],
+    impact: 'Meletakkan dasar untuk berbagi informasi global dan kehadiran online.',
     colorClass: 'text-blue-400 focus:ring-blue-500',
   },
   {
     id: 'web2',
-    title: 'Web2: The Interactive & Social Web',
-    subtitle: 'The rise of user-generated content, social media, and web applications.',
+    title: 'Web2: Web Interaktif & Sosial',
+    subtitle: 'Munculnya konten buatan pengguna, media sosial, dan aplikasi web.',
     Icon: UsersIcon,
     keyConcepts: [
-      { title: 'User-Generated Content', description: 'Platforms enabled users to create and share content (blogs, videos, social posts).', Icon: UsersIcon },
-      { title: 'Interactivity & Rich Applications', description: 'Dynamic web apps with rich user interfaces became common.', Icon: AppWindowIcon },
-      { title: 'Centralized Platforms', description: 'Dominated by large tech companies controlling data and services.', Icon: CogIcon },
+      { title: 'Konten Buatan Pengguna', description: 'Platform memungkinkan pengguna untuk membuat dan berbagi konten (blog, video, postingan sosial).', Icon: UsersIcon },
+      { title: 'Interaktivitas & Aplikasi Kaya Fitur', description: 'Aplikasi web dinamis dengan antarmuka pengguna yang kaya menjadi umum.', Icon: AppWindowIcon },
+      { title: 'Platform Terpusat', description: 'Didominasi oleh perusahaan teknologi besar yang mengendalikan data dan layanan.', Icon: CogIcon },
     ],
-    technologies: ['AJAX', 'JavaScript (React, Angular, Vue)', 'Social Media APIs', 'Cloud Computing'],
-    impact: 'Transformed how people connect, share, and consume information, leading to the platform economy.',
+    technologies: ['AJAX', 'JavaScript (React, Angular, Vue)', 'Social Media API', 'Cloud Computing'],
+    impact: 'Mengubah cara orang terhubung, berbagi, dan mengonsumsi informasi, yang mengarah pada ekonomi platform.',
     colorClass: 'text-purple-400 focus:ring-purple-500',
   },
   {
     id: 'web3',
-    title: 'Web3: The Decentralized & Semantic Web',
-    subtitle: 'Towards a user-owned, intelligent, and trustless internet.',
+    title: 'Web3: Web Terdesentralisasi & Semantik',
+    subtitle: 'Menuju internet milik pengguna, cerdas, dan tanpa perantara kepercayaan (trustless).',
     Icon: Share2Icon,
     keyConcepts: [
-      { title: 'Decentralization', description: 'Utilizing blockchain and peer-to-peer networks to reduce reliance on intermediaries.', Icon: Share2Icon },
-      { title: 'User Ownership & Control', description: 'Empowering users with control over their data and digital assets (NFTs, tokens).', Icon: ShieldCheckIcon },
-      { title: 'Semantic Web & AI', description: 'Enabling machines to understand and process web content, fostering intelligent applications.', Icon: CogIcon },
+      { title: 'Desentralisasi', description: 'Memanfaatkan blockchain dan jaringan peer-to-peer untuk mengurangi ketergantungan pada perantara.', Icon: Share2Icon },
+      { title: 'Kepemilikan & Kontrol Pengguna', description: 'Memberdayakan pengguna dengan kontrol atas data dan aset digital mereka (NFT, token).', Icon: ShieldCheckIcon },
+      { title: 'Web Semantik & AI', description: 'Memungkinkan mesin untuk memahami dan memproses konten web, mendorong aplikasi cerdas.', Icon: CogIcon },
     ],
-    technologies: ['Blockchain (Ethereum, Solana)', 'Smart Contracts', 'NFTs', 'DAOs', 'IPFS', 'AI/ML'],
-    impact: 'Aims to create a more open, transparent, and equitable internet, though still in its early stages of development.',
+    technologies: ['Blockchain (Ethereum, Solana)', 'Smart Contracts', 'NFT', 'DAO', 'IPFS', 'AI/ML'],
+    impact: 'Bertujuan untuk menciptakan internet yang lebih terbuka, transparan, dan adil, meskipun masih dalam tahap awal pengembangan.',
     colorClass: 'text-green-400 focus:ring-green-500',
   },
 ];

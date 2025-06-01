@@ -6,7 +6,7 @@ export interface ResourceItem {
   title: string;
   description: string;
   url: string;
-  type: 'Paper' | 'Article' | 'Website' | 'Book';
+  type: 'Makalah' | 'Artikel' | 'Situs Web' | 'Buku';
   Icon: LucideIcon;
   tags: string[];
 }
@@ -14,47 +14,47 @@ export interface ResourceItem {
 export const resourcesData: ResourceItem[] = [
   {
     id: 'web1-berners-lee',
-    title: 'Information Management: A Proposal',
-    description: "Tim Berners-Lee's original proposal for the World Wide Web at CERN.",
+    title: 'Manajemen Informasi: Sebuah Proposal',
+    description: "Proposal asli Tim Berners-Lee untuk World Wide Web di CERN.",
     url: 'https://www.w3.org/History/1989/proposal.html',
-    type: 'Paper',
+    type: 'Makalah',
     Icon: FileTextIcon,
-    tags: ['Web1', 'Foundational', 'CERN'],
+    tags: ['Web1', 'Dasar', 'CERN'],
   },
   {
     id: 'web2-oreilly',
-    title: "What Is Web 2.0",
-    description: "Tim O'Reilly's seminal article defining the principles of Web 2.0.",
+    title: "Apa Itu Web 2.0",
+    description: "Artikel penting Tim O'Reilly yang mendefinisikan prinsip-prinsip Web 2.0.",
     url: 'https://www.oreilly.com/pub/a/web2/archive/what-is-web-20.html',
-    type: 'Article',
+    type: 'Artikel',
     Icon: BookOpenTextIcon,
-    tags: ['Web2', 'Definition', 'Social Web'],
+    tags: ['Web2', 'Definisi', 'Web Sosial'],
   },
   {
     id: 'web3-ethereum',
-    title: 'Ethereum Whitepaper',
-    description: "Vitalik Buterin's vision for a decentralized application platform.",
+    title: 'Whitepaper Ethereum',
+    description: "Visi Vitalik Buterin untuk platform aplikasi terdesentralisasi.",
     url: 'https://ethereum.org/en/whitepaper/',
-    type: 'Paper',
+    type: 'Makalah',
     Icon: FileTextIcon,
     tags: ['Web3', 'Blockchain', 'Smart Contracts'],
   },
   {
     id: 'ipfs-website',
     title: 'IPFS (InterPlanetary File System)',
-    description: 'Official website for IPFS, a peer-to-peer hypermedia protocol to make the web faster, safer, and more open.',
+    description: 'Situs web resmi untuk IPFS, protokol hypermedia peer-to-peer untuk membuat web lebih cepat, lebih aman, dan lebih terbuka.',
     url: 'https://ipfs.tech/',
-    type: 'Website',
+    type: 'Situs Web',
     Icon: LinkIcon,
-    tags: ['Web3', 'Decentralized Storage', 'P2P'],
+    tags: ['Web3', 'Penyimpanan Terdesentralisasi', 'P2P'],
   },
   {
     id: 'w3c-org',
     title: 'World Wide Web Consortium (W3C)',
-    description: 'The main international standards organization for the World Wide Web.',
+    description: 'Organisasi standar internasional utama untuk World Wide Web.',
     url: 'https://www.w3.org/',
-    type: 'Website',
+    type: 'Situs Web',
     Icon: LinkIcon,
-    tags: ['Standards', 'Web Development', 'Governance'],
+    tags: ['Standar', 'Pengembangan Web', 'Tata Kelola'],
   },
 ];

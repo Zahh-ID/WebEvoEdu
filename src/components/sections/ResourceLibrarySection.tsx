@@ -44,7 +44,7 @@ const ResourceCard: React.FC<{ item: ResourceItem, index: number }> = ({ item, i
         </div>
         <Button variant="outline" asChild className="w-full mt-2 border-accent text-accent hover:bg-accent/10 hover:text-accent">
           <Link href={item.url} target="_blank" rel="noopener noreferrer">
-            Read More <ExternalLinkIcon className="ml-2 h-4 w-4" />
+            Baca Lebih Lanjut <ExternalLinkIcon className="ml-2 h-4 w-4" />
           </Link>
         </Button>
       </CardFooter>
@@ -54,9 +54,9 @@ const ResourceCard: React.FC<{ item: ResourceItem, index: number }> = ({ item, i
 
 export function ResourceLibrarySection() {
   return (
-    <Section id="resources" title="Expand Your Horizons" className="bg-background/30">
+    <Section id="resources" title="Perluas Wawasan Anda" className="bg-background/30">
       <p className="text-center text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
-        Dive deeper into the evolution of the web with these seminal papers, articles, and resources.
+        Selami lebih dalam evolusi web dengan makalah, artikel, dan sumber daya penting ini.
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {resourcesData.map((item, index) => (

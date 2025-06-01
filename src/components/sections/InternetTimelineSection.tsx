@@ -25,7 +25,7 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
   return (
     <Card
       className={cn(
-        "w-full h-full bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 border-2", // Removed transform hover:-translate-y-1
+        "w-full h-full bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 border-2",
         EraColors[item.era]
       )}
     >
@@ -57,47 +57,48 @@ export function InternetTimelineSection() {
         const scrollableWidth = scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth;
 
         if (scrollableWidth > 0) {
+          // Pin the section and scroll its content horizontally based on vertical page scroll
           gsap.to(scrollContainerRef.current, {
             scrollLeft: scrollableWidth,
-            ease: "none", // Linear scroll for smooth control
+            ease: "none",
             scrollTrigger: {
               trigger: sectionPinRef.current,
-              pin: true,
+              pin: sectionPinRef.current, // Pin the <Section> component itself
+              pinType: "transform", // Use transform for pinning to avoid overflow issues
               scrub: 0.5, 
               start: "top top",
-              end: () => `+=${scrollableWidth * 0.8}`, 
+              end: () => `+=${scrollableWidth * 0.8}`, // Vertical scroll distance to drive the horizontal scroll
               invalidateOnRefresh: true,
+              // markers: true, // Uncomment for debugging main pin
             },
           });
-        }
 
-        const cards = gsap.utils.toArray('.timeline-card-item') as HTMLElement[];
-        cards.forEach((card, index) => {
-          const initialY = index % 2 === 0 ? -20 : 20; // Vertical alternation
+          // Animate individual cards as they come into view horizontally
+          const cards = gsap.utils.toArray('.timeline-card-item') as HTMLElement[];
+          cards.forEach((card, index) => {
+            const initialY = index % 2 === 0 ? -15 : 15; // Vertical alternation
 
-          const tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: card,
-              scroller: scrollContainerRef.current, // Scroll based on the horizontal container
-              horizontal: true,
-              scrub: 0.8, // Smooth scrubbing
-              start: "left right", // Animation starts when left of card hits right of viewport
-              end: "right left",   // Animation ends when right of card hits left of viewport
-              // markers: true, // Uncomment for debugging
-            }
+            // Simple animation: slide in from right, with vertical offset, then stay
+            gsap.fromTo(card,
+              { x: 150, opacity: 0, y: initialY }, 
+              { 
+                x: 0, opacity: 1, y: 0,
+                ease: 'power2.out', 
+                duration: 0.6,
+                // delay: 0.05 * index, // Optional: slight stagger for cards already in view at start
+                scrollTrigger: {
+                  trigger: card,
+                  scroller: scrollContainerRef.current, // Animation is driven by horizontal scroll within this container
+                  horizontal: true,
+                  start: "left 90%", // Start when 10% of card is visible from right
+                  end: "right 90%",   // A wide range to ensure it triggers if partially visible
+                  toggleActions: "play none none none", // Play once and stay
+                  // markers: {startColor: "green", endColor: "red", indent: 20 * (index + 1)}, // For debugging card animations
+                }
+              }
+            );
           });
-
-          // Card Entry, Middle (Stable), and Exit Animation
-          tl.fromTo(card,
-            { xPercent: 100, opacity: 0, y: initialY }, // Start from 100% to its right, invisible, with y-offset
-            { xPercent: 0, opacity: 1, y: 0, ease: 'power2.out', duration: 1 } // Animate to center, full opacity, y to 0
-          )
-          .to(card, {}, ">0.5") // Add a pause in the middle (0.5 relative duration units)
-                                // The card will be stable at xPercent:0, opacity:1, y:0 during this phase
-          .to(card,
-            { xPercent: -100, opacity: 0, y: initialY, ease: 'power2.in', duration: 1 } // Animate to 100% to its left, invisible, y to initialY (or -initialY for different effect)
-          );
-        });
+        }
       }
     }, sectionPinRef); 
     
@@ -113,7 +114,7 @@ export function InternetTimelineSection() {
         {timelineData.map((item, index) => (
           <div
             key={item.id}
-            className="timeline-card-item flex-shrink-0 w-80 sm:w-96 snap-start" // Ensure cards don't shrink
+            className="timeline-card-item flex-shrink-0 w-80 sm:w-96 snap-start"
           >
             <TimelineCard item={item} index={index} />
           </div>

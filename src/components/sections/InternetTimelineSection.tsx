@@ -66,10 +66,8 @@ export function InternetTimelineSection() {
               trigger: card,
               scroller: scrollContainerRef.current, // Set scroller to the horizontal container
               start: "left 90%", // Trigger when card's left is 90% in view
-              end: "right 10%",   // For reversing animation
-              toggleActions: "play pause resume reverse",
+              toggleActions: "play none none none", // Play once and then do nothing
               horizontal: true, // Crucial for horizontal scroll
-              // markers: true, // Uncomment for debugging ScrollTrigger
             },
             delay: index * 0.1 // Stagger animation slightly
           });

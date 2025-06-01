@@ -61,8 +61,9 @@ export function InternetTimelineSection() {
           duration: 0.7,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: sectionRef.current, 
-            start: "top 85%",
+            trigger: pinElementRef.current, // Trigger based on the pin element
+            start: "top top+=100px", // Adjust start to ensure title is visible before pin
+            end: "bottom top+=100px", // Adjust end accordingly
             toggleActions: "play pause resume reverse",
           }
         });
@@ -93,7 +94,7 @@ export function InternetTimelineSection() {
               pin: pinElementRef.current,
               scrub: true,
               start: "top 80px", 
-              end: () => `+=${scrollableWidth * 1}`,
+              end: () => `+=${scrollableWidth * 1.2}`, // Adjusted for potentially smoother end
               animation: gsap.to(scrollContainerRef.current, {
                 scrollLeft: scrollableWidth,
                 ease: "none",
@@ -142,12 +143,12 @@ export function InternetTimelineSection() {
         </div>
         <div
           ref={scrollContainerRef}
-          className="flex flex-nowrap items-start overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide" // Removed py-4
+          className="flex flex-nowrap items-start overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide py-4"
         >
           {timelineData.map((item, index) => (
             <div
               key={item.id}
-              className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem] h-96" 
+              className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem] h-112" // Changed h-96 to h-112
             >
               <TimelineCard item={item} index={index} />
             </div>
@@ -157,3 +158,4 @@ export function InternetTimelineSection() {
     </section>
   );
 }
+

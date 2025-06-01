@@ -15,13 +15,15 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Card ini memiliki opacity-0 dari className-nya.
+    // GSAP fromTo akan menganimasikannya dari keadaan tersebut.
     if (cardRef.current) {
       gsap.fromTo(cardRef.current, 
         { opacity: 0, y: 20 }, 
         { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", delay: 0.1 }
       );
     }
-  }, [item]); 
+  }, [item]); // Animasi dijalankan ulang ketika item (tab aktif) berubah
 
   return (
     <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full opacity-0"> 
@@ -39,7 +41,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
       <CardContent className="space-y-6">
         <div>
           <h3 className="text-xl font-semibold mb-3 text-primary-foreground/90">Konsep Kunci</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> {/* Mengubah grid-cols-3 menjadi grid-cols-2 jika jumlah konsep kunci sedikit */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {item.keyConcepts.map(concept => {
               const { Icon: ConceptIcon } = concept;
               return (
@@ -97,12 +99,13 @@ export function AnimatedExplanationsSection() {
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       if (tabsRef.current) {
-        const tabsList = tabsRef.current.querySelector('.tabs-list-anim');
-        const initialTabContent = tabsRef.current.querySelector('div[data-state="active"] > div'); // Ambil Card konten tab awal
+        const tabsListContainer = tabsRef.current.querySelector('.tabs-list-anim');
+        const tabTriggers = tabsRef.current.querySelectorAll('.tab-trigger-item');
 
-        if (tabsList) {
-          gsap.set(tabsList, { opacity: 0, y: -20 });
-          gsap.to(tabsList, {
+        // Animasikan container TabsList
+        if (tabsListContainer) {
+          gsap.set(tabsListContainer, { opacity: 0, y: -20 });
+          gsap.to(tabsListContainer, {
             opacity: 1,
             y: 0,
             duration: 0.5,
@@ -114,10 +117,28 @@ export function AnimatedExplanationsSection() {
             }
           });
         }
-        // Animasikan konten tab pertama yang aktif saat section muncul
-        if (initialTabContent) {
-             gsap.set(initialTabContent, { opacity: 0, y: 20 }); // Dikelola oleh cardRef di ExplanationDetailCard
+
+        // Animasikan individual TabsTrigger dengan stagger
+        if (tabTriggers && tabTriggers.length > 0) {
+          gsap.set(tabTriggers, { opacity: 0, y: 20 });
+          gsap.to(tabTriggers, {
+            opacity: 1,
+            y: 0,
+            duration: 0.4,
+            stagger: 0.15,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: tabsRef.current,
+              start: "top 75%", // Mulai sedikit lebih awal atau bersamaan dengan TabsList
+              toggleActions: "play none none none",
+            },
+            delay: 0.2 // Beri sedikit jeda setelah container TabsList mulai muncul
+          });
         }
+        
+        // Animasi untuk ExplanationDetailCard sudah ditangani di dalam komponennya sendiri
+        // dan akan terpicu ketika Tabs component (parent dari Card) menjadi visible
+        // karena Section component (parent dari Tabs) menganimasikan children-nya.
       }
     }, tabsRef);
     return () => ctx.revert();
@@ -128,7 +149,14 @@ export function AnimatedExplanationsSection() {
       <Tabs defaultValue="web1" className="w-full max-w-4xl mx-auto" ref={tabsRef}>
         <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border mb-8 tabs-list-anim"> 
           {explanationsData.map((item) => (
-            <TabsTrigger key={item.id} value={item.id} className={cn("py-3 text-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg", item.colorClass)}>
+            <TabsTrigger 
+              key={item.id} 
+              value={item.id} 
+              className={cn(
+                "py-3 text-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg tab-trigger-item w-full", // Ditambahkan w-full untuk simetri dan tab-trigger-item untuk selector GSAP
+                item.colorClass
+              )}
+            >
               {item.id.toUpperCase()}
             </TabsTrigger>
           ))}

@@ -60,44 +60,25 @@ export function InternetTimelineSection() {
           // Pin the section and scroll its content horizontally based on vertical page scroll
           gsap.to(scrollContainerRef.current, {
             scrollLeft: scrollableWidth,
-            ease: "none",
+            ease: "none", // Linear ease for direct scroll mapping
             scrollTrigger: {
               trigger: sectionPinRef.current,
-              pin: sectionPinRef.current, // Pin the <Section> component itself
-              pinType: "transform", // Use transform for pinning to avoid overflow issues
-              scrub: 0.5, 
+              pin: sectionPinRef.current,
+              pinType: "transform", // Important for compatibility with overflow:hidden
+              scrub: 0.5, // Adjust for smoothness, 1 is direct link
               start: "top top",
-              end: () => `+=${scrollableWidth * 0.8}`, // Vertical scroll distance to drive the horizontal scroll
+              end: () => `+=${scrollableWidth * 0.8}`, // Vertical scroll distance
               invalidateOnRefresh: true,
               // markers: true, // Uncomment for debugging main pin
             },
           });
 
-          // Animate individual cards as they come into view horizontally
-          const cards = gsap.utils.toArray('.timeline-card-item') as HTMLElement[];
-          cards.forEach((card, index) => {
-            const initialY = index % 2 === 0 ? -15 : 15; // Vertical alternation
+          // Individual card animations are removed to make the strip scroll as a single unit.
+          // If individual card intro animations are desired later, they should be very subtle 
+          // and not interfere with the main scrolling strip illusion.
+          // For example, a simple fade-in for the entire container or very quick fades for cards
+          // as they enter the viewport could be considered.
 
-            // Simple animation: slide in from right, with vertical offset, then stay
-            gsap.fromTo(card,
-              { x: 150, opacity: 0, y: initialY }, 
-              { 
-                x: 0, opacity: 1, y: 0,
-                ease: 'power2.out', 
-                duration: 0.6,
-                // delay: 0.05 * index, // Optional: slight stagger for cards already in view at start
-                scrollTrigger: {
-                  trigger: card,
-                  scroller: scrollContainerRef.current, // Animation is driven by horizontal scroll within this container
-                  horizontal: true,
-                  start: "left 90%", // Start when 10% of card is visible from right
-                  end: "right 90%",   // A wide range to ensure it triggers if partially visible
-                  toggleActions: "play none none none", // Play once and stay
-                  // markers: {startColor: "green", endColor: "red", indent: 20 * (index + 1)}, // For debugging card animations
-                }
-              }
-            );
-          });
         }
       }
     }, sectionPinRef); 
@@ -114,7 +95,8 @@ export function InternetTimelineSection() {
         {timelineData.map((item, index) => (
           <div
             key={item.id}
-            className="timeline-card-item flex-shrink-0 w-80 sm:w-96 snap-start"
+            // .timeline-card-item class is kept for potential future use if individual animations are re-added
+            className="timeline-card-item flex-shrink-0 w-80 sm:w-96 snap-start" 
           >
             <TimelineCard item={item} index={index} />
           </div>

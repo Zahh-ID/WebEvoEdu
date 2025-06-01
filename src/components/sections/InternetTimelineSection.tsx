@@ -52,39 +52,42 @@ export function InternetTimelineSection() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
-      const cards = gsap.utils.toArray('.timeline-card-item');
-      if (cards.length > 0) {
-        gsap.set(cards, { opacity: 0, y: 50 }); // Atur keadaan awal
-        gsap.to(cards, { // Animasikan ke keadaan akhir
-          opacity: 1,
-          y: 0,
-          stagger: 0.2,
-          duration: 0.5,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 70%", 
-            toggleActions: "play none none none",
-          }
-        });
-      }
-      
-      const dots = gsap.utils.toArray('.timeline-dot');
-      if (dots.length > 0) {
-        gsap.set(dots, { scale: 0, opacity: 0 }); // Atur keadaan awal
-        gsap.to(dots, { // Animasikan ke keadaan akhir
-          scale: 1,
-          opacity: 0.8, // Buat sedikit transparan agar tidak terlalu menonjol
-          stagger: 0.2,
-          duration: 0.4,
-          ease: 'back.out(1.7)',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 70%",
-            toggleActions: "play none none none",
-          },
-          delay: 0.3 
-        });
+      if (sectionRef.current) {
+        const cards = sectionRef.current.querySelectorAll('.timeline-card-item');
+        if (cards.length > 0) {
+          gsap.set(cards, { opacity: 0, y: 50, scale: 0.95 }); 
+          gsap.to(cards, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            stagger: 0.2,
+            duration: 0.6, // Sedikit lebih lama untuk efek yang lebih jelas
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 75%", 
+              toggleActions: "play none none none",
+            }
+          });
+        }
+        
+        const dots = sectionRef.current.querySelectorAll('.timeline-dot');
+        if (dots.length > 0) {
+          gsap.set(dots, { scale: 0, opacity: 0 }); 
+          gsap.to(dots, {
+            scale: 1,
+            opacity: 0.8, 
+            stagger: 0.2,
+            duration: 0.4,
+            ease: 'back.out(1.7)',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 75%",
+              toggleActions: "play none none none",
+            },
+            delay: 0.3 
+          });
+        }
       }
     }, sectionRef);
     return () => ctx.revert();
@@ -99,7 +102,7 @@ export function InternetTimelineSection() {
           {timelineData.map((item, index) => (
             <div 
               key={item.id} 
-              className={cn( // Dihapus: opacity-0
+              className={cn(
                 "md:flex items-start relative timeline-card-item", 
                 index % 2 === 0 ? "md:flex-row-reverse" : ""
               )}
@@ -109,7 +112,6 @@ export function InternetTimelineSection() {
               <div className="md:w-1/2 md:px-8">
                  <TimelineCard item={item} index={index} />
               </div>
-              {/* Dihapus: opacity-0 */}
               <div className="absolute left-1/2 top-1/2 w-4 h-4 bg-primary rounded-full border-4 border-background -translate-x-1/2 -translate-y-1/2 hidden md:block timeline-dot" /> 
             </div>
           ))}

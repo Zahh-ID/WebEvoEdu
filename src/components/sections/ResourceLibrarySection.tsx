@@ -15,7 +15,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 const ResourceCard: React.FC<{ item: ResourceItem, index: number }> = ({ item }) => {
   const { Icon } = item;
   return (
-    // Dihapus: opacity-0 dari Card, karena akan diatur oleh GSAP di parent
     <Card 
       className={cn(
         "bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full resource-card-item",
@@ -63,12 +62,13 @@ export function ResourceLibrarySection() {
       if (sectionContentRef.current) {
         const cards = sectionContentRef.current.querySelectorAll('.resource-card-item');
         if (cards.length > 0) {
-          gsap.set(cards, { opacity: 0, y: 50 }); // Atur keadaan awal
-          gsap.to(cards, { // Animasikan ke keadaan akhir
+          gsap.set(cards, { opacity: 0, y: 50, scale: 0.95 }); 
+          gsap.to(cards, { 
             opacity: 1,
             y: 0,
+            scale: 1,
             stagger: 0.15,
-            duration: 0.5,
+            duration: 0.6, 
             ease: 'power2.out',
             scrollTrigger: {
               trigger: sectionContentRef.current,

@@ -20,9 +20,9 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
     let contentTweens: gsap.core.Tween[] = [];
 
     if (cardRef.current) {
-      gsap.set(cardRef.current, { opacity: 0, y: 20 }); // Set initial state for card
+      gsap.set(cardRef.current, { opacity: 0, y: 30, scale: 0.95 }); 
       cardTween = gsap.to(cardRef.current, {
-        opacity: 1, y: 0, duration: 0.5, ease: "power2.out", delay: 0.1,
+        opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power2.out", delay: 0.1,
         onComplete: () => {
           if (contentRef.current) {
             const animatedElements = [
@@ -40,7 +40,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
                 y: 0, 
                 duration: 0.4, 
                 ease: 'power1.out', 
-                delay: 0.1 + (index * 0.05), // Staggered delay
+                delay: 0.1 + (index * 0.05), 
               })
             );
           }
@@ -51,7 +51,6 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
     return () => {
       cardTween?.kill();
       contentTweens.forEach(tween => tween.kill());
-      // Reset styles if needed, though GSAP's revert on parent context should handle most
       if (cardRef.current) gsap.set(cardRef.current, { clearProps: "all" });
       if (contentRef.current) {
          const animatedElements = [
@@ -64,10 +63,9 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
         gsap.set(animatedElements, { clearProps: "all" });
       }
     };
-  }, [item]); // Re-trigger animation when item (active tab) changes
+  }, [item]); 
 
   return (
-    // opacity-0 is removed here as GSAP handles it via .set()
     <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full"> 
       <CardHeader>
         <div className="flex items-center gap-4 mb-4">
@@ -142,7 +140,7 @@ export function AnimatedExplanationsSection() {
     const ctx = gsap.context(() => {
       if (tabsRef.current) {
         const tabsListContainer = tabsRef.current.querySelector('.tabs-list-anim');
-        const tabTriggers = tabsRef.current.querySelectorAll('.tab-trigger-item');
+        const tabTriggers = Array.from(tabsRef.current.querySelectorAll('.tab-trigger-item')) as HTMLElement[];
 
         if (tabsListContainer) {
           gsap.set(tabsListContainer, { opacity: 0, y: -20 });
@@ -160,10 +158,11 @@ export function AnimatedExplanationsSection() {
         }
 
         if (tabTriggers && tabTriggers.length > 0) {
-          gsap.set(tabTriggers, { opacity: 0, y: 20 });
+          gsap.set(tabTriggers, { opacity: 0, y: 20, scale: 0.9 });
           gsap.to(tabTriggers, {
             opacity: 1,
             y: 0,
+            scale: 1,
             duration: 0.4,
             stagger: 0.15,
             ease: 'power2.out',

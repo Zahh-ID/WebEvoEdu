@@ -155,7 +155,7 @@ export default function ConceptDetailClientPage({ params, conceptDetails }: Conc
                   {concept.description}
                 </p>
                 <p className="mt-3 text-sm text-accent/80 italic concept-detail-placeholder">
-                  (Analogi sederhana, elaborasi cara kerja, dan tujuan utama dari {displayConceptName} akan segera ditambahkan.)
+                  Untuk memperkaya pemahaman Anda, kami sedang menyiapkan analogi yang mudah dicerna, elaborasi mendalam mengenai cara kerja inti, serta penjabaran tujuan utama dari {displayConceptName} dalam konteks {era.title}.
                 </p>
               </div>
 
@@ -168,7 +168,7 @@ export default function ConceptDetailClientPage({ params, conceptDetails }: Conc
                     ))}
                   </ul>
                   <p className="mt-3 text-sm text-accent/80 italic concept-detail-placeholder">
-                    (Penjelasan singkat bagaimana contoh-contoh ini merefleksikan {displayConceptName} akan segera ditambahkan.)
+                    Setiap contoh di atas adalah manifestasi dari {displayConceptName}. Analisis lebih lanjut tentang bagaimana masing-masing platform atau aplikasi ini menerapkan dan mencerminkan esensi {displayConceptName} pada era {era.title} akan segera kami tambahkan.
                   </p>
                 </div>
               )}
@@ -176,20 +176,20 @@ export default function ConceptDetailClientPage({ params, conceptDetails }: Conc
               <div>
                 <h3 className="text-xl font-semibold mb-3 text-primary-foreground/85 concept-detail-heading">Mengapa {displayConceptName} Penting untuk Era {era.title}?</h3>
                 <p className="text-muted-foreground leading-relaxed concept-detail-paragraph">
-                  Konsep {displayConceptName} memainkan peran krusial dalam membentuk karakteristik dan kemampuan era {era.title}.
+                  Konsep {displayConceptName} tidak hanya sekadar ada; ia merupakan salah satu pilar yang membentuk karakteristik unik dan kemampuan transformatif dari era {era.title}. Tanpa {displayConceptName}, lanskap digital pada masa itu akan sangat berbeda, membatasi berbagai inovasi yang kita nikmati.
                 </p>
                 <p className="mt-3 text-sm text-accent/80 italic concept-detail-placeholder">
-                  (Diskusi lebih lanjut mengenai kontribusi spesifik {displayConceptName} terhadap perkembangan {era.title}, inovasi yang dibawanya, atau masalah yang dipecahkannya akan segera ditambahkan.)
+                  Untuk memberikan gambaran yang lebih utuh, kami akan segera menambahkan diskusi mendalam mengenai kontribusi spesifik {displayConceptName} terhadap inovasi teknologi, perkembangan ekosistem {era.title}, inovasi kunci yang dimungkinkannya, serta masalah-masalah fundamental pada era sebelumnya yang berhasil dipecahkannya.
                 </p>
               </div>
 
               <div>
                 <h3 className="text-xl font-semibold mb-3 text-primary-foreground/85 concept-detail-heading">Implikasi dan Dampak Lebih Luas</h3>
                  <p className="text-muted-foreground leading-relaxed concept-detail-paragraph">
-                  Pengenalan dan adopsi {displayConceptName} membawa berbagai implikasi, baik positif maupun negatif.
+                  Pengenalan dan adopsi {displayConceptName} tidak terjadi dalam ruang hampa. Ia membawa gelombang implikasi yang merambat ke berbagai aspek kehidupan digital dan sosial pada era {era.title}, menghadirkan peluang sekaligus tantangan yang membentuk cara kita berinteraksi dengan teknologi.
                 </p>
                  <p className="mt-3 text-sm text-accent/80 italic concept-detail-placeholder">
-                  (Analisis dampak {displayConceptName} pada pengguna, pengembang, model bisnis, atau masyarakat secara umum pada era {era.title} akan segera ditambahkan. Diskusi tentang tantangan atau keterbatasan konsep ini juga akan disertakan.)
+                  Analisis komprehensif mengenai dampak-dampak ini sedang kami siapkan. Ini akan mencakup bagaimana {displayConceptName} mengubah pengalaman pengguna, memengaruhi cara pengembang membangun aplikasi dan layanan, mentransformasi model bisnis, serta dampak sosial dan budaya yang lebih luas pada masyarakat. Diskusi tentang tantangan, keterbatasan, atau kontroversi yang muncul seiring adopsi {displayConceptName} juga akan disertakan.
                 </p>
               </div>
 
@@ -197,7 +197,7 @@ export default function ConceptDetailClientPage({ params, conceptDetails }: Conc
                 <p className="text-lg text-primary font-semibold mb-3 concept-detail-heading">Konten Ini Masih dalam Pengembangan!</p>
                 <p className="text-muted-foreground concept-detail-paragraph">
                   Tim kami sedang bekerja keras untuk melengkapi semua detail penjelasan mengenai <strong className={cn(era.colorClass)}>{displayConceptName}</strong>.
-                  Terima kasih atas kesabaran Anda!
+                  Terima kasih atas kesabaran Anda! Konten yang lebih kaya dan mendalam akan segera hadir untuk memperluas wawasan Anda.
                 </p>
               </div>
 

@@ -8,17 +8,15 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 export function HeroSection() {
-  const heroContentRef = useRef<HTMLDivElement>(null); // Ganti nama ref agar lebih jelas
+  const heroContentRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       if (heroContentRef.current && sectionRef.current) {
-        // Animasi masuk awal untuk konten hero
-        // Menggunakan heroContentRef untuk animasi stagger
         const heroElements = heroContentRef.current.querySelectorAll('h1, p, div.space-x-4');
-        gsap.set(heroElements, { opacity: 0, y: 20 });
+        gsap.set(heroElements, { opacity: 0, y: 40 }); // Diperbarui dari y: 20
         gsap.to(heroElements, { 
             opacity: 1, 
             y: 0, 
@@ -26,15 +24,14 @@ export function HeroSection() {
             stagger: 0.2, 
             ease: "power2.out",
             delay: 0.3,
-            scrollTrigger: { // Tambahkan ScrollTrigger di sini jika ingin animasi keluar saat scroll up
+            scrollTrigger: {
               trigger: sectionRef.current,
-              start: "top 80%", // Sesuaikan trigger point
-              toggleActions: "play pause resume reverse", // Diperbarui
+              start: "top 80%",
+              toggleActions: "play pause resume reverse",
             }
         });
         
-        // Animasi parallax untuk konten hero saat scroll
-        gsap.to(heroContentRef.current, { // Targetkan heroContentRef untuk parallax
+        gsap.to(heroContentRef.current, {
           yPercent: -30,
           ease: "none",
           scrollTrigger: {
@@ -51,7 +48,7 @@ export function HeroSection() {
 
   return (
     <section id="hero" ref={sectionRef} className="relative min-h-screen flex items-center justify-center text-center overflow-hidden px-4">
-      <div ref={heroContentRef} className="z-10"> {/* Ref ini untuk konten yang akan dianimasikan dan parallax */}
+      <div ref={heroContentRef} className="z-10">
         <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-headline font-bold mb-6">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary-foreground/80">
             Web Evolusioner

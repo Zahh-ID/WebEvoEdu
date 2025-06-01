@@ -17,7 +17,7 @@ const ResourceCard: React.FC<{ item: ResourceItem, index: number }> = ({ item })
   return (
     <Card 
       className={cn(
-        "bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full resource-card-item", // resource-card-item tetap ada untuk seleksi GSAP
+        "bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full resource-card-item",
         "border-border hover:border-accent"
       )}
     >
@@ -62,7 +62,7 @@ export function ResourceLibrarySection() {
       if (sectionContentRef.current) {
         const cards = sectionContentRef.current.querySelectorAll('.resource-card-item');
         if (cards.length > 0) {
-          gsap.set(cards, { opacity: 0, y: 50, scale: 0.95 }); 
+          gsap.set(cards, { opacity: 0, y: 50, scale: 0.9 }); // Diperbarui dari scale: 0.95
           gsap.to(cards, { 
             opacity: 1,
             y: 0,
@@ -71,9 +71,9 @@ export function ResourceLibrarySection() {
             duration: 0.6, 
             ease: 'power2.out',
             scrollTrigger: {
-              trigger: sectionContentRef.current, // Trigger dari kontainer
+              trigger: sectionContentRef.current,
               start: "top 80%",
-              toggleActions: "play pause resume reverse", // Diperbarui
+              toggleActions: "play pause resume reverse",
             }
           });
         }

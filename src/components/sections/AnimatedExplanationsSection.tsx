@@ -19,16 +19,14 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
     let cardTween: gsap.core.Tween | null = null;
     let contentTweens: gsap.core.Tween[] = [];
 
-    // Animasi untuk kartu utama saat item berubah
     if (cardRef.current) {
-      gsap.set(cardRef.current, { opacity: 0, y: 30, scale: 0.95 }); 
+      gsap.set(cardRef.current, { opacity: 0, y: 40, scale: 0.9 }); // Diperbarui dari y: 30, scale: 0.95
       cardTween = gsap.to(cardRef.current, {
         opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power2.out", delay: 0.1,
         onComplete: () => {
-          // Animasi untuk konten di dalam kartu setelah kartu muncul
           if (contentRef.current) {
             const animatedElements = [
-              contentRef.current.querySelector('div.flex.items-center.gap-4.mb-4'), // Header Icon and Title container
+              contentRef.current.querySelector('div.flex.items-center.gap-4.mb-4'), 
               ...Array.from(contentRef.current.querySelectorAll('h3')),
               ...Array.from(contentRef.current.querySelectorAll('.concept-card-item')),
               ...Array.from(contentRef.current.querySelectorAll('.tech-list-item')),
@@ -36,14 +34,14 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
               contentRef.current.querySelector('.placeholder-anim')
             ].filter(el => el) as HTMLElement[];
 
-            gsap.set(animatedElements, { opacity: 0, y: 15 });
+            gsap.set(animatedElements, { opacity: 0, y: 25 }); // Diperbarui dari y: 15
             contentTweens = animatedElements.map((el, index) => 
               gsap.to(el, { 
                 opacity: 1, 
                 y: 0, 
                 duration: 0.4, 
                 ease: 'power1.out', 
-                delay: 0.1 + (index * 0.05), // Staggering
+                delay: 0.1 + (index * 0.05),
               })
             );
           }
@@ -54,7 +52,6 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
     return () => {
       cardTween?.kill();
       contentTweens.forEach(tween => tween.kill());
-      // Reset properti GSAP saat komponen unmount atau item berubah
       if (cardRef.current) gsap.set(cardRef.current, { clearProps: "all" });
       if (contentRef.current) {
          const animatedElements = [
@@ -68,7 +65,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
         gsap.set(animatedElements, { clearProps: "all" });
       }
     };
-  }, [item]); // Efek ini dijalankan ulang setiap kali 'item' berubah (tab aktif)
+  }, [item]);
 
   return (
     <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full"> 
@@ -148,22 +145,22 @@ export function AnimatedExplanationsSection() {
         const tabTriggers = Array.from(tabsRef.current.querySelectorAll('.tab-trigger-item')) as HTMLElement[];
 
         if (tabsListContainer) {
-          gsap.set(tabsListContainer, { opacity: 0, y: -20 });
+          gsap.set(tabsListContainer, { opacity: 0, y: -30 }); // Diperbarui dari y: -20
           gsap.to(tabsListContainer, {
             opacity: 1,
             y: 0,
             duration: 0.5,
             ease: 'power2.out',
             scrollTrigger: {
-              trigger: tabsRef.current, // Trigger dari kontainer tabs
+              trigger: tabsRef.current,
               start: "top 80%",
-              toggleActions: "play pause resume reverse", // Diperbarui
+              toggleActions: "play pause resume reverse",
             }
           });
         }
 
         if (tabTriggers && tabTriggers.length > 0) {
-          gsap.set(tabTriggers, { opacity: 0, y: 20, scale: 0.9 });
+          gsap.set(tabTriggers, { opacity: 0, y: 30, scale: 0.85 }); // Diperbarui dari y: 20, scale: 0.9
           gsap.to(tabTriggers, {
             opacity: 1,
             y: 0,
@@ -172,16 +169,13 @@ export function AnimatedExplanationsSection() {
             stagger: 0.15,
             ease: 'power2.out',
             scrollTrigger: {
-              trigger: tabsRef.current, // Trigger dari kontainer tabs
-              start: "top 75%", // Sedikit setelah tabsListContainer
-              toggleActions: "play pause resume reverse", // Diperbarui
+              trigger: tabsRef.current,
+              start: "top 75%",
+              toggleActions: "play pause resume reverse",
             },
-            delay: 0.2 // Delay setelah tabsListContainer (jika diperlukan)
+            delay: 0.2 
           });
         }
-        // Animasi untuk TabsContent tidak diatur scroll-triggered di sini
-        // karena mereka dikontrol oleh TabsTrigger yang mengaktifkannya.
-        // Animasi di dalam ExplanationDetailCard akan menangani kemunculan konten saat tab aktif.
       }
     }, tabsRef);
     return () => ctx.revert();
@@ -196,8 +190,8 @@ export function AnimatedExplanationsSection() {
               key={item.id} 
               value={item.id} 
               className={cn(
-                "py-3 text-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg tab-trigger-item w-full", // Ditambahkan w-full
-                item.colorClass // Mungkin perlu disesuaikan jika ingin warna berbeda untuk state non-active
+                "py-3 text-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg tab-trigger-item w-full",
+                item.colorClass
               )}
             >
               {item.id.toUpperCase()}
@@ -206,7 +200,6 @@ export function AnimatedExplanationsSection() {
         </TabsList>
         {explanationsData.map((item) => (
           <TabsContent key={item.id} value={item.id}>
-            {/* ExplanationDetailCard akan menangani animasi internalnya sendiri saat 'item' berubah */}
             <ExplanationDetailCard item={item} />
           </TabsContent>
         ))}

@@ -52,30 +52,64 @@ export function InternetTimelineSection() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     
-    const ctx = gsap.context(() => {
+    let st: ScrollTrigger | undefined;
+
+    const setupGsap = () => {
+      // Kill previous ScrollTrigger instance if it exists
+      st?.kill();
+      // Clear will-change if re-setting up
+      if (scrollContainerRef.current) {
+        gsap.set(scrollContainerRef.current, { clearProps: "willChange" });
+      }
+
       if (scrollContainerRef.current && sectionPinRef.current) {
         const scrollableWidth = scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth;
 
         if (scrollableWidth > 0) {
-          gsap.to(scrollContainerRef.current, {
-            scrollLeft: scrollableWidth,
-            ease: "none", 
-            scrollTrigger: {
-              trigger: sectionPinRef.current,
-              pin: sectionPinRef.current,
-              pinType: "transform", 
-              scrub: true, 
-              start: "top top",
-              end: () => `+=${scrollableWidth}`, 
-              invalidateOnRefresh: true,
-            },
+          gsap.set(scrollContainerRef.current, { willChange: "scroll-position" });
+          
+          st = ScrollTrigger.create({
+            trigger: sectionPinRef.current,
+            pin: sectionPinRef.current,
+            pinType: "transform",
+            scrub: true, 
+            start: "top top",
+            end: "+=150%", // Animate horizontal scroll over 1.5x viewport height of vertical scroll
+            invalidateOnRefresh: true, // Recalculate on resize
+            animation: gsap.to(scrollContainerRef.current, {
+              scrollLeft: scrollableWidth,
+              ease: "none", 
+            }),
+            // markers: true, // Uncomment for debugging
           });
         }
       }
-    }, sectionPinRef); 
+    };
     
-    return () => ctx.revert();
-  }, []);
+    // Debounce resize function
+    let resizeTimeout: NodeJS.Timeout;
+    const debouncedSetupGsap = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(setupGsap, 100); // Adjust delay as needed
+    };
+
+    // Initial setup
+    // Use a small timeout to ensure layout is stable, especially with dynamic content or font loading
+    const initialSetupTimeout = setTimeout(setupGsap, 100);
+
+
+    window.addEventListener('resize', debouncedSetupGsap);
+    
+    return () => {
+      clearTimeout(initialSetupTimeout);
+      clearTimeout(resizeTimeout);
+      window.removeEventListener('resize', debouncedSetupGsap);
+      st?.kill();
+      if (scrollContainerRef.current) {
+        gsap.set(scrollContainerRef.current, { clearProps: "willChange" });
+      }
+    };
+  }, []); 
 
   return (
     <Section ref={sectionPinRef} id="timeline" title="Perjalanan Melalui Evolusi Web">
@@ -86,7 +120,7 @@ export function InternetTimelineSection() {
         {timelineData.map((item, index) => (
           <div
             key={item.id}
-            className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem] snap-start"  // Lebar kartu diubah di sini
+            className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem] snap-start"
           >
             <TimelineCard item={item} index={index} />
           </div>

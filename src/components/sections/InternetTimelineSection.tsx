@@ -6,8 +6,6 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { cn } from '@/lib/utils';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-// Section component is removed as we are customizing the structure here
-// import { Section } from './Section'; 
 
 const sectionTitleText = "Perjalanan Melalui Evolusi Web";
 
@@ -57,7 +55,6 @@ export function InternetTimelineSection() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     
-    // Animate title
     if (titleRef.current && sectionRef.current) {
       gsap.set(titleRef.current, { opacity: 0, y: 30 });
       gsap.to(titleRef.current, {
@@ -73,17 +70,12 @@ export function InternetTimelineSection() {
       });
     }
 
-    if (scrollContainerRef.current) {
-      gsap.set(scrollContainerRef.current, { willChange: 'scroll-position' });
-    }
-
     let st: ScrollTrigger | undefined;
     let resizeTimeout: NodeJS.Timeout;
 
     const setupGsap = () => {
       st?.kill(); 
-
-      gsap.set(scrollContainerRef.current, { clearProps: "scrollLeft" });
+      gsap.set(scrollContainerRef.current, { clearProps: "scrollLeft,willChange" });
       if (pinElementRef.current) {
         gsap.set(pinElementRef.current, { clearProps: "transform" }); 
       }
@@ -91,31 +83,25 @@ export function InternetTimelineSection() {
       ScrollTrigger.refresh();
 
       if (pinElementRef.current && scrollContainerRef.current) {
+        if (scrollContainerRef.current.scrollWidth <= scrollContainerRef.current.clientWidth) {
+          return; 
+        }
         const scrollableWidth = scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth;
         
-        if (scrollableWidth > 0) {
-          st = ScrollTrigger.create({
-            trigger: pinElementRef.current,
-            pin: pinElementRef.current,
-            pinType: "transform", 
-            scrub: true, 
-            start: "top top", 
-            end: () => `+=${scrollableWidth * 1}`, // Entire width scrolled over 1x its own width of vertical scroll
-            animation: gsap.to(scrollContainerRef.current, {
-              scrollLeft: scrollableWidth,
-              ease: "none",
-            }),
-            invalidateOnRefresh: true,
-          });
-        } else {
-           if (pinElementRef.current) {
-             ScrollTrigger.getAll().forEach(trigger => {
-               if (trigger.trigger === pinElementRef.current) {
-                 trigger.kill();
-               }
-             });
-           }
-        }
+        gsap.set(scrollContainerRef.current, { willChange: 'scroll-position' });
+
+        st = ScrollTrigger.create({
+          trigger: pinElementRef.current,
+          pin: pinElementRef.current,
+          scrub: true,
+          start: "top top",
+          end: () => `+=${scrollableWidth * 1}`, 
+          animation: gsap.to(scrollContainerRef.current, {
+            scrollLeft: scrollableWidth,
+            ease: "none",
+          }),
+          invalidateOnRefresh: true,
+        });
       }
     };
     
@@ -131,7 +117,7 @@ export function InternetTimelineSection() {
       clearTimeout(initialSetupTimeout);
       clearTimeout(resizeTimeout);
       window.removeEventListener('resize', debouncedSetupGsap);
-      st?.kill(); 
+      st?.kill();
       if (scrollContainerRef.current) {
         gsap.set(scrollContainerRef.current, { clearProps: "transform,willChange,scrollLeft" });
       }
@@ -153,8 +139,7 @@ export function InternetTimelineSection() {
         <div ref={pinElementRef}> 
           <div
             ref={scrollContainerRef}
-            className="flex flex-nowrap overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide" 
-            // py-4 was removed here to make the pinElementRef tighter
+            className="flex flex-nowrap overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide py-4" 
           >
             {timelineData.map((item, index) => (
               <div

@@ -31,11 +31,11 @@ const ParticleBackground: React.FC = () => {
     }
 
     const particles: Particle[] = [];
-    const particleCount = 120; // Jumlah partikel ditingkatkan
-    const colors = ["rgba(148, 0, 211, 0.5)", "rgba(0, 123, 255, 0.5)", "rgba(224, 224, 224, 0.5)"];
-    const interactionRadius = 150; // Radius interaksi mouse
-    const repulsionStrength = 0.8; // Kekuatan dorongan mouse
-    const dampingFactor = 0.96; // Faktor redaman untuk kembali ke kecepatan normal
+    const particleCount = 150; // Jumlah partikel ditingkatkan sedikit lagi
+    const colors = ["rgba(148, 0, 211, 0.35)", "rgba(0, 123, 255, 0.35)", "rgba(200, 200, 220, 0.35)"]; // Warna disesuaikan
+    const interactionRadius = 160; // Radius interaksi mouse sedikit ditambah
+    const repulsionStrength = 0.9; // Kekuatan dorongan mouse sedikit ditambah
+    const dampingFactor = 0.95; // Faktor redaman untuk kembali ke kecepatan normal
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
@@ -45,16 +45,16 @@ const ParticleBackground: React.FC = () => {
     const initParticles = () => {
       particles.length = 0;
       for (let i = 0; i < particleCount; i++) {
-        const baseVx = Math.random() * 0.5 - 0.25;
-        const baseVy = Math.random() * 0.5 - 0.25;
+        const baseVx = Math.random() * 0.4 - 0.2; // Kecepatan dasar lebih lambat
+        const baseVy = Math.random() * 0.4 - 0.2; // Kecepatan dasar lebih lambat
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          radius: Math.random() * 2.8 + 1.0, // Sedikit lebih besar
+          radius: Math.random() * 2.2 + 0.8, // Radius sedikit dikurangi
           vx: baseVx,
           vy: baseVy,
           color: colors[Math.floor(Math.random() * colors.length)],
-          alpha: Math.random() * 0.5 + 0.2,
+          alpha: Math.random() * 0.3 + 0.2, // Alpha partikel disesuaikan (0.2 - 0.5)
           baseVx,
           baseVy,
         });
@@ -104,8 +104,7 @@ const ParticleBackground: React.FC = () => {
         p.vx = p.vx * dampingFactor + p.baseVx * (1 - dampingFactor);
         p.vy = p.vy * dampingFactor + p.baseVy * (1 - dampingFactor);
         
-        // Batasi kecepatan maksimum untuk menghindari partikel terbang terlalu cepat
-        const maxSpeed = 2;
+        const maxSpeed = 1.8; // Kecepatan maksimum sedikit dikurangi
         const speed = Math.sqrt(p.vx*p.vx + p.vy*p.vy);
         if (speed > maxSpeed) {
             p.vx = (p.vx / speed) * maxSpeed;

@@ -62,7 +62,7 @@ export function ResourceLibrarySection() {
       if (sectionContentRef.current) {
         const cards = sectionContentRef.current.querySelectorAll('.resource-card-item');
         if (cards.length > 0) {
-          gsap.set(cards, { opacity: 0, y: 50, scale: 0.9 }); // Diperbarui dari scale: 0.95
+          gsap.set(cards, { opacity: 0, y: 50, scale: 0.9 }); 
           gsap.to(cards, { 
             opacity: 1,
             y: 0,
@@ -83,7 +83,7 @@ export function ResourceLibrarySection() {
   }, []);
 
   return (
-    <Section id="resources" title="Perluas Wawasan Anda" className="bg-background/30">
+    <Section id="resources" title="Perluas Wawasan Anda" className="bg-background/60"> {/* Opasitas diubah */}
       <div ref={sectionContentRef}>
         <p className="text-center text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
           Selami lebih dalam evolusi web dengan makalah, artikel, dan sumber daya penting ini.

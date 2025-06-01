@@ -194,7 +194,7 @@ export function KnowledgeQuizSection() {
   };
 
   return (
-    <Section id="quiz" title="Uji Pengetahuan Web Anda" className="bg-gradient-to-br from-background/30 to-secondary/30"> {/* Updated gradient */}
+    <Section id="quiz" title="Uji Pengetahuan Web Anda" className="bg-gradient-to-br from-background/70 to-secondary/70"> {/* Opasitas gradient diubah */}
       <Card ref={sectionCardRef} className="max-w-2xl mx-auto bg-card/80 backdrop-blur-sm shadow-2xl border-border">
         <div ref={startScreenRef} style={{display: quizStarted ? 'none' : 'block', opacity:0}}>
             <CardContent className="pt-6 text-center">

@@ -20,7 +20,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
     let contentTweens: gsap.core.Tween[] = [];
 
     if (cardRef.current) {
-      gsap.set(cardRef.current, { opacity: 0, y: 40, scale: 0.9 }); // Diperbarui dari y: 30, scale: 0.95
+      gsap.set(cardRef.current, { opacity: 0, y: 40, scale: 0.9 }); 
       cardTween = gsap.to(cardRef.current, {
         opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power2.out", delay: 0.1,
         onComplete: () => {
@@ -29,12 +29,12 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
               contentRef.current.querySelector('div.flex.items-center.gap-4.mb-4'), 
               ...Array.from(contentRef.current.querySelectorAll('h3')),
               ...Array.from(contentRef.current.querySelectorAll('.concept-card-item')),
-              ...Array.from(contentRef.current.querySelectorAll('.tech-list-item')),
+              ...(item.technologies && item.technologies.length > 0 ? Array.from(contentRef.current.querySelectorAll('.tech-list-item')) : []),
               ...Array.from(contentRef.current.querySelectorAll('.impact-paragraph')),
               contentRef.current.querySelector('.placeholder-anim')
             ].filter(el => el) as HTMLElement[];
 
-            gsap.set(animatedElements, { opacity: 0, y: 25 }); // Diperbarui dari y: 15
+            gsap.set(animatedElements, { opacity: 0, y: 25 }); 
             contentTweens = animatedElements.map((el, index) => 
               gsap.to(el, { 
                 opacity: 1, 
@@ -58,7 +58,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
               contentRef.current.querySelector('div.flex.items-center.gap-4.mb-4'),
               ...Array.from(contentRef.current.querySelectorAll('h3')),
               ...Array.from(contentRef.current.querySelectorAll('.concept-card-item')),
-              ...Array.from(contentRef.current.querySelectorAll('.tech-list-item')),
+              ...(item.technologies && item.technologies.length > 0 ? Array.from(contentRef.current.querySelectorAll('.tech-list-item')) : []),
               ...Array.from(contentRef.current.querySelectorAll('.impact-paragraph')),
               contentRef.current.querySelector('.placeholder-anim')
             ].flat().filter(el => el) as HTMLElement[];
@@ -145,7 +145,7 @@ export function AnimatedExplanationsSection() {
         const tabTriggers = Array.from(tabsRef.current.querySelectorAll('.tab-trigger-item')) as HTMLElement[];
 
         if (tabsListContainer) {
-          gsap.set(tabsListContainer, { opacity: 0, y: -30 }); // Diperbarui dari y: -20
+          gsap.set(tabsListContainer, { opacity: 0, y: -30 }); 
           gsap.to(tabsListContainer, {
             opacity: 1,
             y: 0,
@@ -160,7 +160,7 @@ export function AnimatedExplanationsSection() {
         }
 
         if (tabTriggers && tabTriggers.length > 0) {
-          gsap.set(tabTriggers, { opacity: 0, y: 30, scale: 0.85 }); // Diperbarui dari y: 20, scale: 0.9
+          gsap.set(tabTriggers, { opacity: 0, y: 30, scale: 0.85 }); 
           gsap.to(tabTriggers, {
             opacity: 1,
             y: 0,
@@ -182,7 +182,7 @@ export function AnimatedExplanationsSection() {
   }, []);
 
   return (
-    <Section id="concepts" title="Memahami Era Web" className="bg-background/30">
+    <Section id="concepts" title="Memahami Era Web" className="bg-background/60"> {/* Opasitas diubah */}
       <Tabs defaultValue="web1" className="w-full max-w-4xl mx-auto" ref={tabsRef}>
         <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border mb-8 tabs-list-anim"> 
           {explanationsData.map((item) => (

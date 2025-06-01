@@ -84,7 +84,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
   };
 
   return (
-    <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full flex flex-col"> 
+    <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full flex flex-col min-h-[42rem]"> 
       <CardHeader>
         <div className="flex items-center gap-4 mb-4">
           <div className={cn("p-3 rounded-lg bg-primary/20", item.colorClass)}>
@@ -181,7 +181,7 @@ export function AnimatedExplanationsSection() {
             y: 0,
             duration: 0.6,
             ease: 'power3.out',
-            delay: 0.3, // Delay after main Tabs container (from Section.tsx)
+            delay: 0.3, 
             scrollTrigger: {
               trigger: tabsRef.current,
               start: "top 80%",
@@ -196,14 +196,14 @@ export function AnimatedExplanationsSection() {
             opacity: 1,
             y: 0,
             duration: 0.5,
-            stagger: 0.15, // Slightly reduced stagger
+            stagger: 0.15, 
             ease: 'power3.out',
             scrollTrigger: {
-              trigger: tabsRef.current, // Can also be tabsListContainer if better timing needed
-              start: "top 75%", // Adjust if needed
+              trigger: tabsRef.current, 
+              start: "top 75%", 
               toggleActions: "play pause resume reverse",
             },
-            delay: 0.5 // Delay after TabsList
+            delay: 0.5 
           });
         }
       }
@@ -241,3 +241,4 @@ export function AnimatedExplanationsSection() {
     </Section>
   );
 }
+

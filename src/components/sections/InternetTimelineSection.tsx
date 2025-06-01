@@ -54,21 +54,19 @@ export function InternetTimelineSection() {
     
     const ctx = gsap.context(() => {
       if (scrollContainerRef.current && sectionPinRef.current) {
-        // Calculate the total scrollable width
         const scrollableWidth = scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth;
 
         if (scrollableWidth > 0) {
-          // Pin the section and scroll its content horizontally based on vertical page scroll
           gsap.to(scrollContainerRef.current, {
             scrollLeft: scrollableWidth,
-            ease: "none", // Linear ease for direct scroll mapping
+            ease: "none",
             scrollTrigger: {
               trigger: sectionPinRef.current,
-              pin: sectionPinRef.current, // Pin the section itself
-              pinType: "transform", // Important for compatibility with overflow:hidden
-              scrub: 1, // Increased for smoother scrubbing
+              pin: sectionPinRef.current,
+              pinType: "transform", 
+              scrub: 0.2, // Adjusted for more direct "flow"
               start: "top top",
-              end: () => `+=${scrollableWidth * 1}`, // Vertical scroll distance matches scrollable width
+              end: () => `+=${scrollableWidth * 1}`, 
               invalidateOnRefresh: true,
             },
           });
@@ -97,3 +95,4 @@ export function InternetTimelineSection() {
     </Section>
   );
 }
+

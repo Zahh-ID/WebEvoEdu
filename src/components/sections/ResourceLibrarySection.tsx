@@ -1,5 +1,6 @@
+
 "use client";
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Section } from './Section';
 import { resourcesData, type ResourceItem } from '@/data/resources-data';
@@ -8,17 +9,21 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ExternalLinkIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const ResourceCard: React.FC<{ item: ResourceItem, index: number }> = ({ item, index }) => {
+gsap.registerPlugin(ScrollTrigger);
+
+const ResourceCard: React.FC<{ item: ResourceItem, index: number }> = ({ item }) => {
   const { Icon } = item;
   return (
     <Card 
       className={cn(
-        "bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full",
-        "border-border hover:border-accent",
-        "animate-fade-in-up"
+        "bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full resource-card-item opacity-0", // Added class & opacity-0
+        "border-border hover:border-accent"
+        // "animate-fade-in-up" class removed
       )}
-      style={{ animationDelay: `${0.5 + index * 0.1}s`, opacity: 0 }}
+      // style removed
     >
       <CardHeader>
         <div className="flex items-start gap-3 mb-2">
@@ -53,15 +58,39 @@ const ResourceCard: React.FC<{ item: ResourceItem, index: number }> = ({ item, i
 };
 
 export function ResourceLibrarySection() {
+  const sectionContentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (sectionContentRef.current) {
+        gsap.from(sectionContentRef.current.querySelectorAll('.resource-card-item'), {
+          opacity: 0,
+          y: 50,
+          stagger: 0.15,
+          duration: 0.5,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: sectionContentRef.current,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          }
+        });
+      }
+    }, sectionContentRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
     <Section id="resources" title="Perluas Wawasan Anda" className="bg-background/30">
-      <p className="text-center text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
-        Selami lebih dalam evolusi web dengan makalah, artikel, dan sumber daya penting ini.
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {resourcesData.map((item, index) => (
-          <ResourceCard key={item.id} item={item} index={index} />
-        ))}
+      <div ref={sectionContentRef}> {/* Wrapper for ScrollTrigger targeting */}
+        <p className="text-center text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
+          Selami lebih dalam evolusi web dengan makalah, artikel, dan sumber daya penting ini.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {resourcesData.map((item, index) => (
+            <ResourceCard key={item.id} item={item} index={index} />
+          ))}
+        </div>
       </div>
     </Section>
   );

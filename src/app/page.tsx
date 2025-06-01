@@ -1,9 +1,10 @@
+
 import { Header } from '@/components/layout/Header';
 import ParticleBackground from '@/components/layout/ParticleBackground';
 import { HeroSection } from '@/components/sections/HeroSection';
 import { InternetTimelineSection } from '@/components/sections/InternetTimelineSection';
 import { AnimatedExplanationsSection } from '@/components/sections/AnimatedExplanationsSection';
-import { ThreeDModelsSection } from '@/components/sections/ThreeDModelsSection';
+// import { ThreeDModelsSection } from '@/components/sections/ThreeDModelsSection'; // Dihapus
 import { KnowledgeQuizSection } from '@/components/sections/KnowledgeQuizSection';
 import { ResourceLibrarySection } from '@/components/sections/ResourceLibrarySection';
 import { Footer } from '@/components/layout/Footer';
@@ -17,7 +18,7 @@ export default function Home() {
         <HeroSection />
         <InternetTimelineSection />
         <AnimatedExplanationsSection />
-        <ThreeDModelsSection />
+        {/* <ThreeDModelsSection /> Dihapus */}
         <KnowledgeQuizSection />
         <ResourceLibrarySection />
       </main>

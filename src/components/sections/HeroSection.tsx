@@ -1,17 +1,38 @@
+
 "use client";
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowDownCircleIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { gsap } from 'gsap';
 
 export function HeroSection() {
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(heroRef.current, 
+        { opacity: 0, y: 20 }, 
+        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 0.3 }
+      );
+      gsap.fromTo(heroRef.current?.querySelectorAll('h1, p, div > .inline-flex'), // Target buttons as well
+        { opacity: 0, y: 20 },
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.6, 
+          stagger: 0.2, 
+          ease: "power2.out",
+          delay: 0.5 // Initial delay for the group
+        }
+      );
+    }, heroRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center text-center overflow-hidden px-4">
-      <div 
-        className="z-10 animate-fade-in-up"
-        style={{ opacity: 0 }} // Opasitas awal untuk animasi
-      >
+      <div ref={heroRef} className="z-10 opacity-0">
         <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-headline font-bold mb-6">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary-foreground/80">
             Web Evolusioner
@@ -33,7 +54,6 @@ export function HeroSection() {
           </Button>
         </div>
       </div>
-      {/* Opsional: Tambahkan bentuk atau konstelasi animasi halus di latar belakang menggunakan lebih banyak div/svg yang dianimasikan dengan GSAP jika ParticleBackground tidak cukup */}
     </section>
   );
 }

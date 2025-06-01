@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useRef, useEffect } from 'react';
@@ -10,6 +11,7 @@ interface Particle {
   vx: number;
   vy: number;
   color: string;
+  alpha: number;
 }
 
 const ParticleBackground: React.FC = () => {
@@ -24,8 +26,8 @@ const ParticleBackground: React.FC = () => {
 
     let animationFrameId: number;
     const particles: Particle[] = [];
-    const particleCount = 50;
-    const colors = ["rgba(148, 0, 211, 0.6)", "rgba(0, 123, 255, 0.6)", "rgba(224, 224, 224, 0.6)"]; // Primary, Accent, Light Gray
+    const particleCount = 75; // Jumlah partikel ditingkatkan sedikit
+    const colors = ["rgba(148, 0, 211, 0.7)", "rgba(0, 123, 255, 0.7)", "rgba(224, 224, 224, 0.7)"]; // Primary, Accent, Light Gray
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
@@ -33,15 +35,16 @@ const ParticleBackground: React.FC = () => {
     };
 
     const initParticles = () => {
-      particles.length = 0; // Clear existing particles
+      particles.length = 0; 
       for (let i = 0; i < particleCount; i++) {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          radius: Math.random() * 2 + 1,
-          vx: Math.random() * 1 - 0.5,
-          vy: Math.random() * 1 - 0.5,
+          radius: Math.random() * 2.5 + 1, // Ukuran partikel sedikit bervariasi
+          vx: Math.random() * 0.5 - 0.25, // Kecepatan sedikit lebih lambat
+          vy: Math.random() * 0.5 - 0.25,
           color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: Math.random() * 0.5 + 0.3, // Variasi alpha
         });
       }
     };
@@ -53,7 +56,6 @@ const ParticleBackground: React.FC = () => {
         initParticles();
     });
 
-
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -61,25 +63,22 @@ const ParticleBackground: React.FC = () => {
         p.x += p.vx;
         p.y += p.vy;
 
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
+        if (p.x + p.radius < 0 || p.x - p.radius > canvas.width) p.x = p.vx > 0 ? -p.radius : canvas.width + p.radius;
+        if (p.y + p.radius < 0 || p.y - p.radius > canvas.height) p.y = p.vy > 0 ? -p.radius : canvas.height + p.radius;
+        
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
+        ctx.fillStyle = p.color.replace(/[^,]+(?=\))/, p.alpha.toString()); // Apply alpha
         ctx.fill();
       });
 
-      animationFrameId = requestAnimationFrame(animate);
+      // Tidak lagi memerlukan animationFrameId karena GSAP ticker akan mengelola loop
     };
 
-    // Use GSAP ticker for smoother animations if preferred, or stick with requestAnimationFrame
-    // gsap.ticker.add(animate);
-    animate(); // Start animation
+    gsap.ticker.add(animate); // Menggunakan GSAP ticker
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      // gsap.ticker.remove(animate);
+      gsap.ticker.remove(animate); // Membersihkan GSAP ticker
       window.removeEventListener('resize', () => {
         resizeCanvas();
         initParticles();

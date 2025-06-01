@@ -1,5 +1,6 @@
+
 "use client";
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Section } from './Section';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,8 +10,13 @@ import { webEvolutionQuiz, type WebEvolutionQuizInput, type WebEvolutionQuizOutp
 import { Loader2, LightbulbIcon, CheckCircleIcon, XCircleIcon, RefreshCwIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-type QuizHistoryItem = WebEvolutionQuizInput['quizHistory'][0];
+gsap.registerPlugin(ScrollTrigger);
+
+type QuizHistoryItem = NonNullable<WebEvolutionQuizInput['quizHistory']>[0];
+
 
 export function KnowledgeQuizSection() {
   const [currentQuestion, setCurrentQuestion] = useState<string>('');
@@ -21,6 +27,27 @@ export function KnowledgeQuizSection() {
   const [quizComplete, setQuizComplete] = useState<boolean>(false);
   const [quizStarted, setQuizStarted] = useState<boolean>(false);
   const { toast } = useToast();
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (cardRef.current) {
+        gsap.from(cardRef.current, {
+          opacity: 0,
+          y: 50,
+          duration: 0.6,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: cardRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          }
+        });
+      }
+    }, cardRef);
+    return () => ctx.revert();
+  }, []);
+
 
   const startQuiz = useCallback(async () => {
     setIsLoading(true);
@@ -82,9 +109,9 @@ export function KnowledgeQuizSection() {
         setQuizComplete(true);
         setCurrentQuestion('');
         if(!response.isCorrect && response.explanation) {
-            setFeedback(prev => ({...prev, message: "Kuis Selesai!", explanation: response.explanation || prev?.explanation}));
+            setFeedback(prev => ({...(prev ?? {type: 'info', message: ''}), message: "Kuis Selesai!", explanation: response.explanation || prev?.explanation}));
         } else {
-            setFeedback(prev => ({...prev, message: "Kuis Selesai!", explanation: response.explanation || prev?.explanation}));
+            setFeedback(prev => ({...(prev ?? {type: 'info', message: ''}), message: "Kuis Selesai!", explanation: response.explanation || prev?.explanation}));
         }
       } else {
         setCurrentQuestion(response.question);
@@ -119,7 +146,7 @@ export function KnowledgeQuizSection() {
 
   return (
     <Section id="quiz" title="Uji Pengetahuan Web Anda" className="bg-gradient-to-br from-background to-secondary/30">
-      <Card className="max-w-2xl mx-auto bg-card/80 backdrop-blur-sm shadow-2xl border-border">
+      <Card ref={cardRef} className="max-w-2xl mx-auto bg-card/80 backdrop-blur-sm shadow-2xl border-border opacity-0"> {/* Default opacity 0 */}
         {!quizStarted ? (
           <CardContent className="pt-6 text-center">
             <p className="text-lg text-muted-foreground mb-6">Siap menjelajahi kedalaman evolusi web? Uji pengetahuan Anda dengan kuis bertenaga AI kami!</p>

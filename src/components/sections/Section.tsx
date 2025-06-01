@@ -1,5 +1,12 @@
+
+"use client";
 import { cn } from "@/lib/utils";
-import React from "type-definitions";
+import type React from "react";
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface SectionProps {
   id: string;
@@ -11,21 +18,52 @@ interface SectionProps {
 }
 
 export const Section: React.FC<SectionProps> = ({ id, title, children, className, titleClassName, containerClassName }) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const childrenRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (titleRef.current) {
+        gsap.from(titleRef.current, {
+          opacity: 0,
+          y: 30,
+          duration: 0.6,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          }
+        });
+      }
+      if (childrenRef.current) {
+        gsap.from(childrenRef.current, { 
+          opacity: 0,
+          y: 30,
+          duration: 0.6,
+          delay: 0.2,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          }
+        });
+      }
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id={id} className={cn("py-16 md:py-24 overflow-hidden", className)}>
+    <section id={id} className={cn("py-16 md:py-24 overflow-hidden", className)} ref={sectionRef}>
       <div className={cn("container mx-auto px-4 md:px-6", containerClassName)}>
-        <h2 className={cn(
-          "text-4xl md:text-5xl font-headline font-bold text-center mb-12 md:mb-16 text-primary-foreground animate-fade-in-up",
+        <h2 ref={titleRef} className={cn(
+          "text-4xl md:text-5xl font-headline font-bold text-center mb-12 md:mb-16 text-primary-foreground opacity-0", // Default opacity 0
           titleClassName
           )}
-          style={{ animationDelay: '0.2s', opacity: 0 }} // Initial opacity for animation
         >
           {title}
         </h2>
-        <div 
-          className="animate-fade-in-up"
-          style={{ animationDelay: '0.4s', opacity: 0 }} // Initial opacity for animation
-        >
+        <div ref={childrenRef} className="opacity-0"> {/* Default opacity 0 */}
           {children}
         </div>
       </div>

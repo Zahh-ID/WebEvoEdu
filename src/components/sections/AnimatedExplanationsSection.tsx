@@ -15,17 +15,15 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Card ini sudah menggunakan gsap.fromTo dengan opacity awal 0, jadi ini sudah benar
     if (cardRef.current) {
       gsap.fromTo(cardRef.current, 
         { opacity: 0, y: 20 }, 
-        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", delay: 0.1 } // Tambahkan sedikit delay
+        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", delay: 0.1 }
       );
     }
   }, [item]); 
 
   return (
-    // opacity-0 di sini dikontrol oleh GSAP di useEffect di atas
     <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full opacity-0"> 
       <CardHeader>
         <div className="flex items-center gap-4 mb-4">
@@ -41,7 +39,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
       <CardContent className="space-y-6">
         <div>
           <h3 className="text-xl font-semibold mb-3 text-primary-foreground/90">Konsep Kunci</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> {/* Mengubah grid-cols-3 menjadi grid-cols-2 jika jumlah konsep kunci sedikit */}
             {item.keyConcepts.map(concept => {
               const { Icon: ConceptIcon } = concept;
               return (
@@ -50,22 +48,36 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
                     <ConceptIcon className={cn("w-5 h-5", item.colorClass)} />
                     <h4 className="font-semibold text-primary-foreground/80">{concept.title}</h4>
                   </div>
-                  <p className="text-sm text-muted-foreground">{concept.description}</p>
+                  <p className="text-sm text-muted-foreground mb-2">{concept.description}</p>
+                  {concept.examples && concept.examples.length > 0 && (
+                    <div>
+                      <h5 className="text-xs font-semibold text-muted-foreground/80 mb-1">Contoh Aplikasi/Platform:</h5>
+                      <ul className="list-disc list-inside text-xs text-muted-foreground space-y-0.5">
+                        {concept.examples.map(example => (
+                          <li key={example}>{example}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               );
             })}
           </div>
         </div>
-        <div>
-          <h3 className="text-xl font-semibold mb-2 text-primary-foreground/90">Teknologi Inti</h3>
-          <ul className="list-inside list-disc space-y-1 text-muted-foreground">
-            {item.technologies.map(tech => (
-              <li key={tech} className="flex items-center">
-                <CheckCircle2 className={cn("w-4 h-4 mr-2 flex-shrink-0", item.colorClass)} /> {tech}
-              </li>
-            ))}
-          </ul>
-        </div>
+        
+        {item.technologies && item.technologies.length > 0 && (
+          <div>
+            <h3 className="text-xl font-semibold mb-2 text-primary-foreground/90">Teknologi Inti</h3>
+            <ul className="list-inside list-disc space-y-1 text-muted-foreground">
+              {item.technologies.map(tech => (
+                <li key={tech} className="flex items-center">
+                  <CheckCircle2 className={cn("w-4 h-4 mr-2 flex-shrink-0", item.colorClass)} /> {tech}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <div>
           <h3 className="text-xl font-semibold mb-2 text-primary-foreground/90">Dampak & Visi</h3>
           <p className="text-muted-foreground">{item.impact}</p>
@@ -86,9 +98,11 @@ export function AnimatedExplanationsSection() {
     const ctx = gsap.context(() => {
       if (tabsRef.current) {
         const tabsList = tabsRef.current.querySelector('.tabs-list-anim');
+        const initialTabContent = tabsRef.current.querySelector('div[data-state="active"] > div'); // Ambil Card konten tab awal
+
         if (tabsList) {
-          gsap.set(tabsList, { opacity: 0, y: -20 }); // Atur keadaan awal
-          gsap.to(tabsList, { // Animasikan ke keadaan akhir
+          gsap.set(tabsList, { opacity: 0, y: -20 });
+          gsap.to(tabsList, {
             opacity: 1,
             y: 0,
             duration: 0.5,
@@ -100,6 +114,10 @@ export function AnimatedExplanationsSection() {
             }
           });
         }
+        // Animasikan konten tab pertama yang aktif saat section muncul
+        if (initialTabContent) {
+             gsap.set(initialTabContent, { opacity: 0, y: 20 }); // Dikelola oleh cardRef di ExplanationDetailCard
+        }
       }
     }, tabsRef);
     return () => ctx.revert();
@@ -108,7 +126,6 @@ export function AnimatedExplanationsSection() {
   return (
     <Section id="concepts" title="Memahami Era Web" className="bg-background/30">
       <Tabs defaultValue="web1" className="w-full max-w-4xl mx-auto" ref={tabsRef}>
-        {/* Dihapus: opacity-0 dari TabsList */}
         <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border mb-8 tabs-list-anim"> 
           {explanationsData.map((item) => (
             <TabsTrigger key={item.id} value={item.id} className={cn("py-3 text-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg", item.colorClass)}>

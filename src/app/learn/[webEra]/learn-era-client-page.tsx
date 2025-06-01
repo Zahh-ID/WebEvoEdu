@@ -71,7 +71,7 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
           },
         });
 
-        gsap.from(card.querySelectorAll('.card-title-anim, .card-desc-anim, .concept-item-anim, .tech-item-anim, .impact-text-anim, .casestudy-text-anim'), {
+        gsap.from(card.querySelectorAll('.card-title-anim, .card-desc-anim, .concept-item-anim, .tech-item-anim, .impact-text-anim, .casestudy-text-anim, .placeholder-text-anim'), {
           opacity: 0,
           y: 25, 
           duration: 0.4,
@@ -178,8 +178,8 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
                         </ul>
                       </div>
                     )}
-                    <p className="mt-4 text-xs sm:text-sm text-accent/70 italic">
-                      {/* Placeholder: Penjelasan lebih mendalam tentang {concept.title} akan ditambahkan di sini, membahas nuansa, implikasi, atau studi kasus terkait. */}
+                    <p className="mt-4 text-xs sm:text-sm text-accent/70 italic placeholder-text-anim">
+                      (Penjelasan lebih mendalam tentang {concept.title}, termasuk nuansa, implikasi, atau studi kasus terkait, akan segera ditambahkan.)
                     </p>
                   </div>
                 );
@@ -211,8 +211,8 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
                     );
                   })}
                 </ul>
-                 <p className="mt-6 text-xs sm:text-sm text-accent/70 italic impact-text-anim">
-                   {/* Placeholder: Analisis mendalam tentang peran masing-masing teknologi dalam membentuk era {eraData.title}, termasuk keterbatasan dan inovasi yang dibawanya. */}
+                 <p className="mt-6 text-xs sm:text-sm text-accent/70 italic placeholder-text-anim">
+                   (Analisis mendalam tentang peran setiap teknologi dalam membentuk era {eraData.title}, termasuk keterbatasan dan inovasinya, akan segera ditambahkan.)
                  </p>
               </CardContent>
             </Card>
@@ -226,8 +226,8 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
               <div className="prose prose-sm sm:prose-base prose-invert max-w-none text-muted-foreground whitespace-pre-line leading-relaxed impact-text-anim">
                 <p>{eraData.impact}</p>
               </div>
-              <p className="mt-6 text-xs sm:text-sm text-accent/70 italic impact-text-anim">
-                {/* Placeholder: Refleksi lebih jauh mengenai konsekuensi sosial, ekonomi, dan budaya dari era {eraData.title}, serta bagaimana era ini membentuk fondasi untuk evolusi web berikutnya. */}
+              <p className="mt-6 text-xs sm:text-sm text-accent/70 italic placeholder-text-anim">
+                (Refleksi lebih lanjut mengenai konsekuensi sosial, ekonomi, dan budaya dari era {eraData.title}, serta perannya dalam evolusi web, akan segera ditambahkan.)
               </p>
             </CardContent>
           </Card>
@@ -266,3 +266,4 @@ export default function LearnEraClientPage({ params, eraData }: LearnEraClientPa
     </div>
   );
 }
+

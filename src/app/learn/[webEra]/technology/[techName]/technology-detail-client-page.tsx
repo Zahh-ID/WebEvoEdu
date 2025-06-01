@@ -157,7 +157,7 @@ export default function TechnologyDetailClientPage({ params, techDetails }: Tech
                   Di era {era.title}, peran utamanya adalah untuk <strong className={cn(era.colorClass)}>[Peran Singkat {displayTechName} di Era Tersebut]</strong>.
                 </p>
                 <p className="mt-3 text-sm text-accent/80 italic tech-detail-placeholder">
-                  (Tim kami sedang menyiapkan penjelasan yang lebih mendalam namun tetap mudah dicerna mengenai definisi dasar {displayTechName} dan cara kerjanya secara umum.)
+                  (Penjelasan lebih mendalam mengenai definisi dasar dan cara kerja umum {displayTechName} akan segera ditambahkan.)
                 </p>
               </div>
 
@@ -168,7 +168,7 @@ export default function TechnologyDetailClientPage({ params, techDetails }: Tech
                   {displayTechName} memberikan kontribusi besar dalam <strong className={cn(era.colorClass)}>[Manfaat Utama 1 dari {displayTechName} untuk Era {era.title}]</strong> dan <strong className={cn(era.colorClass)}>[Manfaat Utama 2 dari {displayTechName} untuk Era {era.title}]</strong>.
                 </p>
                 <p className="mt-3 text-sm text-accent/80 italic tech-detail-placeholder">
-                  (Analisis lebih lanjut mengenai kontribusi spesifik {displayTechName} terhadap fitur, kemampuan, dan karakteristik utama dari era {era.title} akan segera ditambahkan.)
+                  (Analisis lebih lanjut mengenai kontribusi spesifik {displayTechName} pada era {era.title} akan segera ditambahkan.)
                 </p>
               </div>
 
@@ -179,7 +179,7 @@ export default function TechnologyDetailClientPage({ params, techDetails }: Tech
                   Contohnya, ketika Anda <strong className={cn(era.colorClass)}>[Aktivitas Umum Pengguna Internet di Era {era.title}]</strong>, {displayTechName} bekerja di belakang layar untuk <strong className={cn(era.colorClass)}>[Bagaimana {displayTechName} Terlibat dalam Aktivitas Tersebut]</strong>.
                 </p>
                  <p className="mt-3 text-sm text-accent/80 italic tech-detail-placeholder">
-                  (Kami akan menambahkan ilustrasi atau studi kasus sederhana yang menunjukkan bagaimana {displayTechName} digunakan dalam skenario yang relatable pada masanya.)
+                  (Ilustrasi dan studi kasus sederhana penggunaan {displayTechName} dalam skenario sehari-hari di era {era.title} akan segera ditambahkan.)
                 </p>
               </div>
 
@@ -190,7 +190,7 @@ export default function TechnologyDetailClientPage({ params, techDetails }: Tech
                   Keterbatasan inilah yang seringkali mendorong inovasi untuk menciptakan teknologi yang lebih baik di era berikutnya.
                 </p>
                  <p className="mt-3 text-sm text-accent/80 italic tech-detail-placeholder">
-                  (Diskusi mengenai tantangan, batasan, atau bahkan dampak negatif (jika ada) dari {displayTechName} pada era tersebut, dan bagaimana hal itu memicu evolusi.)
+                  (Diskusi lebih lanjut mengenai tantangan, keterbatasan, dan dampak {displayTechName} pada era {era.title}, serta bagaimana hal tersebut memicu evolusi, akan segera ditambahkan.)
                 </p>
               </div>
 
@@ -220,3 +220,4 @@ export default function TechnologyDetailClientPage({ params, techDetails }: Tech
     </div>
   );
 }
+

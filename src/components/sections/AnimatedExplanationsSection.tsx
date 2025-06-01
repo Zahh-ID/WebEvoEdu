@@ -175,12 +175,13 @@ export function AnimatedExplanationsSection() {
         const tabTriggers = Array.from(tabsRef.current.querySelectorAll('.tab-trigger-item')) as HTMLElement[];
 
         if (tabsListContainer) {
-          gsap.set(tabsListContainer, { opacity: 0, y: -50 }); 
+          gsap.set(tabsListContainer, { opacity: 0, y: 20 }); 
           gsap.to(tabsListContainer, {
             opacity: 1,
             y: 0,
             duration: 0.6,
             ease: 'power3.out',
+            delay: 0.3, // Delay after main Tabs container (from Section.tsx)
             scrollTrigger: {
               trigger: tabsRef.current,
               start: "top 80%",
@@ -190,20 +191,19 @@ export function AnimatedExplanationsSection() {
         }
 
         if (tabTriggers && tabTriggers.length > 0) {
-          gsap.set(tabTriggers, { opacity: 0, y: 50, scale: 0.9 }); 
+          gsap.set(tabTriggers, { opacity: 0, y: 20 }); 
           gsap.to(tabTriggers, {
             opacity: 1,
             y: 0,
-            scale: 1,
             duration: 0.5,
-            stagger: 0.2,
+            stagger: 0.15, // Slightly reduced stagger
             ease: 'power3.out',
             scrollTrigger: {
-              trigger: tabsRef.current,
-              start: "top 75%",
+              trigger: tabsRef.current, // Can also be tabsListContainer if better timing needed
+              start: "top 75%", // Adjust if needed
               toggleActions: "play pause resume reverse",
             },
-            delay: 0.2 
+            delay: 0.5 // Delay after TabsList
           });
         }
       }

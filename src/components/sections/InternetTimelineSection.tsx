@@ -39,7 +39,7 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
           <CardDescription className="text-sm text-muted-foreground">{item.era} - {item.year}</CardDescription>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4"> {/* Ensure CardContent has padding if needed */}
         <p className="text-foreground/80">{item.description}</p>
       </CardContent>
     </Card>
@@ -54,7 +54,6 @@ export function InternetTimelineSection() {
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-    
     if (titleRef.current && sectionRef.current) {
       gsap.set(titleRef.current, { opacity: 0, y: 30 });
       gsap.to(titleRef.current, {
@@ -63,70 +62,67 @@ export function InternetTimelineSection() {
         duration: 0.6,
         ease: 'power2.out',
         scrollTrigger: {
-          trigger: sectionRef.current, // Trigger based on the whole section
-          start: "top 85%", // Animate title a bit earlier
+          trigger: sectionRef.current,
+          start: "top 85%",
           toggleActions: "play pause resume reverse",
         }
       });
     }
+  }, []);
 
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    
     let st: ScrollTrigger | undefined;
     let resizeTimeout: NodeJS.Timeout;
 
     const setupGsap = () => {
-      st?.kill(); 
-      gsap.set(scrollContainerRef.current, { clearProps: "scrollLeft,willChange" });
+      st?.kill();
+      if (scrollContainerRef.current) {
+        gsap.set(scrollContainerRef.current, { clearProps: "scrollLeft,willChange" });
+      }
       if (pinElementRef.current) {
-        gsap.set(pinElementRef.current, { clearProps: "transform" }); 
+        gsap.set(pinElementRef.current, { clearProps: "transform" });
       }
       
-      ScrollTrigger.refresh(); // Refresh ScrollTrigger to recalculate dimensions
+      ScrollTrigger.refresh();
 
       if (pinElementRef.current && scrollContainerRef.current) {
-        // Check if the content is actually scrollable
-        if (scrollContainerRef.current.scrollWidth <= scrollContainerRef.current.clientWidth) {
-          // console.log("Timeline content is not wide enough to scroll horizontally.");
-          return; // Don't set up scroll trigger if not scrollable
-        }
-
         const scrollableWidth = scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth;
         
-        // Add will-change for potentially smoother animation
-        gsap.set(scrollContainerRef.current, { willChange: 'scroll-position' });
+        if (scrollableWidth > 0) {
+          gsap.set(scrollContainerRef.current, { willChange: 'scroll-position' });
 
-        st = ScrollTrigger.create({
-          trigger: pinElementRef.current,
-          pin: pinElementRef.current, // Pin the element containing the cards
-          scrub: true, // Direct link to scrollbar, no easing from scrub
-          start: "top top", // Start pinning when the top of pinElementRef hits the top of the viewport
-          end: () => `+=${scrollableWidth * 1}`, // Adjust multiplier for scroll speed/distance
-          animation: gsap.to(scrollContainerRef.current, {
-            scrollLeft: scrollableWidth,
-            ease: "none", // Linear animation from GSAP side
-          }),
-          invalidateOnRefresh: true, // Recalculate on resize
-        });
+          st = ScrollTrigger.create({
+            trigger: pinElementRef.current,
+            pin: pinElementRef.current,
+            scrub: true,
+            start: "top 80px", // Changed from "top top" to pin below an 80px header
+            end: () => `+=${scrollableWidth * 1}`,
+            animation: gsap.to(scrollContainerRef.current, {
+              scrollLeft: scrollableWidth,
+              ease: "none",
+            }),
+            invalidateOnRefresh: true,
+          });
+        }
       }
     };
     
-    // Debounce resize handling
     const debouncedSetupGsap = () => {
         clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(setupGsap, 250); // Adjust delay as needed
+        resizeTimeout = setTimeout(setupGsap, 250);
     };
 
-    // Initial setup with a small delay to allow layout to settle
-    const initialSetupTimeout = setTimeout(setupGsap, 100); // Slightly increased delay
+    const initialSetupTimeout = setTimeout(setupGsap, 100);
 
     window.addEventListener('resize', debouncedSetupGsap);
     
-    // Cleanup
     return () => {
       clearTimeout(initialSetupTimeout);
       clearTimeout(resizeTimeout);
       window.removeEventListener('resize', debouncedSetupGsap);
       st?.kill();
-      // Clear GSAP inline styles to prevent interference on re-renders/navigation
       if (scrollContainerRef.current) {
         gsap.set(scrollContainerRef.current, { clearProps: "transform,willChange,scrollLeft" });
       }
@@ -137,7 +133,7 @@ export function InternetTimelineSection() {
   }, []); 
 
   return (
-    <section id="timeline" ref={sectionRef} className="py-16 md:py-24 overflow-hidden">
+    <section id="timeline" ref={sectionRef} className="py-16 md:py-24">
       <div className="container mx-auto px-4 md:px-6">
         <h2 
           ref={titleRef} 
@@ -145,16 +141,15 @@ export function InternetTimelineSection() {
         >
           {sectionTitleText}
         </h2>
-        {/* This div will be pinned */}
         <div ref={pinElementRef}> 
           <div
             ref={scrollContainerRef}
-            className="flex flex-nowrap items-start overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide py-4" 
+            className="flex flex-nowrap items-start overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide py-4"
           >
             {timelineData.map((item, index) => (
               <div
                 key={item.id}
-                className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem]" // Card width
+                className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem]"
               >
                 <TimelineCard item={item} index={index} />
               </div>

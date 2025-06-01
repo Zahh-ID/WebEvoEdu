@@ -48,6 +48,7 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
 export function InternetTimelineSection() {
   const sectionPinRef = useRef<HTMLElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  // No longer animating individual cards with separate ScrollTriggers
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -55,9 +56,7 @@ export function InternetTimelineSection() {
     let st: ScrollTrigger | undefined;
 
     const setupGsap = () => {
-      // Kill previous ScrollTrigger instance if it exists
       st?.kill();
-      // Clear will-change if re-setting up
       if (scrollContainerRef.current) {
         gsap.set(scrollContainerRef.current, { clearProps: "willChange" });
       }
@@ -71,11 +70,11 @@ export function InternetTimelineSection() {
           st = ScrollTrigger.create({
             trigger: sectionPinRef.current,
             pin: sectionPinRef.current,
-            pinType: "transform",
-            scrub: true, 
+            pinType: "transform", // Important for compatibility with overflow:hidden on parent
+            scrub: 0.5, // Smooth connection between vertical scroll and horizontal animation
             start: "top top",
-            end: "+=150%", // Animate horizontal scroll over 1.5x viewport height of vertical scroll
-            invalidateOnRefresh: true, // Recalculate on resize
+            end: "+=200%", // Scroll horizontally over 2x viewport height of vertical scroll
+            invalidateOnRefresh: true,
             animation: gsap.to(scrollContainerRef.current, {
               scrollLeft: scrollableWidth,
               ease: "none", 
@@ -86,17 +85,13 @@ export function InternetTimelineSection() {
       }
     };
     
-    // Debounce resize function
     let resizeTimeout: NodeJS.Timeout;
     const debouncedSetupGsap = () => {
         clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(setupGsap, 100); // Adjust delay as needed
+        resizeTimeout = setTimeout(setupGsap, 250); 
     };
 
-    // Initial setup
-    // Use a small timeout to ensure layout is stable, especially with dynamic content or font loading
     const initialSetupTimeout = setTimeout(setupGsap, 100);
-
 
     window.addEventListener('resize', debouncedSetupGsap);
     
@@ -115,12 +110,13 @@ export function InternetTimelineSection() {
     <Section ref={sectionPinRef} id="timeline" title="Perjalanan Melalui Evolusi Web">
       <div
         ref={scrollContainerRef}
-        className="flex flex-nowrap overflow-x-auto space-x-6 md:space-x-8 py-4 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide snap-x snap-mandatory"
+        className="flex flex-nowrap overflow-x-auto space-x-6 md:space-x-8 py-4 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide"
       >
         {timelineData.map((item, index) => (
           <div
             key={item.id}
-            className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem] snap-start"
+            // Width classes for the cards - make them larger
+            className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem]" 
           >
             <TimelineCard item={item} index={index} />
           </div>

@@ -13,10 +13,7 @@ import { cn } from '@/lib/utils';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(ScrollTrigger);
-
 type QuizHistoryItem = NonNullable<WebEvolutionQuizInput['quizHistory']>[0];
-
 
 export function KnowledgeQuizSection() {
   const [currentQuestion, setCurrentQuestion] = useState<string>('');
@@ -30,11 +27,13 @@ export function KnowledgeQuizSection() {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       if (cardRef.current) {
-        gsap.from(cardRef.current, {
-          opacity: 0,
-          y: 50,
+        gsap.set(cardRef.current, { opacity: 0, y: 50 }); // Atur keadaan awal
+        gsap.to(cardRef.current, { // Animasikan ke keadaan akhir
+          opacity: 1,
+          y: 0,
           duration: 0.6,
           ease: 'power2.out',
           scrollTrigger: {
@@ -146,7 +145,8 @@ export function KnowledgeQuizSection() {
 
   return (
     <Section id="quiz" title="Uji Pengetahuan Web Anda" className="bg-gradient-to-br from-background to-secondary/30">
-      <Card ref={cardRef} className="max-w-2xl mx-auto bg-card/80 backdrop-blur-sm shadow-2xl border-border opacity-0"> {/* Default opacity 0 */}
+      {/* Dihapus: opacity-0 dari Card */}
+      <Card ref={cardRef} className="max-w-2xl mx-auto bg-card/80 backdrop-blur-sm shadow-2xl border-border">
         {!quizStarted ? (
           <CardContent className="pt-6 text-center">
             <p className="text-lg text-muted-foreground mb-6">Siap menjelajahi kedalaman evolusi web? Uji pengetahuan Anda dengan kuis bertenaga AI kami!</p>

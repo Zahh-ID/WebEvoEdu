@@ -12,18 +12,15 @@ import { cn } from '@/lib/utils';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(ScrollTrigger);
-
 const ResourceCard: React.FC<{ item: ResourceItem, index: number }> = ({ item }) => {
   const { Icon } = item;
   return (
+    // Dihapus: opacity-0 dari Card, karena akan diatur oleh GSAP di parent
     <Card 
       className={cn(
-        "bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full resource-card-item opacity-0", // Added class & opacity-0
+        "bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full resource-card-item",
         "border-border hover:border-accent"
-        // "animate-fade-in-up" class removed
       )}
-      // style removed
     >
       <CardHeader>
         <div className="flex items-start gap-3 mb-2">
@@ -61,20 +58,25 @@ export function ResourceLibrarySection() {
   const sectionContentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       if (sectionContentRef.current) {
-        gsap.from(sectionContentRef.current.querySelectorAll('.resource-card-item'), {
-          opacity: 0,
-          y: 50,
-          stagger: 0.15,
-          duration: 0.5,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: sectionContentRef.current,
-            start: "top 80%",
-            toggleActions: "play none none none",
-          }
-        });
+        const cards = sectionContentRef.current.querySelectorAll('.resource-card-item');
+        if (cards.length > 0) {
+          gsap.set(cards, { opacity: 0, y: 50 }); // Atur keadaan awal
+          gsap.to(cards, { // Animasikan ke keadaan akhir
+            opacity: 1,
+            y: 0,
+            stagger: 0.15,
+            duration: 0.5,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: sectionContentRef.current,
+              start: "top 80%",
+              toggleActions: "play none none none",
+            }
+          });
+        }
       }
     }, sectionContentRef);
     return () => ctx.revert();
@@ -82,7 +84,7 @@ export function ResourceLibrarySection() {
 
   return (
     <Section id="resources" title="Perluas Wawasan Anda" className="bg-background/30">
-      <div ref={sectionContentRef}> {/* Wrapper for ScrollTrigger targeting */}
+      <div ref={sectionContentRef}>
         <p className="text-center text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
           Selami lebih dalam evolusi web dengan makalah, artikel, dan sumber daya penting ini.
         </p>

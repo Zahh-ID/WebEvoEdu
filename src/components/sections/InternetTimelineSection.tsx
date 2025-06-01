@@ -8,8 +8,6 @@ import { cn } from '@/lib/utils';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(ScrollTrigger);
-
 const EraColors = {
   Web1: 'border-blue-500/50 hover:border-blue-500',
   Web2: 'border-purple-500/50 hover:border-purple-500',
@@ -30,9 +28,7 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
         "w-full bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1",
         EraColors[item.era],
         "border-l-4"
-        // "animate-fade-in-up" class removed
       )}
-      // style={{ opacity: 0 }} style removed
     >
       <CardHeader className="flex flex-row items-start gap-4">
         <div className={cn("p-2 rounded-md bg-primary/10", EraTextColors[item.era])}>
@@ -54,37 +50,42 @@ export function InternetTimelineSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       const cards = gsap.utils.toArray('.timeline-card-item');
-      gsap.from(cards, {
-        opacity: 0,
-        y: 50,
-        stagger: 0.2,
-        duration: 0.5,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%", 
-          toggleActions: "play none none none",
-        }
-      });
+      if (cards.length > 0) {
+        gsap.set(cards, { opacity: 0, y: 50 }); // Atur keadaan awal
+        gsap.to(cards, { // Animasikan ke keadaan akhir
+          opacity: 1,
+          y: 0,
+          stagger: 0.2,
+          duration: 0.5,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 70%", 
+            toggleActions: "play none none none",
+          }
+        });
+      }
       
-      // Animate timeline dots
       const dots = gsap.utils.toArray('.timeline-dot');
-       gsap.from(dots, {
-        scale: 0,
-        opacity: 0,
-        stagger: 0.2,
-        duration: 0.4,
-        ease: 'back.out(1.7)',
-         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-          toggleActions: "play none none none",
-        },
-        delay: 0.3 // Delay slightly after cards start appearing
-      });
-
+      if (dots.length > 0) {
+        gsap.set(dots, { scale: 0, opacity: 0 }); // Atur keadaan awal
+        gsap.to(dots, { // Animasikan ke keadaan akhir
+          scale: 1,
+          opacity: 0.8, // Buat sedikit transparan agar tidak terlalu menonjol
+          stagger: 0.2,
+          duration: 0.4,
+          ease: 'back.out(1.7)',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 70%",
+            toggleActions: "play none none none",
+          },
+          delay: 0.3 
+        });
+      }
     }, sectionRef);
     return () => ctx.revert();
   }, []);
@@ -98,8 +99,8 @@ export function InternetTimelineSection() {
           {timelineData.map((item, index) => (
             <div 
               key={item.id} 
-              className={cn(
-                "md:flex items-start relative timeline-card-item opacity-0", // Added opacity-0 for GSAP
+              className={cn( // Dihapus: opacity-0
+                "md:flex items-start relative timeline-card-item", 
                 index % 2 === 0 ? "md:flex-row-reverse" : ""
               )}
             >
@@ -108,7 +109,8 @@ export function InternetTimelineSection() {
               <div className="md:w-1/2 md:px-8">
                  <TimelineCard item={item} index={index} />
               </div>
-               <div className="absolute left-1/2 top-1/2 w-4 h-4 bg-primary rounded-full border-4 border-background -translate-x-1/2 -translate-y-1/2 hidden md:block timeline-dot opacity-0" /> {/* Added opacity-0 */}
+              {/* Dihapus: opacity-0 */}
+              <div className="absolute left-1/2 top-1/2 w-4 h-4 bg-primary rounded-full border-4 border-background -translate-x-1/2 -translate-y-1/2 hidden md:block timeline-dot" /> 
             </div>
           ))}
         </div>

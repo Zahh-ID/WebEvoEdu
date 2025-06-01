@@ -10,23 +10,23 @@ import { cn } from '@/lib/utils';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(ScrollTrigger);
-
 const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item }) => {
   const { Icon: SectionIcon } = item;
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Card ini sudah menggunakan gsap.fromTo dengan opacity awal 0, jadi ini sudah benar
     if (cardRef.current) {
       gsap.fromTo(cardRef.current, 
         { opacity: 0, y: 20 }, 
-        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", delay: 0.1 } // Tambahkan sedikit delay
       );
     }
-  }, [item]); // Re-run animation if item changes (tab switch)
+  }, [item]); 
 
   return (
-    <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full opacity-0"> {/* Default opacity 0 */}
+    // opacity-0 di sini dikontrol oleh GSAP di useEffect di atas
+    <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full opacity-0"> 
       <CardHeader>
         <div className="flex items-center gap-4 mb-4">
           <div className={cn("p-3 rounded-lg bg-primary/20", item.colorClass)}>
@@ -82,20 +82,24 @@ export function AnimatedExplanationsSection() {
   const tabsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       if (tabsRef.current) {
-        gsap.from(tabsRef.current.querySelector('.tabs-list-anim'), { // Target TabsList
-          opacity: 0,
-          y: -20,
-          duration: 0.5,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: tabsRef.current,
-            start: "top 80%",
-            toggleActions: "play none none none",
-          }
-        });
-        // TabsContent animation handled by ExplanationDetailCard's useEffect
+        const tabsList = tabsRef.current.querySelector('.tabs-list-anim');
+        if (tabsList) {
+          gsap.set(tabsList, { opacity: 0, y: -20 }); // Atur keadaan awal
+          gsap.to(tabsList, { // Animasikan ke keadaan akhir
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: tabsRef.current,
+              start: "top 80%",
+              toggleActions: "play none none none",
+            }
+          });
+        }
       }
     }, tabsRef);
     return () => ctx.revert();
@@ -104,7 +108,8 @@ export function AnimatedExplanationsSection() {
   return (
     <Section id="concepts" title="Memahami Era Web" className="bg-background/30">
       <Tabs defaultValue="web1" className="w-full max-w-4xl mx-auto" ref={tabsRef}>
-        <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border mb-8 tabs-list-anim opacity-0"> {/* Added class & opacity-0 */}
+        {/* Dihapus: opacity-0 dari TabsList */}
+        <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border mb-8 tabs-list-anim"> 
           {explanationsData.map((item) => (
             <TabsTrigger key={item.id} value={item.id} className={cn("py-3 text-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg", item.colorClass)}>
               {item.id.toUpperCase()}
@@ -112,8 +117,6 @@ export function AnimatedExplanationsSection() {
           ))}
         </TabsList>
         {explanationsData.map((item) => (
-          // Removed "animate-fade-in-up" and style from TabsContent
-          // Animation will be handled by ExplanationDetailCard
           <TabsContent key={item.id} value={item.id}>
             <ExplanationDetailCard item={item} />
           </TabsContent>

@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useRef, useEffect } from 'react';
-import { gsap } from 'gsap';
+// import { gsap } from 'gsap'; // GSAP ticker tidak lagi digunakan di sini
 
 interface Particle {
   x: number;
@@ -16,18 +16,21 @@ interface Particle {
 
 const ParticleBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationFrameIdRef = useRef<number | null>(null); // Untuk menyimpan ID frame animasi
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {
+        console.error("Gagal mendapatkan konteks 2D dari canvas");
+        return;
+    }
 
-    let animationFrameId: number;
     const particles: Particle[] = [];
-    const particleCount = 75; // Jumlah partikel ditingkatkan sedikit
-    const colors = ["rgba(148, 0, 211, 0.7)", "rgba(0, 123, 255, 0.7)", "rgba(224, 224, 224, 0.7)"]; // Primary, Accent, Light Gray
+    const particleCount = 85; // Jumlah partikel sedikit ditingkatkan dari sebelumnya
+    const colors = ["rgba(148, 0, 211, 0.6)", "rgba(0, 123, 255, 0.6)", "rgba(224, 224, 224, 0.6)"];
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
@@ -35,54 +38,64 @@ const ParticleBackground: React.FC = () => {
     };
 
     const initParticles = () => {
-      particles.length = 0; 
+      particles.length = 0;
       for (let i = 0; i < particleCount; i++) {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          radius: Math.random() * 2.5 + 1, // Ukuran partikel sedikit bervariasi
-          vx: Math.random() * 0.5 - 0.25, // Kecepatan sedikit lebih lambat
-          vy: Math.random() * 0.5 - 0.25,
+          radius: Math.random() * 2.5 + 0.8,
+          vx: Math.random() * 0.4 - 0.2,
+          vy: Math.random() * 0.4 - 0.2,
           color: colors[Math.floor(Math.random() * colors.length)],
-          alpha: Math.random() * 0.5 + 0.3, // Variasi alpha
+          alpha: Math.random() * 0.4 + 0.2,
         });
       }
     };
-    
-    resizeCanvas();
-    initParticles();
-    window.addEventListener('resize', () => {
+
+    const resizeAndInit = () => {
         resizeCanvas();
         initParticles();
-    });
+    };
+    
+    resizeAndInit(); // Panggil sekali saat setup
+    window.addEventListener('resize', resizeAndInit);
 
     const animate = () => {
+      if (!canvasRef.current || !ctx) {
+          console.error("Canvas atau context tidak tersedia dalam loop animasi");
+          if (animationFrameIdRef.current) {
+            cancelAnimationFrame(animationFrameIdRef.current);
+          }
+          return;
+      }
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       particles.forEach(p => {
         p.x += p.vx;
         p.y += p.vy;
 
-        if (p.x + p.radius < 0 || p.x - p.radius > canvas.width) p.x = p.vx > 0 ? -p.radius : canvas.width + p.radius;
-        if (p.y + p.radius < 0 || p.y - p.radius > canvas.height) p.y = p.vy > 0 ? -p.radius : canvas.height + p.radius;
+        if (p.x + p.radius < 0) p.x = canvas.width + p.radius;
+        if (p.x - p.radius > canvas.width) p.x = -p.radius;
+        if (p.y + p.radius < 0) p.y = canvas.height + p.radius;
+        if (p.y - p.radius > canvas.height) p.y = -p.radius;
         
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color.replace(/[^,]+(?=\))/, p.alpha.toString()); // Apply alpha
+        // Menggunakan properti alpha yang disimpan di objek partikel
+        ctx.fillStyle = p.color.replace(/[^,]+(?=\))/, p.alpha.toString());
         ctx.fill();
       });
 
-      // Tidak lagi memerlukan animationFrameId karena GSAP ticker akan mengelola loop
+      animationFrameIdRef.current = requestAnimationFrame(animate);
     };
 
-    gsap.ticker.add(animate); // Menggunakan GSAP ticker
+    animate(); // Mulai loop animasi
 
     return () => {
-      gsap.ticker.remove(animate); // Membersihkan GSAP ticker
-      window.removeEventListener('resize', () => {
-        resizeCanvas();
-        initParticles();
-      });
+      if (animationFrameIdRef.current) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+      }
+      window.removeEventListener('resize', resizeAndInit);
     };
   }, []);
 

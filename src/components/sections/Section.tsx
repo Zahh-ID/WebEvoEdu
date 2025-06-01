@@ -6,8 +6,6 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(ScrollTrigger);
-
 interface SectionProps {
   id: string;
   title: string;
@@ -23,11 +21,13 @@ export const Section: React.FC<SectionProps> = ({ id, title, children, className
   const childrenRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       if (titleRef.current) {
-        gsap.from(titleRef.current, {
-          opacity: 0,
-          y: 30,
+        gsap.set(titleRef.current, { opacity: 0, y: 30 });
+        gsap.to(titleRef.current, {
+          opacity: 1,
+          y: 0,
           duration: 0.6,
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -37,9 +37,10 @@ export const Section: React.FC<SectionProps> = ({ id, title, children, className
         });
       }
       if (childrenRef.current) {
-        gsap.from(childrenRef.current, { 
-          opacity: 0,
-          y: 30,
+        gsap.set(childrenRef.current, { opacity: 0, y: 30 });
+        gsap.to(childrenRef.current, { 
+          opacity: 1,
+          y: 0,
           duration: 0.6,
           delay: 0.2,
           scrollTrigger: {
@@ -57,13 +58,14 @@ export const Section: React.FC<SectionProps> = ({ id, title, children, className
     <section id={id} className={cn("py-16 md:py-24 overflow-hidden", className)} ref={sectionRef}>
       <div className={cn("container mx-auto px-4 md:px-6", containerClassName)}>
         <h2 ref={titleRef} className={cn(
-          "text-4xl md:text-5xl font-headline font-bold text-center mb-12 md:mb-16 text-primary-foreground opacity-0", // Default opacity 0
+          "text-4xl md:text-5xl font-headline font-bold text-center mb-12 md:mb-16 text-primary-foreground", // Dihapus: opacity-0
           titleClassName
           )}
         >
           {title}
         </h2>
-        <div ref={childrenRef} className="opacity-0"> {/* Default opacity 0 */}
+        {/* Dihapus: opacity-0 */}
+        <div ref={childrenRef}> 
           {children}
         </div>
       </div>

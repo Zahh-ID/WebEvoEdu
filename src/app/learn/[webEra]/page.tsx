@@ -193,5 +193,3 @@ export default async function LearnWebEraPage({ params }: { params: { webEra: st
     </div>
   );
 }
-
-    

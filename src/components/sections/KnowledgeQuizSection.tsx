@@ -24,28 +24,68 @@ export function KnowledgeQuizSection() {
   const [quizComplete, setQuizComplete] = useState<boolean>(false);
   const [quizStarted, setQuizStarted] = useState<boolean>(false);
   const { toast } = useToast();
+  
   const cardRef = useRef<HTMLDivElement>(null);
+  const startScreenRef = useRef<HTMLDivElement>(null);
+  const quizInterfaceRef = useRef<HTMLDivElement>(null);
+  const feedbackAlertRef = useRef<HTMLDivElement>(null);
+  const quizCompleteRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       if (cardRef.current) {
-        gsap.set(cardRef.current, { opacity: 0, y: 50 }); // Atur keadaan awal
-        gsap.to(cardRef.current, { // Animasikan ke keadaan akhir
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          ease: 'power2.out',
+        gsap.set(cardRef.current, { opacity: 0, y: 50 });
+        gsap.to(cardRef.current, {
+          opacity: 1, y: 0, duration: 0.6, ease: 'power2.out',
           scrollTrigger: {
-            trigger: cardRef.current,
-            start: "top 85%",
-            toggleActions: "play none none none",
+            trigger: cardRef.current, start: "top 85%", toggleActions: "play none none none",
           }
         });
       }
     }, cardRef);
     return () => ctx.revert();
   }, []);
+
+  // Animation for Start Screen
+  useEffect(() => {
+    if (!quizStarted && startScreenRef.current) {
+      gsap.set(startScreenRef.current, { opacity: 0, y: 20 });
+      gsap.to(startScreenRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.2 });
+    } else if (startScreenRef.current) {
+      gsap.set(startScreenRef.current, { opacity: 0, y: 20 }); // Hide if not active
+    }
+  }, [quizStarted]);
+
+  // Animation for Quiz Interface
+  useEffect(() => {
+    if (quizStarted && !quizComplete && quizInterfaceRef.current) {
+      gsap.set(quizInterfaceRef.current, { opacity: 0, y: 20 });
+      gsap.to(quizInterfaceRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.1 });
+    } else if (quizInterfaceRef.current) {
+      gsap.set(quizInterfaceRef.current, { opacity: 0, y: 20 }); // Hide if not active
+    }
+  }, [quizStarted, quizComplete, currentQuestion]); // Re-animate if question changes (might need refinement if too flashy)
+
+  // Animation for Feedback Alert
+  useEffect(() => {
+    if (feedback && feedbackAlertRef.current) {
+      gsap.set(feedbackAlertRef.current, { opacity: 0, scale: 0.9 });
+      gsap.to(feedbackAlertRef.current, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.7)' });
+    } else if (!feedback && feedbackAlertRef.current) {
+        gsap.set(feedbackAlertRef.current, { opacity: 0 }); // Hide if no feedback
+    }
+  }, [feedback]);
+
+  // Animation for Quiz Complete Screen
+  useEffect(() => {
+    if (quizComplete && quizCompleteRef.current) {
+      gsap.set(quizCompleteRef.current, { opacity: 0, y: 20 });
+      gsap.to(quizCompleteRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.1 });
+    } else if (quizCompleteRef.current) {
+      gsap.set(quizCompleteRef.current, { opacity: 0, y: 20 }); // Hide if not active
+    }
+  }, [quizComplete]);
 
 
   const startQuiz = useCallback(async () => {
@@ -74,7 +114,8 @@ export function KnowledgeQuizSection() {
   const handleSubmitAnswer = async (hintRequested: boolean = false) => {
     if (!currentQuestion && !hintRequested) return;
     setIsLoading(true);
-    setFeedback(null);
+    // Don't clear feedback immediately, let new feedback replace it or disappear if no new feedback
+    // setFeedback(null); 
 
     const input: WebEvolutionQuizInput = {
       question: currentQuestion,
@@ -92,28 +133,34 @@ export function KnowledgeQuizSection() {
         isCorrect: response.isCorrect,
         hintGiven: hintRequested || !!response.hint,
       };
+      // Ensure quizHistory is updated before setting new feedback that might depend on it
       setQuizHistory(prev => [...prev, newHistoryItem]);
 
-      if (response.hint) {
-        setFeedback({ type: 'hint', message: response.hint });
-      } else if (response.isCorrect !== undefined) {
-        setFeedback({
-          type: response.isCorrect ? 'correct' : 'incorrect',
-          message: response.isCorrect ? "Benar!" : "Kurang tepat. Mari kita lihat...",
-          explanation: response.explanation,
-        });
-      }
-      
+
       if (response.quizComplete) {
         setQuizComplete(true);
-        setCurrentQuestion('');
-        if(!response.isCorrect && response.explanation) {
-            setFeedback(prev => ({...(prev ?? {type: 'info', message: ''}), message: "Kuis Selesai!", explanation: response.explanation || prev?.explanation}));
-        } else {
-            setFeedback(prev => ({...(prev ?? {type: 'info', message: ''}), message: "Kuis Selesai!", explanation: response.explanation || prev?.explanation}));
-        }
+        setCurrentQuestion(''); // Clear question for complete state
+        // Set feedback for completion AFTER quizComplete is true
+        const completionMessage = response.isCorrect ? "Kuis Selesai! Jawaban terakhir Anda Benar!" : "Kuis Selesai!";
+        setFeedback({
+            type: response.isCorrect ? 'correct' : 'info', 
+            message: completionMessage,
+            explanation: response.explanation || (feedback?.explanation) // Preserve previous explanation if new one is missing
+        });
       } else {
-        setCurrentQuestion(response.question);
+        // Handle feedback for non-completion cases
+        if (response.hint) {
+            setFeedback({ type: 'hint', message: response.hint });
+        } else if (response.isCorrect !== undefined) {
+            setFeedback({
+            type: response.isCorrect ? 'correct' : 'incorrect',
+            message: response.isCorrect ? "Benar!" : "Kurang tepat. Mari kita lihat...",
+            explanation: response.explanation,
+            });
+        } else {
+            setFeedback(null); // No specific feedback, clear previous
+        }
+        setCurrentQuestion(response.question); // Set next question
       }
       setUserAnswer(''); 
 
@@ -138,60 +185,54 @@ export function KnowledgeQuizSection() {
       case 'correct': return <CheckCircleIcon className="h-5 w-5 text-green-500" />;
       case 'incorrect': return <XCircleIcon className="h-5 w-5 text-red-500" />;
       case 'hint': return <LightbulbIcon className="h-5 w-5 text-yellow-500" />;
-      default: return null;
+      default: return <LightbulbIcon className="h-5 w-5 text-blue-500" />; // For 'info'
     }
   };
 
-
   return (
     <Section id="quiz" title="Uji Pengetahuan Web Anda" className="bg-gradient-to-br from-background to-secondary/30">
-      {/* Dihapus: opacity-0 dari Card */}
       <Card ref={cardRef} className="max-w-2xl mx-auto bg-card/80 backdrop-blur-sm shadow-2xl border-border">
-        {!quizStarted ? (
-          <CardContent className="pt-6 text-center">
-            <p className="text-lg text-muted-foreground mb-6">Siap menjelajahi kedalaman evolusi web? Uji pengetahuan Anda dengan kuis bertenaga AI kami!</p>
-            <Button size="lg" onClick={startQuiz} disabled={isLoading} className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
-              {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <LightbulbIcon className="mr-2 h-5 w-5" />}
-              Mulai Kuis
-            </Button>
-          </CardContent>
-        ) : quizComplete ? (
-          <CardContent className="pt-6 text-center">
-            <CardTitle className="text-3xl font-headline mb-4 text-primary">Kuis Selesai!</CardTitle>
-            {feedback?.explanation && <p className="text-muted-foreground mb-4">{feedback.explanation}</p>}
-            <p className="text-lg text-muted-foreground mb-6">Anda telah menavigasi era web. Kerja bagus!</p>
-            <Button onClick={startQuiz} disabled={isLoading} className="font-semibold">
-              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCwIcon className="mr-2 h-4 w-4" />}
-              Main Lagi
-            </Button>
-          </CardContent>
-        ) : (
-          <>
+        {!quizStarted && (
+          <div ref={startScreenRef} style={{opacity: 0}}>
+            <CardContent className="pt-6 text-center">
+              <p className="text-lg text-muted-foreground mb-6">Siap menjelajahi kedalaman evolusi web? Uji pengetahuan Anda dengan kuis bertenaga AI kami!</p>
+              <Button size="lg" onClick={startQuiz} disabled={isLoading} className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
+                {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <LightbulbIcon className="mr-2 h-5 w-5" />}
+                Mulai Kuis
+              </Button>
+            </CardContent>
+          </div>
+        )}
+
+        {quizStarted && !quizComplete && (
+          <div ref={quizInterfaceRef} style={{opacity: 0}}>
             <CardHeader>
               <CardTitle className="text-2xl font-headline text-primary-foreground/90">{currentQuestion || "Memuat pertanyaan..."}</CardTitle>
               <CardDescription className="text-muted-foreground">Masukkan jawaban Anda di bawah atau minta petunjuk.</CardDescription>
             </CardHeader>
             <CardContent>
               {feedback && (
-                <Alert className={cn(
-                  "mb-6 border-2",
-                  feedback.type === 'correct' && "border-green-500/50 bg-green-500/10",
-                  feedback.type === 'incorrect' && "border-red-500/50 bg-red-500/10",
-                  feedback.type === 'hint' && "border-yellow-500/50 bg-yellow-500/10",
-                  feedback.type === 'info' && "border-blue-500/50 bg-blue-500/10"
-                )}>
-                  <div className="flex items-center gap-2">
-                    {renderFeedbackIcon()}
-                    <AlertTitle className={cn(
-                       "font-semibold",
-                       feedback.type === 'correct' && "text-green-400",
-                       feedback.type === 'incorrect' && "text-red-400",
-                       feedback.type === 'hint' && "text-yellow-400",
-                       feedback.type === 'info' && "text-blue-400"
-                    )}>{feedback.message}</AlertTitle>
-                  </div>
-                  {feedback.explanation && <AlertDescription className="mt-2 text-muted-foreground">{feedback.explanation}</AlertDescription>}
-                </Alert>
+                <div ref={feedbackAlertRef} style={{opacity:0}}>
+                  <Alert className={cn(
+                    "mb-6 border-2",
+                    feedback.type === 'correct' && "border-green-500/50 bg-green-500/10",
+                    feedback.type === 'incorrect' && "border-red-500/50 bg-red-500/10",
+                    feedback.type === 'hint' && "border-yellow-500/50 bg-yellow-500/10",
+                    feedback.type === 'info' && "border-blue-500/50 bg-blue-500/10"
+                  )}>
+                    <div className="flex items-center gap-2">
+                      {renderFeedbackIcon()}
+                      <AlertTitle className={cn(
+                         "font-semibold",
+                         feedback.type === 'correct' && "text-green-400",
+                         feedback.type === 'incorrect' && "text-red-400",
+                         feedback.type === 'hint' && "text-yellow-400",
+                         feedback.type === 'info' && "text-blue-400"
+                      )}>{feedback.message}</AlertTitle>
+                    </div>
+                    {feedback.explanation && <AlertDescription className="mt-2 text-muted-foreground">{feedback.explanation}</AlertDescription>}
+                  </Alert>
+                </div>
               )}
               <form onSubmit={handleFormSubmit} className="space-y-4">
                 <Input
@@ -204,7 +245,7 @@ export function KnowledgeQuizSection() {
                 />
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Button type="submit" disabled={isLoading || !userAnswer.trim()} className="flex-1 font-semibold bg-accent hover:bg-accent/90 text-accent-foreground">
-                    {isLoading && !feedback?.hint ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    {isLoading && !(feedback?.type === 'hint' && hintRequested) ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                     Kirim Jawaban
                   </Button>
                   <Button
@@ -214,7 +255,7 @@ export function KnowledgeQuizSection() {
                     disabled={isLoading}
                     className="flex-1 font-semibold border-primary text-primary hover:bg-primary/10 hover:text-primary"
                   >
-                    {isLoading && feedback?.hint ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LightbulbIcon className="mr-2 h-4 w-4" />}
+                    {isLoading && feedback?.type === 'hint' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LightbulbIcon className="mr-2 h-4 w-4" />}
                     Dapatkan Petunjuk
                   </Button>
                 </div>
@@ -223,7 +264,24 @@ export function KnowledgeQuizSection() {
             <CardFooter className="text-xs text-muted-foreground">
               <p>Kuis didukung oleh AI. Pertanyaan dan petunjuk menyesuaikan dengan perjalanan belajar Anda.</p>
             </CardFooter>
-          </>
+          </div>
+        )}
+
+        {quizComplete && (
+           <div ref={quizCompleteRef} style={{opacity:0}}>
+            <CardContent className="pt-6 text-center">
+                <CardTitle className="text-3xl font-headline mb-4 text-primary">
+                    {feedback?.type === 'correct' ? "Selamat, Kuis Selesai!" : "Kuis Selesai!"}
+                </CardTitle>
+                {feedback?.message && feedback.type !== 'correct' && <p className="text-lg text-muted-foreground mb-2">{feedback.message}</p>}
+                {feedback?.explanation && <p className="text-muted-foreground mb-4">{feedback.explanation}</p>}
+                <p className="text-lg text-muted-foreground mb-6">Anda telah menavigasi era web. Kerja bagus!</p>
+                <Button onClick={startQuiz} disabled={isLoading} className="font-semibold">
+                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCwIcon className="mr-2 h-4 w-4" />}
+                Main Lagi
+                </Button>
+            </CardContent>
+           </div>
         )}
       </Card>
     </Section>

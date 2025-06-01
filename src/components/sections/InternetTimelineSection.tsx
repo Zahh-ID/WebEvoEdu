@@ -58,7 +58,7 @@ export function InternetTimelineSection() {
       st?.kill(); 
       if (scrollContainerRef.current) {
         gsap.set(scrollContainerRef.current, { clearProps: "all" });
-        gsap.set(scrollContainerRef.current, { willChange: "scroll-position" });
+        gsap.set(scrollContainerRef.current, { willChange: "scroll-position" }); // Hint for browser
       }
 
       if (scrollContainerRef.current && sectionPinRef.current) {
@@ -67,11 +67,11 @@ export function InternetTimelineSection() {
         if (scrollableWidth > 0) {
           st = ScrollTrigger.create({
             trigger: sectionPinRef.current,
-            pin: sectionPinRef.current,
-            pinType: "transform", 
-            scrub: true, 
+            pin: sectionPinRef.current, 
+            pinType: "transform",
+            scrub: true, // Changed to true for direct linkage
             start: "top top",
-            end: "+=100%", // Changed from "+=200%" for more direct shift
+            end: () => "+=" + (scrollContainerRef.current?.offsetHeight || 0) * (scrollableWidth / (scrollContainerRef.current?.offsetHeight || 1)) * 0.8, // Adjusted end for more natural scroll distance
             animation: gsap.to(scrollContainerRef.current, {
               scrollLeft: scrollableWidth,
               ease: "none", 
@@ -88,6 +88,7 @@ export function InternetTimelineSection() {
         resizeTimeout = setTimeout(setupGsap, 250); 
     };
 
+    // Delay initial setup slightly to ensure all elements are measured correctly
     const initialSetupTimeout = setTimeout(setupGsap, 100);
 
     window.addEventListener('resize', debouncedSetupGsap);
@@ -98,13 +99,19 @@ export function InternetTimelineSection() {
       window.removeEventListener('resize', debouncedSetupGsap);
       st?.kill(); 
       if (scrollContainerRef.current) {
-        gsap.set(scrollContainerRef.current, { clearProps: "all" });
+        // Clear only GSAP-set properties to avoid interfering with initial styles
+        gsap.set(scrollContainerRef.current, { clearProps: "transform,willChange" });
       }
     };
   }, []); 
 
   return (
-    <Section ref={sectionPinRef} id="timeline" title="Perjalanan Melalui Evolusi Web">
+    <Section 
+      ref={sectionPinRef} 
+      id="timeline" 
+      title="Perjalanan Melalui Evolusi Web"
+      animateChildren={false} // Do not animate the main content container of this section
+    >
       <div
         ref={scrollContainerRef}
         className="flex flex-nowrap overflow-x-auto space-x-6 md:space-x-8 py-4 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide"
@@ -112,7 +119,7 @@ export function InternetTimelineSection() {
         {timelineData.map((item, index) => (
           <div
             key={item.id}
-            className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem]"
+            className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem]" // Enlarged cards
           >
             <TimelineCard item={item} index={index} />
           </div>

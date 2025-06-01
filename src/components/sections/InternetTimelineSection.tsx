@@ -55,25 +55,23 @@ export function InternetTimelineSection() {
     let st: ScrollTrigger | undefined;
 
     const setupGsap = () => {
-      st?.kill(); // Kill previous ScrollTrigger instance if exists
+      st?.kill(); 
       if (scrollContainerRef.current) {
-        // Clear any existing inline styles/transforms set by GSAP
         gsap.set(scrollContainerRef.current, { clearProps: "all" });
+        gsap.set(scrollContainerRef.current, { willChange: "scroll-position" });
       }
 
       if (scrollContainerRef.current && sectionPinRef.current) {
         const scrollableWidth = scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth;
         
         if (scrollableWidth > 0) {
-          gsap.set(scrollContainerRef.current, { willChange: "scroll-position" });
-
           st = ScrollTrigger.create({
             trigger: sectionPinRef.current,
             pin: sectionPinRef.current,
             pinType: "transform", 
-            scrub: true, // Changed from 0.5 to true for direct linking
+            scrub: true, 
             start: "top top",
-            end: "+=200%", 
+            end: "+=100%", // Changed from "+=200%" for more direct shift
             animation: gsap.to(scrollContainerRef.current, {
               scrollLeft: scrollableWidth,
               ease: "none", 
@@ -90,7 +88,6 @@ export function InternetTimelineSection() {
         resizeTimeout = setTimeout(setupGsap, 250); 
     };
 
-    // Initial setup after a short delay to ensure layout is stable
     const initialSetupTimeout = setTimeout(setupGsap, 100);
 
     window.addEventListener('resize', debouncedSetupGsap);
@@ -99,8 +96,7 @@ export function InternetTimelineSection() {
       clearTimeout(initialSetupTimeout);
       clearTimeout(resizeTimeout);
       window.removeEventListener('resize', debouncedSetupGsap);
-      st?.kill(); // Cleanup ScrollTrigger on component unmount
-      // Optionally clear GSAP's inline styles from the element
+      st?.kill(); 
       if (scrollContainerRef.current) {
         gsap.set(scrollContainerRef.current, { clearProps: "all" });
       }

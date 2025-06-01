@@ -14,7 +14,8 @@ export default function RootLayout({
 }>) {
   return (
     // Terapkan kelas gelap ke html untuk konsistensi jika diperlukan, atau andalkan :root
-    <html lang="id" className="dark">
+    // Tambahkan bg-background untuk memastikan lapisan dasar adalah warna tema gelap
+    <html lang="id" className="dark bg-background">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

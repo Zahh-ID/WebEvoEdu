@@ -6,7 +6,8 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { cn } from '@/lib/utils';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Section } from './Section';
+// Section component is removed as we are customizing the structure here
+// import { Section } from './Section'; 
 
 const sectionTitleText = "Perjalanan Melalui Evolusi Web";
 
@@ -49,11 +50,29 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
 
 export function InternetTimelineSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const pinElementRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
+    
+    // Animate title
+    if (titleRef.current && sectionRef.current) {
+      gsap.set(titleRef.current, { opacity: 0, y: 30 });
+      gsap.to(titleRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 85%",
+          toggleActions: "play pause resume reverse",
+        }
+      });
+    }
+
     if (scrollContainerRef.current) {
       gsap.set(scrollContainerRef.current, { willChange: 'scroll-position' });
     }
@@ -64,19 +83,12 @@ export function InternetTimelineSection() {
     const setupGsap = () => {
       st?.kill(); 
 
-      if (scrollContainerRef.current) {
-        // Reset scrollLeft before recalculating scrollableWidth
-        // This ensures that if the container was previously scrolled,
-        // scrollWidth is calculated correctly without being affected by its current scroll position.
-        // scrollContainerRef.current.scrollLeft = 0; // No, this might cause a jump if called during resize when already scrolled.
-        // clearProps is better here if we want to reset transforms or other GSAP-controlled props
-        gsap.set(scrollContainerRef.current, { clearProps: "scrollLeft" });
-      }
+      gsap.set(scrollContainerRef.current, { clearProps: "scrollLeft" });
       if (pinElementRef.current) {
         gsap.set(pinElementRef.current, { clearProps: "transform" }); 
       }
       
-      ScrollTrigger.refresh(); // Refresh ScrollTrigger to ensure calculations are up-to-date
+      ScrollTrigger.refresh();
 
       if (pinElementRef.current && scrollContainerRef.current) {
         const scrollableWidth = scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth;
@@ -85,18 +97,17 @@ export function InternetTimelineSection() {
           st = ScrollTrigger.create({
             trigger: pinElementRef.current,
             pin: pinElementRef.current,
-            pinType: "transform",
+            pinType: "transform", 
             scrub: true, 
             start: "top top", 
-            end: "+=200%", // Reverted to "+=200%"
+            end: () => `+=${scrollableWidth * 1}`, // Entire width scrolled over 1x its own width of vertical scroll
             animation: gsap.to(scrollContainerRef.current, {
               scrollLeft: scrollableWidth,
-              ease: "none", // Linear movement for direct scroll feel
+              ease: "none",
             }),
-            invalidateOnRefresh: true, // Recalculate on resize/refresh
+            invalidateOnRefresh: true,
           });
         } else {
-           // If not scrollable, ensure no pin is active
            if (pinElementRef.current) {
              ScrollTrigger.getAll().forEach(trigger => {
                if (trigger.trigger === pinElementRef.current) {
@@ -110,10 +121,9 @@ export function InternetTimelineSection() {
     
     const debouncedSetupGsap = () => {
         clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(setupGsap, 250); // Debounce resize
+        resizeTimeout = setTimeout(setupGsap, 250);
     };
 
-    // Delay initial setup slightly to ensure layout is stable
     const initialSetupTimeout = setTimeout(setupGsap, 100);
     window.addEventListener('resize', debouncedSetupGsap);
     
@@ -123,7 +133,6 @@ export function InternetTimelineSection() {
       window.removeEventListener('resize', debouncedSetupGsap);
       st?.kill(); 
       if (scrollContainerRef.current) {
-        // Clear GSAP-set properties to avoid conflicts on unmount/re-mount
         gsap.set(scrollContainerRef.current, { clearProps: "transform,willChange,scrollLeft" });
       }
       if (pinElementRef.current) {
@@ -133,26 +142,31 @@ export function InternetTimelineSection() {
   }, []); 
 
   return (
-    // Using the generic Section component, but disabling its children animation
-    // so the horizontal scroll can be managed by this component's useEffect.
-    <Section ref={sectionRef} id="timeline" title={sectionTitleText} animateChildren={false}>
-      <div ref={pinElementRef}> 
-        <div
-          ref={scrollContainerRef}
-          className="flex flex-nowrap overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 py-4 scrollbar-hide"
-          // style={{ willChange: 'scroll-position' }} // Applied via GSAP
+    <section id="timeline" ref={sectionRef} className="py-16 md:py-24 overflow-hidden">
+      <div className="container mx-auto px-4 md:px-6">
+        <h2 
+          ref={titleRef} 
+          className="text-4xl md:text-5xl font-headline font-bold text-center mb-12 md:mb-16 text-primary-foreground"
         >
-          {timelineData.map((item, index) => (
-            <div
-              key={item.id}
-              // Each card item has a fixed width to allow horizontal scrolling
-              className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem]"
-            >
-              <TimelineCard item={item} index={index} />
-            </div>
-          ))}
+          {sectionTitleText}
+        </h2>
+        <div ref={pinElementRef}> 
+          <div
+            ref={scrollContainerRef}
+            className="flex flex-nowrap overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide" 
+            // py-4 was removed here to make the pinElementRef tighter
+          >
+            {timelineData.map((item, index) => (
+              <div
+                key={item.id}
+                className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem]"
+              >
+                <TimelineCard item={item} index={index} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </Section>
+    </section>
   );
 }

@@ -35,9 +35,9 @@ export function KnowledgeQuizSection() {
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       if (sectionCardRef.current) {
-        gsap.set(sectionCardRef.current, { opacity: 0, y: 30 }); // Adjusted y from 50 to 30
+        gsap.set(sectionCardRef.current, { opacity: 0, y: 50, scale: 0.95 }); 
         gsap.to(sectionCardRef.current, {
-          opacity: 1, y: 0, duration: 0.6, ease: 'power2.out',
+          opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionCardRef.current, 
             start: "top 85%", 
@@ -194,7 +194,7 @@ export function KnowledgeQuizSection() {
   };
 
   return (
-    <Section id="quiz" title="Uji Pengetahuan Web Anda" className="bg-gradient-to-br from-background/70 to-secondary/70"> {/* Opasitas gradient diubah */}
+    <Section id="quiz" title="Uji Pengetahuan Web Anda" className="bg-gradient-to-br from-background/70 to-secondary/70">
       <Card ref={sectionCardRef} className="max-w-2xl mx-auto bg-card/80 backdrop-blur-sm shadow-2xl border-border">
         <div ref={startScreenRef} style={{display: quizStarted ? 'none' : 'block', opacity:0}}>
             <CardContent className="pt-6 text-center">

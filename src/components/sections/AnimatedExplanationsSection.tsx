@@ -23,9 +23,9 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
     let contentTweens: gsap.core.Tween[] = [];
 
     if (cardRef.current) {
-      gsap.set(cardRef.current, { opacity: 0, y: 40, scale: 0.9 }); 
+      gsap.set(cardRef.current, { opacity: 0, y: 60, scale: 0.95 }); 
       cardTween = gsap.to(cardRef.current, {
-        opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power2.out", delay: 0.1,
+        opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out", delay: 0.1,
         onComplete: () => {
           if (contentRef.current) {
             const animatedElements = [
@@ -37,14 +37,14 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
               contentRef.current.querySelector('.placeholder-anim')
             ].filter(el => el) as HTMLElement[];
 
-            gsap.set(animatedElements, { opacity: 0, y: 20 }); // Adjusted y from 25 to 20
+            gsap.set(animatedElements, { opacity: 0, y: 30 }); 
             contentTweens = animatedElements.map((el, index) => 
               gsap.to(el, { 
                 opacity: 1, 
                 y: 0, 
-                duration: 0.4, 
-                ease: 'power2.out', // Changed from power1.out
-                delay: 0.1 + (index * 0.05),
+                duration: 0.5, 
+                ease: 'power3.out', 
+                delay: 0.1 + (index * 0.07),
               })
             );
           }
@@ -175,12 +175,12 @@ export function AnimatedExplanationsSection() {
         const tabTriggers = Array.from(tabsRef.current.querySelectorAll('.tab-trigger-item')) as HTMLElement[];
 
         if (tabsListContainer) {
-          gsap.set(tabsListContainer, { opacity: 0, y: -30 }); 
+          gsap.set(tabsListContainer, { opacity: 0, y: -50 }); 
           gsap.to(tabsListContainer, {
             opacity: 1,
             y: 0,
-            duration: 0.5,
-            ease: 'power2.out',
+            duration: 0.6,
+            ease: 'power3.out',
             scrollTrigger: {
               trigger: tabsRef.current,
               start: "top 80%",
@@ -190,14 +190,14 @@ export function AnimatedExplanationsSection() {
         }
 
         if (tabTriggers && tabTriggers.length > 0) {
-          gsap.set(tabTriggers, { opacity: 0, y: 30, scale: 0.85 }); 
+          gsap.set(tabTriggers, { opacity: 0, y: 50, scale: 0.9 }); 
           gsap.to(tabTriggers, {
             opacity: 1,
             y: 0,
             scale: 1,
-            duration: 0.4,
-            stagger: 0.15,
-            ease: 'power2.out',
+            duration: 0.5,
+            stagger: 0.2,
+            ease: 'power3.out',
             scrollTrigger: {
               trigger: tabsRef.current,
               start: "top 75%",

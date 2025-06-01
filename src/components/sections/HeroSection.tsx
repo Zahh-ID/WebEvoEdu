@@ -16,13 +16,13 @@ export function HeroSection() {
     const ctx = gsap.context(() => {
       if (heroContentRef.current && sectionRef.current) {
         const heroElements = heroContentRef.current.querySelectorAll('h1, p, div.space-x-4');
-        gsap.set(heroElements, { opacity: 0, y: 40 }); // Diperbarui dari y: 20
+        gsap.set(heroElements, { opacity: 0, y: 60 }); 
         gsap.to(heroElements, { 
             opacity: 1, 
             y: 0, 
-            duration: 0.7, 
-            stagger: 0.2, 
-            ease: "power2.out",
+            duration: 0.8, 
+            stagger: 0.25, 
+            ease: "power3.out",
             delay: 0.3,
             scrollTrigger: {
               trigger: sectionRef.current,

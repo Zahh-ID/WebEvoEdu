@@ -7,8 +7,6 @@ import { cn } from '@/lib/utils';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const sectionTitleText = "Perjalanan Melalui Evolusi Web";
-
 const EraColors = {
   Web1: 'border-blue-500/70 hover:border-blue-500',
   Web2: 'border-purple-500/70 hover:border-purple-500',
@@ -21,13 +19,12 @@ const EraTextColors = {
   Web3: 'text-green-400',
 };
 
-// Komponen TimelineCard didefinisikan secara inline untuk kemudahan
 const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }) => {
   const { Icon } = item;
   return (
     <Card
       className={cn(
-        "w-full bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 border-2 flex flex-col h-full", // Added flex flex-col h-full
+        "w-full bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 border-2 flex flex-col h-full",
         EraColors[item.era]
       )}
     >
@@ -40,7 +37,7 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
           <CardDescription className="text-sm text-muted-foreground">{item.era} - {item.year}</CardDescription>
         </div>
       </CardHeader>
-      <CardContent className="p-4 flex-grow"> {/* Added flex-grow */}
+      <CardContent className="p-4 flex-grow"> 
         <p className="text-foreground/80">{item.description}</p>
       </CardContent>
     </Card>
@@ -56,15 +53,15 @@ export function InternetTimelineSection() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
-      if (titleRef.current && sectionRef.current) { // sectionRef.current untuk trigger title
-        gsap.set(titleRef.current, { opacity: 0, y: 30 });
+      if (titleRef.current && sectionRef.current) {
+        gsap.set(titleRef.current, { opacity: 0, y: 50 });
         gsap.to(titleRef.current, {
           opacity: 1,
           y: 0,
-          duration: 0.6,
-          ease: 'power2.out',
+          duration: 0.7,
+          ease: 'power3.out',
           scrollTrigger: {
-            trigger: sectionRef.current, // Trigger animasi judul saat section masuk
+            trigger: sectionRef.current, 
             start: "top 85%",
             toggleActions: "play pause resume reverse",
           }
@@ -127,30 +124,30 @@ export function InternetTimelineSection() {
           gsap.set(pinElementRef.current, { clearProps: "transform" });
         }
       };
-    }, sectionRef); // Konteks GSAP utama menggunakan sectionRef
+    }, sectionRef); 
 
-    return () => { /* Cleanup logic di dalam return dari useEffect utama jika ada */ };
-  }, []); // Dependency array kosong
+    return () => { /* Cleanup logic */ };
+  }, []); 
 
   return (
     <section id="timeline" ref={sectionRef} className="py-16 md:py-24">
-      <div ref={pinElementRef}> {/* Elemen ini akan di-pin, berisi judul dan kartu */}
-        <div className="container mx-auto px-4 md:px-6"> {/* Container untuk judul agar tetap terpusat */}
+      <div ref={pinElementRef}> 
+        <div className="container mx-auto px-4 md:px-6">
           <h2 
             ref={titleRef} 
-            className="text-4xl md:text-5xl font-headline font-bold text-center mb-6 md:mb-8 text-primary-foreground" // Margin bawah dikurangi
+            className="text-4xl md:text-5xl font-headline font-bold text-center mb-6 md:mb-8 text-primary-foreground"
           >
-            {sectionTitleText}
+            Perjalanan Melalui Evolusi Web
           </h2>
         </div>
         <div
           ref={scrollContainerRef}
-          className="flex flex-nowrap items-start overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 py-4 scrollbar-hide"
+          className="flex flex-nowrap items-start overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide" // Removed py-4
         >
           {timelineData.map((item, index) => (
             <div
               key={item.id}
-              className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem] h-96" // Tinggi ditingkatkan dari h-80 ke h-96
+              className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem] h-96" 
             >
               <TimelineCard item={item} index={index} />
             </div>
@@ -160,4 +157,3 @@ export function InternetTimelineSection() {
     </section>
   );
 }
-

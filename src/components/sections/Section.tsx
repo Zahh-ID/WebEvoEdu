@@ -14,11 +14,11 @@ interface SectionProps {
   className?: string;
   titleClassName?: string;
   containerClassName?: string;
-  animateChildren?: boolean; // New prop
+  animateChildren?: boolean;
 }
 
 export const Section = React.forwardRef<HTMLElement, SectionProps>(
-  ({ id, title, children, className, titleClassName, containerClassName, animateChildren = true }, ref) => { // Default animateChildren to true
+  ({ id, title, children, className, titleClassName, containerClassName, animateChildren = true }, ref) => {
     const titleRef = useRef<HTMLHeadingElement>(null);
     const childrenRef = useRef<HTMLDivElement>(null);
     const internalSectionRef = useRef<HTMLElement>(null);
@@ -29,12 +29,12 @@ export const Section = React.forwardRef<HTMLElement, SectionProps>(
 
       const ctx = gsap.context(() => {
         if (titleRef.current && currentSectionRef.current) {
-          gsap.set(titleRef.current, { opacity: 0, y: 30 }); // Adjusted y from 50 to 30
+          gsap.set(titleRef.current, { opacity: 0, y: 50 });
           gsap.to(titleRef.current, {
             opacity: 1,
             y: 0,
-            duration: 0.6,
-            ease: 'power2.out', // Added ease
+            duration: 0.7,
+            ease: 'power3.out',
             scrollTrigger: {
               trigger: currentSectionRef.current,
               start: "top 85%",
@@ -45,13 +45,14 @@ export const Section = React.forwardRef<HTMLElement, SectionProps>(
         
         if (childrenRef.current && currentSectionRef.current) {
           if (animateChildren) {
-            gsap.set(childrenRef.current, { opacity: 0, y: 30 }); // Adjusted y from 50 to 30
+            gsap.set(childrenRef.current, { opacity: 0, y: 50, scale: 0.97 });
             gsap.to(childrenRef.current, {
                 opacity: 1,
                 y: 0,
-                duration: 0.6,
+                scale: 1,
+                duration: 0.7,
                 delay: 0.2,
-                ease: 'power2.out', // Added ease
+                ease: 'power3.out',
                 scrollTrigger: {
                 trigger: currentSectionRef.current,
                 start: "top 80%",
@@ -59,13 +60,12 @@ export const Section = React.forwardRef<HTMLElement, SectionProps>(
                 }
             });
           } else {
-            // If not animating children, ensure they are visible
-            gsap.set(childrenRef.current, { opacity: 1, y: 0 });
+            gsap.set(childrenRef.current, { opacity: 1, y: 0, scale: 1 });
           }
         }
       }, currentSectionRef);
       return () => ctx.revert();
-    }, [ref, animateChildren]); // Add animateChildren to dependency array
+    }, [ref, animateChildren]);
 
     return (
       <section id={id} className={cn("py-16 md:py-24 overflow-hidden", className)} ref={ref || internalSectionRef}>

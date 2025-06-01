@@ -56,7 +56,7 @@ export default function ConceptDetailClientPage({ params, conceptDetails }: Conc
           }
         });
 
-        gsap.from(mainCard.querySelectorAll('.card-title-anim, .card-desc-anim, .concept-detail-heading, .concept-detail-paragraph, .concept-detail-list-item, .concept-detail-placeholder'), {
+        gsap.from(mainCard.querySelectorAll('.card-title-anim, .card-desc-anim, .concept-detail-heading, .concept-detail-paragraph, .concept-detail-list-item, .concept-detail-elaboration'), {
           opacity: 0,
           y: 20,
           duration: 0.4,
@@ -154,8 +154,8 @@ export default function ConceptDetailClientPage({ params, conceptDetails }: Conc
                 <p className="text-muted-foreground leading-relaxed concept-detail-paragraph">
                   {concept.description}
                 </p>
-                <p className="mt-3 text-sm text-accent/80 italic concept-detail-placeholder">
-                  Untuk memperkaya pemahaman Anda, kami sedang menyiapkan analogi yang mudah dicerna, elaborasi mendalam mengenai cara kerja inti, serta penjabaran tujuan utama dari {displayConceptName} dalam konteks {era.title}.
+                <p className="mt-4 text-muted-foreground/90 leading-relaxed concept-detail-elaboration">
+                  Untuk memahami {displayConceptName} lebih dalam, seringkali membantu untuk memvisualisasikannya sebagai sebuah mekanisme yang memungkinkan interaksi baru, pertukaran informasi yang lebih efisien, atau organisasi data yang lebih baik dalam dunia digital {era.title}. Cara kerjanya dapat melibatkan prinsip-prinsip seperti standarisasi format data, penggunaan protokol komunikasi terbuka, atau platform yang memfasilitasi kolaborasi terdistribusi. Tujuan utamanya adalah untuk menyederhanakan kompleksitas, meningkatkan partisipasi pengguna, atau membangun sistem yang lebih transparan dan dapat dipercaya dalam ekosistem {era.title}. Hal ini seringkali menghasilkan kemampuan baru, seperti transaksi yang lebih aman, informasi yang lebih mudah diakses dan dipahami, atau kolaborasi skala besar tanpa memerlukan perantara terpusat.
                 </p>
               </div>
 
@@ -167,8 +167,8 @@ export default function ConceptDetailClientPage({ params, conceptDetails }: Conc
                       <li key={idx} className="concept-detail-list-item">{example}</li>
                     ))}
                   </ul>
-                  <p className="mt-3 text-sm text-accent/80 italic concept-detail-placeholder">
-                    Setiap contoh di atas adalah manifestasi dari {displayConceptName}. Analisis lebih lanjut tentang bagaimana masing-masing platform atau aplikasi ini menerapkan dan mencerminkan esensi {displayConceptName} pada era {era.title} akan segera kami tambahkan.
+                  <p className="mt-4 text-muted-foreground/90 leading-relaxed concept-detail-elaboration">
+                    Sebagai ilustrasi, platform seperti {concept.examples[0]} secara nyata mengimplementasikan ide {displayConceptName} dengan cara memungkinkan pengguna untuk {concept.title.toLowerCase().includes('konten') ? 'membuat dan berbagi konten secara luas' : concept.title.toLowerCase().includes('interaksi') ? 'berinteraksi secara dinamis dengan layanan' : 'mengakses dan memanfaatkan data secara terbuka'}. Demikian pula, aplikasi lain yang menerapkan {displayConceptName} menunjukkan bagaimana konsep ini menjadi fondasi bagi berbagai inovasi layanan digital, mengubah cara kita mendapatkan informasi, berkomunikasi, atau melakukan transaksi di era {era.title}.
                   </p>
                 </div>
               )}
@@ -178,8 +178,8 @@ export default function ConceptDetailClientPage({ params, conceptDetails }: Conc
                 <p className="text-muted-foreground leading-relaxed concept-detail-paragraph">
                   Konsep {displayConceptName} tidak hanya sekadar ada; ia merupakan salah satu pilar yang membentuk karakteristik unik dan kemampuan transformatif dari era {era.title}. Tanpa {displayConceptName}, lanskap digital pada masa itu akan sangat berbeda, membatasi berbagai inovasi yang kita nikmati.
                 </p>
-                <p className="mt-3 text-sm text-accent/80 italic concept-detail-placeholder">
-                  Untuk memberikan gambaran yang lebih utuh, kami akan segera menambahkan diskusi mendalam mengenai kontribusi spesifik {displayConceptName} terhadap inovasi teknologi, perkembangan ekosistem {era.title}, inovasi kunci yang dimungkinkannya, serta masalah-masalah fundamental pada era sebelumnya yang berhasil dipecahkannya.
+                <p className="mt-4 text-muted-foreground/90 leading-relaxed concept-detail-elaboration">
+                  Pentingnya {displayConceptName} untuk {era.title} terletak pada kemampuannya untuk menjawab tantangan spesifik dari era sebelumnya atau membuka peluang inovasi yang fundamental. Konsep ini berkontribusi secara signifikan terhadap perkembangan teknologi inti, pertumbuhan ekosistem digital yang lebih kaya, serta pemberdayaan pengguna melalui alat dan kerangka kerja baru. {displayConceptName} seringkali menjadi kunci yang memungkinkan lahirnya model-model aplikasi dan layanan yang mendefinisikan karakteristik era {era.title}, memecahkan masalah skalabilitas, interoperabilitas, atau partisipasi pengguna yang ada sebelumnya.
                 </p>
               </div>
 
@@ -188,16 +188,16 @@ export default function ConceptDetailClientPage({ params, conceptDetails }: Conc
                  <p className="text-muted-foreground leading-relaxed concept-detail-paragraph">
                   Pengenalan dan adopsi {displayConceptName} tidak terjadi dalam ruang hampa. Ia membawa gelombang implikasi yang merambat ke berbagai aspek kehidupan digital dan sosial pada era {era.title}, menghadirkan peluang sekaligus tantangan yang membentuk cara kita berinteraksi dengan teknologi.
                 </p>
-                 <p className="mt-3 text-sm text-accent/80 italic concept-detail-placeholder">
-                  Analisis komprehensif mengenai dampak-dampak ini sedang kami siapkan. Ini akan mencakup bagaimana {displayConceptName} mengubah pengalaman pengguna, memengaruhi cara pengembang membangun aplikasi dan layanan, mentransformasi model bisnis, serta dampak sosial dan budaya yang lebih luas pada masyarakat. Diskusi tentang tantangan, keterbatasan, atau kontroversi yang muncul seiring adopsi {displayConceptName} juga akan disertakan.
+                 <p className="mt-4 text-muted-foreground/90 leading-relaxed concept-detail-elaboration">
+                  Implikasi dari {displayConceptName} meluas hingga mengubah cara pengguna berinteraksi dengan layanan digital, informasi, dan satu sama lain. Hal ini mendorong pengembang untuk mengadopsi paradigma baru dalam merancang arsitektur aplikasi, model keamanan, dan pengalaman pengguna. Dari perspektif bisnis, {displayConceptName} seringkali memicu munculnya pasar-pasar baru, mengganggu model bisnis tradisional, atau menciptakan efisiensi operasional yang signifikan. Secara sosial dan budaya, adopsinya juga dapat memunculkan diskusi etis, pergeseran norma, serta tantangan terkait kesetaraan akses dan literasi digital, yang semuanya penting untuk dipertimbangkan seiring evolusi web.
                 </p>
               </div>
 
               <div className="mt-10 pt-6 border-t border-border/50 text-center">
-                <p className="text-lg text-primary font-semibold mb-3 concept-detail-heading">Konten Ini Masih dalam Pengembangan!</p>
+                <p className="text-lg text-primary font-semibold mb-3 concept-detail-heading">Memahami Esensi {era.title}</p>
                 <p className="text-muted-foreground concept-detail-paragraph">
-                  Tim kami sedang bekerja keras untuk melengkapi semua detail penjelasan mengenai <strong className={cn(era.colorClass)}>{displayConceptName}</strong>.
-                  Terima kasih atas kesabaran Anda! Konten yang lebih kaya dan mendalam akan segera hadir untuk memperluas wawasan Anda.
+                  Konsep <strong className={cn(era.colorClass)}>{displayConceptName}</strong> merupakan bagian integral dari narasi evolusi {era.title}.
+                  Kami harap penjelasan ini telah memberikan wawasan yang berharga. Teruslah menjelajahi untuk pemahaman yang lebih mendalam!
                 </p>
               </div>
 

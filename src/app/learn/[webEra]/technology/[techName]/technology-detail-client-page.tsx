@@ -55,7 +55,7 @@ export default function TechnologyDetailClientPage({ params, techDetails }: Tech
           }
         });
 
-        gsap.from(mainCard.querySelectorAll('.card-title-anim, .card-desc-anim, .tech-detail-heading, .tech-detail-paragraph, .tech-detail-placeholder'), {
+        gsap.from(mainCard.querySelectorAll('.card-title-anim, .card-desc-anim, .tech-detail-heading, .tech-detail-paragraph, .tech-detail-elaboration'), {
           opacity: 0,
           y: 20,
           duration: 0.4,
@@ -152,23 +152,23 @@ export default function TechnologyDetailClientPage({ params, techDetails }: Tech
               <div>
                 <h3 className="text-xl font-semibold mb-3 text-primary-foreground/85 tech-detail-heading">1. Apa Itu {displayTechName}? (Versi Sederhana)</h3>
                 <p className="text-muted-foreground leading-relaxed tech-detail-paragraph">
-                  Bayangkan {displayTechName} seperti <strong className={cn(era.colorClass)}>[Analogi Sederhana untuk {displayTechName}]</strong>.
-                  Pada dasarnya, {displayTechName} adalah sebuah <strong className={cn(era.colorClass)}>[Jenis Teknologi: misal, aturan, bahasa, alat, sistem]</strong> yang memungkinkan komputer atau internet untuk <strong className={cn(era.colorClass)}>[Fungsi Utama Sederhana dari {displayTechName}]</strong>.
-                  Di era {era.title}, peran utamanya adalah untuk <strong className={cn(era.colorClass)}>[Peran Singkat {displayTechName} di Era Tersebut]</strong>.
+                  Bayangkan {displayTechName} seperti <strong className={cn(era.colorClass)}>{techNameOriginal && techNameOriginal.toLowerCase().includes('html') ? 'cetak biru untuk halaman web' : techNameOriginal && techNameOriginal.toLowerCase().includes('http') ? 'kurir pengantar informasi di internet' : techNameOriginal && techNameOriginal.toLowerCase().includes('url') ? 'alamat unik setiap rumah di kota internet' : 'alat canggih atau aturan main baru'}</strong>.
+                  Pada dasarnya, {displayTechName} adalah sebuah <strong className={cn(era.colorClass)}>{techNameOriginal && (techNameOriginal.toLowerCase().includes('html') || techNameOriginal.toLowerCase().includes('solidity')) ? 'bahasa pemrograman atau markup' : techNameOriginal && techNameOriginal.toLowerCase().includes('http') ? 'protokol komunikasi' : techNameOriginal && techNameOriginal.toLowerCase().includes('blockchain') ? 'sistem pencatatan terdistribusi' : 'metodologi atau standar teknis'}</strong> yang memungkinkan komputer atau internet untuk <strong className={cn(era.colorClass)}>{techNameOriginal && techNameOriginal.toLowerCase().includes('html') ? 'menampilkan konten secara terstruktur' : techNameOriginal && techNameOriginal.toLowerCase().includes('http') ? 'mengirim dan menerima data antar server dan klien' : techNameOriginal && techNameOriginal.toLowerCase().includes('blockchain') ? 'mencatat transaksi secara aman dan transparan' : 'melakukan fungsi spesifik yang inovatif'}</strong>.
+                  Di era {era.title}, peran utamanya adalah untuk <strong className={cn(era.colorClass)}>{techNameOriginal && techNameOriginal.toLowerCase().includes('html') ? 'membangun halaman-halaman web statis' : techNameOriginal && techNameOriginal.toLowerCase().includes('http') ? 'memfasilitasi pertukaran informasi dasar' : techNameOriginal && techNameOriginal.toLowerCase().includes('blockchain') ? 'memungkinkan aplikasi terdesentralisasi dan kepemilikan aset digital' : 'mendukung pengembangan aplikasi yang lebih canggih dan interaktif'}</strong>.
                 </p>
-                <p className="mt-3 text-sm text-accent/80 italic tech-detail-placeholder">
-                  (Penjelasan lebih mendalam mengenai definisi dasar dan cara kerja umum {displayTechName} akan segera ditambahkan.)
+                <p className="mt-4 text-muted-foreground/90 leading-relaxed tech-detail-elaboration">
+                  Secara lebih teknis, {displayTechName} bekerja dengan menetapkan serangkaian aturan, protokol, atau sintaks standar yang mengatur bagaimana data dibuat, dikirim, diterima, atau diproses. Misalnya, sebuah bahasa markup akan mendefinisikan tag untuk menstrukturkan elemen, sementara protokol jaringan akan menentukan format pesan dan urutan komunikasi. Definisi dasarnya mencakup spesifikasi inti yang membedakannya dari pendekatan sebelumnya, menjadi fondasi untuk kapabilitas baru dan inovasi di era {era.title}.
                 </p>
               </div>
 
               <div>
                 <h3 className="text-xl font-semibold mb-3 text-primary-foreground/85 tech-detail-heading">2. Mengapa {displayTechName} Penting di Era {era.title}?</h3>
                 <p className="text-muted-foreground leading-relaxed tech-detail-paragraph">
-                  Kehadiran {displayTechName} sangat krusial bagi perkembangan {era.title}. Tanpa teknologi ini, hal-hal seperti <strong className={cn(era.colorClass)}>[Contoh Dampak Jika {displayTechName} Tidak Ada di Era Itu]</strong> mungkin tidak akan pernah terwujud atau akan sangat berbeda.
-                  {displayTechName} memberikan kontribusi besar dalam <strong className={cn(era.colorClass)}>[Manfaat Utama 1 dari {displayTechName} untuk Era {era.title}]</strong> dan <strong className={cn(era.colorClass)}>[Manfaat Utama 2 dari {displayTechName} untuk Era {era.title}]</strong>.
+                  Kehadiran {displayTechName} sangat krusial bagi perkembangan {era.title}. Tanpa teknologi ini, hal-hal seperti <strong className={cn(era.colorClass)}>{techNameOriginal && techNameOriginal.toLowerCase().includes('html') ? 'tampilan visual web yang kita kenal' : techNameOriginal && techNameOriginal.toLowerCase().includes('http') ? 'kemampuan mengakses situs web secara global' : techNameOriginal && techNameOriginal.toLowerCase().includes('blockchain') ? 'konsep kepemilikan aset digital terverifikasi' : 'aplikasi interaktif dan layanan online modern'}</strong> mungkin tidak akan pernah terwujud atau akan sangat berbeda.
+                  {displayTechName} memberikan kontribusi besar dalam <strong className={cn(era.colorClass)}>{techNameOriginal && techNameOriginal.toLowerCase().includes('html') ? 'standardisasi presentasi informasi' : techNameOriginal && techNameOriginal.toLowerCase().includes('http') ? 'memungkinkan komunikasi dasar web' : techNameOriginal && techNameOriginal.toLowerCase().includes('blockchain') ? 'menciptakan sistem tanpa perantara kepercayaan' : 'meningkatkan fungsionalitas dan pengalaman pengguna'}</strong> dan <strong className={cn(era.colorClass)}>{techNameOriginal && techNameOriginal.toLowerCase().includes('html') ? 'mempermudah pembuatan konten web awal' : techNameOriginal && techNameOriginal.toLowerCase().includes('http') ? 'menjadi tulang punggung transfer data' : techNameOriginal && techNameOriginal.toLowerCase().includes('blockchain') ? 'memfasilitasi transaksi yang transparan dan aman' : 'memungkinkan pengembangan aplikasi yang lebih kompleks'}</strong>.
                 </p>
-                <p className="mt-3 text-sm text-accent/80 italic tech-detail-placeholder">
-                  (Analisis lebih lanjut mengenai kontribusi spesifik {displayTechName} pada era {era.title} akan segera ditambahkan.)
+                <p className="mt-4 text-muted-foreground/90 leading-relaxed tech-detail-elaboration">
+                  {displayTechName} secara signifikan membentuk lanskap {era.title} dengan menyediakan infrastruktur dasar untuk aplikasi baru, memungkinkan skala dan efisiensi yang belum pernah ada sebelumnya, atau memperkenalkan model interaksi digital yang inovatif. Kontribusinya tidak hanya terbatas pada aspek teknis, tetapi juga membuka jalan bagi perkembangan model bisnis baru, pemberdayaan komunitas pengguna, serta peningkatan aksesibilitas informasi dan layanan. Teknologi ini seringkali menjadi katalisator utama perubahan pada eranya.
                 </p>
               </div>
 
@@ -176,29 +176,29 @@ export default function TechnologyDetailClientPage({ params, techDetails }: Tech
                 <h3 className="text-xl font-semibold mb-3 text-primary-foreground/85 tech-detail-heading">3. Contoh Penggunaan Sehari-hari (di Era {era.title})</h3>
                 <p className="text-muted-foreground leading-relaxed tech-detail-paragraph">
                   Mungkin Anda tidak sadar, tetapi jika Anda hidup atau membayangkan menggunakan internet di era {era.title}, Anda akan sering bertemu {displayTechName}.
-                  Contohnya, ketika Anda <strong className={cn(era.colorClass)}>[Aktivitas Umum Pengguna Internet di Era {era.title}]</strong>, {displayTechName} bekerja di belakang layar untuk <strong className={cn(era.colorClass)}>[Bagaimana {displayTechName} Terlibat dalam Aktivitas Tersebut]</strong>.
+                  Contohnya, ketika Anda <strong className={cn(era.colorClass)}>{techNameOriginal && techNameOriginal.toLowerCase().includes('html') ? 'membuka sebuah halaman web sederhana' : techNameOriginal && techNameOriginal.toLowerCase().includes('http') ? 'mengklik tautan untuk mengunjungi situs baru' : techNameOriginal && techNameOriginal.toLowerCase().includes('blockchain') ? 'berinteraksi dengan aplikasi keuangan terdesentralisasi' : 'menggunakan media sosial atau platform e-commerce'}</strong>, {displayTechName} bekerja di belakang layar untuk <strong className={cn(era.colorClass)}>{techNameOriginal && techNameOriginal.toLowerCase().includes('html') ? 'menyusun dan menampilkan teks, gambar, dan tautan yang Anda lihat' : techNameOriginal && techNameOriginal.toLowerCase().includes('http') ? 'mengambil data dari server dan menampilkannya di peramban Anda' : techNameOriginal && techNameOriginal.toLowerCase().includes('blockchain') ? 'memverifikasi dan mencatat transaksi Anda di jaringan terdistribusi' : 'memproses permintaan Anda dan menyajikan konten dinamis'}</strong>.
                 </p>
-                 <p className="mt-3 text-sm text-accent/80 italic tech-detail-placeholder">
-                  (Ilustrasi dan studi kasus sederhana penggunaan {displayTechName} dalam skenario sehari-hari di era {era.title} akan segera ditambahkan.)
+                 <p className="mt-4 text-muted-foreground/90 leading-relaxed tech-detail-elaboration">
+                  Lebih jauh, {displayTechName} juga berperan dalam mendukung berbagai fitur seperti formulir online, pemutaran media, atau bahkan pembaruan konten secara real-time, tergantung pada teknologi spesifik dan era yang dibicarakan. Meskipun seringkali bekerja secara tak terlihat, dampaknya terasa dalam kemudahan, kecepatan, dan keamanan yang dinikmati pengguna saat melakukan berbagai aktivitas online di era {era.title}. Pemahaman akan peran ini membantu mengapresiasi kompleksitas dan kecanggihan teknologi yang ada.
                 </p>
               </div>
 
               <div>
                 <h3 className="text-xl font-semibold mb-3 text-primary-foreground/85 tech-detail-heading">4. Apakah Ada Tantangan atau Keterbatasan?</h3>
                 <p className="text-muted-foreground leading-relaxed tech-detail-paragraph">
-                  Setiap teknologi, termasuk {displayTechName} pada era {era.title}, tentu memiliki sisi lain. Beberapa tantangan atau keterbatasannya saat itu mungkin adalah <strong className={cn(era.colorClass)}>[Keterbatasan Umum 1 dari {displayTechName}]</strong> atau <strong className={cn(era.colorClass)}>[Keterbatasan Umum 2 dari {displayTechName}]</strong>.
+                  Setiap teknologi, termasuk {displayTechName} pada era {era.title}, tentu memiliki sisi lain. Beberapa tantangan atau keterbatasannya saat itu mungkin adalah <strong className={cn(era.colorClass)}>{techNameOriginal && techNameOriginal.toLowerCase().includes('html') ? 'kurangnya interaktivitas dan kemampuan dinamis' : techNameOriginal && techNameOriginal.toLowerCase().includes('http') ? 'masalah keamanan pada versi awal atau kecepatan transfer data' : techNameOriginal && techNameOriginal.toLowerCase().includes('blockchain') ? 'isu skalabilitas dan kompleksitas penggunaan bagi awam' : 'kompleksitas pengembangan atau masalah kinerja'}</strong> atau <strong className={cn(era.colorClass)}>{techNameOriginal && techNameOriginal.toLowerCase().includes('html') ? 'pemisahan konten dan presentasi yang belum matang' : techNameOriginal && techNameOriginal.toLowerCase().includes('http') ? 'kurangnya enkripsi pada lalu lintas data (untuk HTTP lama)' : techNameOriginal && techNameOriginal.toLowerCase().includes('blockchain') ? 'konsumsi energi yang tinggi untuk beberapa mekanisme konsensus' : 'ketergantungan pada infrastruktur terpusat tertentu'}</strong>.
                   Keterbatasan inilah yang seringkali mendorong inovasi untuk menciptakan teknologi yang lebih baik di era berikutnya.
                 </p>
-                 <p className="mt-3 text-sm text-accent/80 italic tech-detail-placeholder">
-                  (Diskusi lebih lanjut mengenai tantangan, keterbatasan, dan dampak {displayTechName} pada era {era.title}, serta bagaimana hal tersebut memicu evolusi, akan segera ditambahkan.)
+                 <p className="mt-4 text-muted-foreground/90 leading-relaxed tech-detail-elaboration">
+                  Selain keterbatasan yang telah disebutkan, {displayTechName} di era {era.title} juga dapat menghadapi isu terkait interoperabilitas dengan teknologi lain, biaya implementasi awal yang tinggi, atau kurva pembelajaran yang curam bagi pengguna maupun pengembang. Tantangan-tantangan ini menjadi pemicu penting bagi komunitas riset dan pengembangan untuk mencari solusi inovatif, yang pada gilirannya mendorong evolusi teknologi ke arah yang lebih matang, efisien, dan ramah pengguna, seringkali mengarah pada standar atau teknologi baru di era selanjutnya.
                 </p>
               </div>
 
               <div className="mt-10 pt-6 border-t border-border/50 text-center">
-                <p className="text-lg text-primary font-semibold mb-3 tech-detail-heading">Konten Ini Masih dalam Pengembangan!</p>
+                <p className="text-lg text-primary font-semibold mb-3 tech-detail-heading">Teknologi Penggerak {era.title}</p>
                 <p className="text-muted-foreground tech-detail-paragraph">
-                  Kami berkomitmen untuk menyediakan penjelasan yang paling akurat, jelas, dan mudah dipahami untuk Anda mengenai <strong className={cn(era.colorClass)}>{displayTechName}</strong>.
-                  Tim kami sedang bekerja keras untuk melengkapi semua detail. Terima kasih atas kesabaran Anda!
+                  Teknologi <strong className={cn(era.colorClass)}>{displayTechName}</strong> adalah salah satu pilar penting dalam evolusi {era.title}.
+                  Semoga penjelasan ini memberikan gambaran yang lebih jelas. Dunia teknologi terus berkembang, jadi teruslah belajar!
                 </p>
               </div>
 

@@ -4,9 +4,11 @@ import React, { useEffect, useRef } from 'react';
 import { Section } from './Section';
 import { explanationsData, type ExplanationContent } from '@/data/explanations-data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2 } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import { CheckCircle2, ArrowRightCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -67,8 +69,21 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
     };
   }, [item]);
 
+  const getButtonBgColor = (eraId: string) => {
+    switch (eraId) {
+      case 'web1':
+        return 'bg-blue-500 hover:bg-blue-600 focus-visible:ring-blue-500';
+      case 'web2':
+        return 'bg-purple-500 hover:bg-purple-600 focus-visible:ring-purple-500';
+      case 'web3':
+        return 'bg-green-500 hover:bg-green-600 focus-visible:ring-green-500';
+      default:
+        return 'bg-primary hover:bg-primary/90';
+    }
+  };
+
   return (
-    <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full"> 
+    <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full flex flex-col"> 
       <CardHeader>
         <div className="flex items-center gap-4 mb-4">
           <div className={cn("p-3 rounded-lg bg-primary/20", item.colorClass)}>
@@ -80,14 +95,14 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
           </div>
         </div>
       </CardHeader>
-      <CardContent ref={contentRef} className="space-y-6">
+      <CardContent ref={contentRef} className="space-y-6 flex-grow">
         <div>
           <h3 className="text-xl font-semibold mb-3 text-primary-foreground/90">Konsep Kunci</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {item.keyConcepts.map(concept => {
               const { Icon: ConceptIcon } = concept;
               return (
-                <div key={concept.title} className="p-4 bg-background/50 rounded-lg border border-border/50 concept-card-item">
+                <div key={concept.title} className="p-4 bg-background/50 rounded-lg border border-border/50 concept-card-item h-full">
                   <div className="flex items-center gap-2 mb-1">
                     <ConceptIcon className={cn("w-5 h-5", item.colorClass)} />
                     <h4 className="font-semibold text-primary-foreground/80">{concept.title}</h4>
@@ -130,6 +145,20 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
           <p>Placeholder animasi masa depan untuk {item.title}</p>
         </div>
       </CardContent>
+      <CardFooter className="pt-6 mt-auto">
+        <Button 
+            asChild 
+            className={cn(
+                "w-full font-semibold text-primary-foreground",
+                getButtonBgColor(item.id)
+            )}
+        >
+          <Link href={`/learn/${item.id}`}>
+            Pelajari Lebih Lanjut tentang {item.id.toUpperCase()}
+            <ArrowRightCircle className="ml-2 h-5 w-5" />
+          </Link>
+        </Button>
+      </CardFooter>
     </Card>
   );
 };
@@ -182,7 +211,7 @@ export function AnimatedExplanationsSection() {
   }, []);
 
   return (
-    <Section id="concepts" title="Memahami Era Web" className="bg-background/60"> {/* Opasitas diubah */}
+    <Section id="concepts" title="Memahami Era Web" className="bg-background/60">
       <Tabs defaultValue="web1" className="w-full max-w-4xl mx-auto" ref={tabsRef}>
         <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border border-border mb-8 tabs-list-anim"> 
           {explanationsData.map((item) => (
@@ -191,7 +220,13 @@ export function AnimatedExplanationsSection() {
               value={item.id} 
               className={cn(
                 "py-3 text-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg tab-trigger-item w-full",
-                item.colorClass
+                // item.colorClass // Ini untuk teks, bukan background trigger aktif
+                 item.id === 'web1' && 'data-[state=active]:bg-blue-600 data-[state=active]:text-white focus-visible:ring-blue-500',
+                 item.id === 'web2' && 'data-[state=active]:bg-purple-600 data-[state=active]:text-white focus-visible:ring-purple-500',
+                 item.id === 'web3' && 'data-[state=active]:bg-green-600 data-[state=active]:text-white focus-visible:ring-green-500',
+                 // Fallback or default active style if needed
+                 !(item.id === 'web1' || item.id === 'web2' || item.id === 'web3') && 'data-[state=active]:bg-primary'
+
               )}
             >
               {item.id.toUpperCase()}
@@ -207,3 +242,6 @@ export function AnimatedExplanationsSection() {
     </Section>
   );
 }
+
+
+    

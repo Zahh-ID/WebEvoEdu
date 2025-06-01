@@ -25,7 +25,7 @@ export function KnowledgeQuizSection() {
   const [quizStarted, setQuizStarted] = useState<boolean>(false);
   const { toast } = useToast();
   
-  const sectionCardRef = useRef<HTMLDivElement>(null); // Mengganti nama cardRef agar lebih spesifik
+  const sectionCardRef = useRef<HTMLDivElement>(null);
   const startScreenRef = useRef<HTMLDivElement>(null);
   const quizInterfaceRef = useRef<HTMLDivElement>(null);
   const feedbackAlertRef = useRef<HTMLDivElement>(null);
@@ -33,7 +33,6 @@ export function KnowledgeQuizSection() {
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-    // Animasi untuk kartu utama section
     const ctx = gsap.context(() => {
       if (sectionCardRef.current) {
         gsap.set(sectionCardRef.current, { opacity: 0, y: 50 });
@@ -42,19 +41,18 @@ export function KnowledgeQuizSection() {
           scrollTrigger: {
             trigger: sectionCardRef.current, 
             start: "top 85%", 
-            toggleActions: "play pause resume reverse", // Diperbarui
+            toggleActions: "play pause resume reverse",
           }
         });
       }
-    }, sectionCardRef); // Scope ke sectionCardRef
+    }, sectionCardRef);
     return () => ctx.revert();
-  }, []); // Hanya dijalankan sekali saat mount untuk section card
+  }, []);
 
-  // Animation for Start Screen
   useEffect(() => {
     if (startScreenRef.current) {
       if (!quizStarted) {
-        gsap.set(startScreenRef.current, { opacity: 0, y: 20 });
+        gsap.set(startScreenRef.current, { display: 'block', opacity: 0, y: 20 });
         gsap.to(startScreenRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.2 });
       } else {
         gsap.to(startScreenRef.current, { opacity: 0, y: -20, duration: 0.3, onComplete: () => gsap.set(startScreenRef.current, {display: 'none'}) });
@@ -62,37 +60,34 @@ export function KnowledgeQuizSection() {
     }
   }, [quizStarted]);
 
-  // Animation for Quiz Interface
   useEffect(() => {
     if (quizInterfaceRef.current) {
       if (quizStarted && !quizComplete) {
         gsap.set(quizInterfaceRef.current, { display:'block', opacity: 0, y: 20 });
         gsap.to(quizInterfaceRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.1 });
-      } else {
+      } else if (quizInterfaceRef.current.style.display !== 'none') {
          gsap.to(quizInterfaceRef.current, { opacity: 0, y: -20, duration: 0.3, onComplete: () => gsap.set(quizInterfaceRef.current, {display: 'none'}) });
       }
     }
   }, [quizStarted, quizComplete, currentQuestion]);
 
-  // Animation for Feedback Alert
   useEffect(() => {
     if (feedbackAlertRef.current) {
         if (feedback) {
             gsap.set(feedbackAlertRef.current, { display: 'block', opacity: 0, scale: 0.9 });
             gsap.to(feedbackAlertRef.current, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.7)' });
-        } else {
+        } else if (feedbackAlertRef.current.style.display !== 'none') {
             gsap.to(feedbackAlertRef.current, { opacity: 0, scale: 0.9, duration: 0.3, onComplete: () => gsap.set(feedbackAlertRef.current, {display: 'none'}) });
         }
     }
   }, [feedback]);
 
-  // Animation for Quiz Complete Screen
   useEffect(() => {
     if (quizCompleteRef.current) {
         if (quizComplete) {
             gsap.set(quizCompleteRef.current, { display: 'block', opacity: 0, y: 20 });
             gsap.to(quizCompleteRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.1 });
-        } else {
+        } else if (quizCompleteRef.current.style.display !== 'none') {
             gsap.to(quizCompleteRef.current, { opacity: 0, y: -20, duration: 0.3, onComplete: () => gsap.set(quizCompleteRef.current, {display: 'none'}) });
         }
     }
@@ -125,7 +120,7 @@ export function KnowledgeQuizSection() {
   const handleSubmitAnswer = async (hintRequested: boolean = false) => {
     if (!currentQuestion && !hintRequested) return;
     setIsLoading(true);
-    // setFeedback(null); // Jangan hapus feedback langsung
+    // setFeedback(null); // Feedback should persist or be explicitly cleared before new feedback
 
     const input: WebEvolutionQuizInput = {
       question: currentQuestion,
@@ -150,7 +145,6 @@ export function KnowledgeQuizSection() {
         setQuizComplete(true);
         setCurrentQuestion(''); 
         const completionMessage = response.isCorrect !== false ? "Kuis Selesai! Jawaban terakhir Anda Benar!" : "Kuis Selesai!";
-        // Cek apakah response.isCorrect null atau undefined sebelum menampilkannya
         const feedbackType = response.isCorrect === true ? 'correct' : (response.isCorrect === false ? 'incorrect' : 'info');
 
         setFeedback({
@@ -200,7 +194,7 @@ export function KnowledgeQuizSection() {
   };
 
   return (
-    <Section id="quiz" title="Uji Pengetahuan Web Anda" className="bg-gradient-to-br from-background to-secondary/30">
+    <Section id="quiz" title="Uji Pengetahuan Web Anda" className="bg-gradient-to-br from-background/30 to-secondary/30"> {/* Updated gradient */}
       <Card ref={sectionCardRef} className="max-w-2xl mx-auto bg-card/80 backdrop-blur-sm shadow-2xl border-border">
         <div ref={startScreenRef} style={{display: quizStarted ? 'none' : 'block', opacity:0}}>
             <CardContent className="pt-6 text-center">
@@ -295,4 +289,3 @@ let hintRequestedForSubmit = false;
 const setHintRequestedForSubmit = (val: boolean) => {
     hintRequestedForSubmit = val;
 }
-

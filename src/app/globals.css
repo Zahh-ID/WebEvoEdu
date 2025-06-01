@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -94,7 +95,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-body antialiased;
+    @apply bg-transparent text-foreground font-body antialiased; /* Updated bg-background to bg-transparent */
   }
   html {
     scroll-behavior: smooth;

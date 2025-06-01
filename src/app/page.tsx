@@ -11,7 +11,7 @@ import { Footer } from '@/components/layout/Footer';
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen"> {/* Removed bg-background */}
       <ParticleBackground />
       <Header />
       <main className="flex-grow">

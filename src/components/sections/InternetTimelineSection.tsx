@@ -26,7 +26,7 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
   return (
     <Card
       className={cn(
-        "w-full h-full bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 border-2",
+        "w-full h-full bg-card/80 backdrop-blur-sm shadow-xl hover:shadow-primary/30 transition-all duration-300 border-2 flex flex-col", // Added flex flex-col
         EraColors[item.era]
       )}
     >
@@ -39,7 +39,7 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
           <CardDescription className="text-sm text-muted-foreground">{item.era} - {item.year}</CardDescription>
         </div>
       </CardHeader>
-      <CardContent className="p-4"> {/* Ensure CardContent has padding if needed */}
+      <CardContent className="p-4 flex-grow"> {/* Added flex-grow */}
         <p className="text-foreground/80">{item.description}</p>
       </CardContent>
     </Card>
@@ -62,8 +62,8 @@ export function InternetTimelineSection() {
         duration: 0.6,
         ease: 'power2.out',
         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 85%",
+          trigger: titleRef.current, // Trigger animation when title itself is in view
+          start: "top 90%", // Start animation a bit earlier
           toggleActions: "play pause resume reverse",
         }
       });
@@ -77,15 +77,16 @@ export function InternetTimelineSection() {
     let resizeTimeout: NodeJS.Timeout;
 
     const setupGsap = () => {
-      st?.kill();
+      st?.kill(); // Kill previous ScrollTrigger instance if exists
+      // Clear inline styles set by GSAP to ensure a clean slate, especially for scrollLeft
       if (scrollContainerRef.current) {
         gsap.set(scrollContainerRef.current, { clearProps: "scrollLeft,willChange" });
       }
       if (pinElementRef.current) {
-        gsap.set(pinElementRef.current, { clearProps: "transform" });
+        gsap.set(pinElementRef.current, { clearProps: "transform" }); // Clear transform for pin element
       }
       
-      ScrollTrigger.refresh();
+      ScrollTrigger.refresh(); // Refresh ScrollTrigger to recalculate positions
 
       if (pinElementRef.current && scrollContainerRef.current) {
         const scrollableWidth = scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth;
@@ -97,13 +98,13 @@ export function InternetTimelineSection() {
             trigger: pinElementRef.current,
             pin: pinElementRef.current,
             scrub: true,
-            start: "top 80px", // Changed from "top top" to pin below an 80px header
-            end: () => `+=${scrollableWidth * 1}`,
+            start: "top 80px", // Start pinning 80px from the top (adjust if header height changes)
+            end: () => `+=${scrollableWidth * 1}`, // Pin for the duration of the horizontal scroll
             animation: gsap.to(scrollContainerRef.current, {
               scrollLeft: scrollableWidth,
-              ease: "none",
+              ease: "none", // Linear movement
             }),
-            invalidateOnRefresh: true,
+            invalidateOnRefresh: true, // Recalculate on resize/refresh
           });
         }
       }
@@ -111,9 +112,10 @@ export function InternetTimelineSection() {
     
     const debouncedSetupGsap = () => {
         clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(setupGsap, 250);
+        resizeTimeout = setTimeout(setupGsap, 250); // Debounce resize event
     };
 
+    // Initial setup with a slight delay to ensure layout is stable
     const initialSetupTimeout = setTimeout(setupGsap, 100);
 
     window.addEventListener('resize', debouncedSetupGsap);
@@ -123,6 +125,7 @@ export function InternetTimelineSection() {
       clearTimeout(resizeTimeout);
       window.removeEventListener('resize', debouncedSetupGsap);
       st?.kill();
+      // Clean up GSAP inline styles on unmount
       if (scrollContainerRef.current) {
         gsap.set(scrollContainerRef.current, { clearProps: "transform,willChange,scrollLeft" });
       }
@@ -130,31 +133,31 @@ export function InternetTimelineSection() {
         gsap.set(pinElementRef.current, { clearProps: "transform" });
       }
     };
-  }, []); 
+  }, []); // Empty dependency array, runs once on mount and cleans up on unmount
 
   return (
     <section id="timeline" ref={sectionRef} className="py-16 md:py-24">
-      <div className="container mx-auto px-4 md:px-6">
-        <h2 
-          ref={titleRef} 
-          className="text-4xl md:text-5xl font-headline font-bold text-center mb-12 md:mb-16 text-primary-foreground"
-        >
-          {sectionTitleText}
-        </h2>
-        <div ref={pinElementRef}> 
-          <div
-            ref={scrollContainerRef}
-            className="flex flex-nowrap items-start overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide py-4"
+      <div ref={pinElementRef}> {/* This element will be pinned */}
+        <div className="container mx-auto px-4 md:px-6">
+          <h2 
+            ref={titleRef} 
+            className="text-4xl md:text-5xl font-headline font-bold text-center mb-12 md:mb-16 text-primary-foreground"
           >
-            {timelineData.map((item, index) => (
-              <div
-                key={item.id}
-                className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem]"
-              >
-                <TimelineCard item={item} index={index} />
-              </div>
-            ))}
-          </div>
+            {sectionTitleText}
+          </h2>
+        </div>
+        <div
+          ref={scrollContainerRef}
+          className="flex flex-nowrap items-start overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide py-4"
+        >
+          {timelineData.map((item, index) => (
+            <div
+              key={item.id}
+              className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem] h-80" // Added h-80 for fixed height
+            >
+              <TimelineCard item={item} index={index} />
+            </div>
+          ))}
         </div>
       </div>
     </section>

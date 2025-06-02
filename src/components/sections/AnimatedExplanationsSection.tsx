@@ -84,7 +84,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
   };
 
   return (
-    <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full flex flex-col min-h-[42rem]"> 
+    <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full flex flex-col h-[42rem]"> {/* Changed min-h-[42rem] to h-[42rem] */}
       <CardHeader>
         <div className="flex items-center gap-4 mb-4">
           <div className={cn("p-3 rounded-lg bg-primary/20", item.colorClass)}>

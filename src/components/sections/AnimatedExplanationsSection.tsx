@@ -84,7 +84,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
   };
 
   return (
-    <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full flex flex-col h-[46rem]">
+    <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full flex flex-col">
       <CardHeader>
         <div className="flex items-center gap-4 mb-4">
           <div className={cn("p-3 rounded-lg bg-primary/20", item.colorClass)}>
@@ -96,7 +96,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
           </div>
         </div>
       </CardHeader>
-      <CardContent ref={contentRef} className="space-y-6 flex-grow overflow-y-auto"> {/* Removed scrollbar-hide */}
+      <CardContent ref={contentRef} className="space-y-6 flex-grow">
         <div>
           <h3 className="text-xl font-semibold mb-3 text-primary-foreground/90">Konsep Kunci</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -28,17 +28,17 @@ const TimelineCard: React.FC<{ item: TimelineEvent; index: number }> = ({ item }
         EraColors[item.era]
       )}
     >
-      <CardHeader className="flex flex-row items-start gap-4">
+      <CardHeader className="flex flex-row items-start gap-4 p-4 sm:p-6"> {/* Adjusted padding */}
         <div className={cn("p-2 rounded-md bg-primary/10", EraTextColors[item.era])}>
-          <Icon className="h-8 w-8" />
+          <Icon className="h-7 w-7 sm:h-8 sm:w-8" /> {/* Slightly adjusted icon size */}
         </div>
         <div>
-          <CardTitle className={cn("text-xl font-headline", EraTextColors[item.era])}>{item.title}</CardTitle>
-          <CardDescription className="text-sm text-muted-foreground">{item.era} - {item.year}</CardDescription>
+          <CardTitle className={cn("text-lg sm:text-xl font-headline", EraTextColors[item.era])}>{item.title}</CardTitle> {/* Adjusted text size */}
+          <CardDescription className="text-xs sm:text-sm text-muted-foreground">{item.era} - {item.year}</CardDescription>
         </div>
       </CardHeader>
-      <CardContent className="p-4 flex-grow"> 
-        <p className="text-foreground/80">{item.description}</p>
+      <CardContent className="p-4 sm:p-6 pt-0 flex-grow overflow-y-auto scrollbar-hide"> {/* Added overflow-y-auto, scrollbar-hide, adjusted padding */}
+        <p className="text-foreground/80 text-sm sm:text-base">{item.description}</p> {/* Adjusted text size */}
       </CardContent>
     </Card>
   );
@@ -61,9 +61,9 @@ export function InternetTimelineSection() {
           duration: 0.7,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: pinElementRef.current, // Trigger based on the pin element
-            start: "top top+=100px", // Adjust start to ensure title is visible before pin
-            end: "bottom top+=100px", // Adjust end accordingly
+            trigger: pinElementRef.current, 
+            start: "top top+=80px", // Use 80px from header
+            end: "bottom top+=80px", 
             toggleActions: "play pause resume reverse",
           }
         });
@@ -93,8 +93,8 @@ export function InternetTimelineSection() {
               trigger: pinElementRef.current,
               pin: pinElementRef.current,
               scrub: true,
-              start: "top 80px", 
-              end: () => `+=${scrollableWidth * 1.2}`, // Adjusted for potentially smoother end
+              start: "top 80px", // Pin starts 80px from top (for header)
+              end: () => `+=${scrollableWidth * 1.2}`, 
               animation: gsap.to(scrollContainerRef.current, {
                 scrollLeft: scrollableWidth,
                 ease: "none",
@@ -136,19 +136,19 @@ export function InternetTimelineSection() {
         <div className="container mx-auto px-4 md:px-6">
           <h2 
             ref={titleRef} 
-            className="text-4xl md:text-5xl font-headline font-bold text-center mb-6 md:mb-8 text-primary-foreground"
+            className="text-3xl sm:text-4xl md:text-5xl font-headline font-bold text-center mb-6 md:mb-8 text-primary-foreground" // Adjusted text size
           >
             Perjalanan Melalui Evolusi Web
           </h2>
         </div>
         <div
           ref={scrollContainerRef}
-          className="flex flex-nowrap items-start overflow-x-auto space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide py-4"
+          className="flex flex-nowrap items-start overflow-x-auto space-x-4 sm:space-x-6 md:space-x-8 px-4 md:px-2 -mx-4 md:-mx-2 scrollbar-hide py-4 items-stretch" // Added items-stretch
         >
           {timelineData.map((item, index) => (
             <div
               key={item.id}
-              className="timeline-card-item flex-shrink-0 w-[28rem] sm:w-[32rem] h-112" // Changed h-96 to h-112
+              className="timeline-card-item flex-shrink-0 w-[22rem] min-[420px]:w-[24rem] sm:w-[26rem] md:w-[30rem] h-112" // Adjusted widths
             >
               <TimelineCard item={item} index={index} />
             </div>
@@ -158,4 +158,3 @@ export function InternetTimelineSection() {
     </section>
   );
 }
-

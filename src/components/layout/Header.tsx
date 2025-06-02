@@ -1,22 +1,30 @@
 
 "use client";
 import Link from 'next/link';
-import { RocketIcon } from 'lucide-react';
+import { RocketIcon, Menu as MenuIcon, X as CloseIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import * as React from 'react';
 import { gsap } from 'gsap';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 const navItems = [
   { name: 'Linimasa', href: '#timeline' },
   { name: 'Konsep', href: '#concepts' },
-  // { name: 'Arsitektur', href: '#architecture' }, // Dihapus karena sectionnya dihapus
   { name: 'Kuis', href: '#quiz' },
   { name: 'Sumber Daya', href: '#resources' },
 ];
 
 export function Header() {
   const [isScrolled, setIsScrolled] = React.useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const headerRef = React.useRef<HTMLElement>(null);
   const logoRef = React.useRef<HTMLAnchorElement>(null);
   const navItemsRef = React.useRef<(HTMLButtonElement | HTMLAnchorElement | null)[]>([]);
@@ -58,12 +66,14 @@ export function Header() {
       )}
     >
       <div className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6">
-        <Link href="/" ref={logoRef} className="flex items-center gap-2 group">
+        <Link href="/" ref={logoRef} className="flex items-center gap-2 group z-10"> {/* Added z-10 for logo */}
           <RocketIcon className="h-8 w-8 text-primary group-hover:animate-pulse" />
           <span className="text-2xl font-headline font-bold text-primary-foreground group-hover:text-primary transition-colors">
             Web Evolusioner
           </span>
         </Link>
+        
+        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-2 lg:space-x-4">
           {navItems.map((item, index) => (
             <Button 
@@ -77,8 +87,44 @@ export function Header() {
             </Button>
           ))}
         </nav>
+
+        {/* Mobile Menu Trigger */}
         <div className="md:hidden">
-          {/* Tombol menu mobile bisa ditambahkan di sini */}
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label="Buka menu">
+                <MenuIcon className="h-7 w-7 text-primary-foreground" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[300px] sm:w-[340px] bg-background p-0 flex flex-col">
+              <SheetHeader className="p-4 border-b border-border flex flex-row justify-between items-center">
+                <SheetTitle className="flex items-center gap-2 text-left">
+                  <RocketIcon className="h-7 w-7 text-primary" />
+                  <span className="text-xl font-headline font-bold text-primary-foreground">
+                    Web Evolusioner
+                  </span>
+                </SheetTitle>
+                <SheetClose asChild>
+                     <Button variant="ghost" size="icon" className="rounded-full" aria-label="Tutup menu">
+                        <CloseIcon className="h-5 w-5" />
+                     </Button>
+                </SheetClose>
+              </SheetHeader>
+              <nav className="flex flex-col p-4 space-y-2 mt-4 flex-grow">
+                {navItems.map((item) => (
+                  <SheetClose asChild key={item.name}>
+                    <Link
+                      href={item.href}
+                      className="block rounded-md px-3 py-3 text-base font-medium text-primary-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  </SheetClose>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>

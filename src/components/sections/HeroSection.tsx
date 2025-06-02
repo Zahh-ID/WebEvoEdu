@@ -15,7 +15,7 @@ export function HeroSection() {
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       if (heroContentRef.current && sectionRef.current) {
-        const heroElements = heroContentRef.current.querySelectorAll('h1, p, div.space-x-4');
+        const heroElements = heroContentRef.current.querySelectorAll('h1, p, div.button-container'); // Changed selector
         gsap.set(heroElements, { opacity: 0, y: 60 }); 
         gsap.to(heroElements, { 
             opacity: 1, 
@@ -54,16 +54,16 @@ export function HeroSection() {
             Web Evolusioner
           </span>
         </h1>
-        <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-10">
+        <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-xl md:max-w-3xl mx-auto mb-10"> {/* Adjusted max-width */}
           Mulailah perjalanan melalui era transformatif internet. Jelajahi masa lalu, pahami masa kini, dan intip masa depan web.
         </p>
-        <div className="space-x-4">
-          <Button size="lg" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-lg transform hover:scale-105 transition-transform duration-300">
+        <div className="button-container flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 justify-center items-center">
+          <Button size="lg" asChild className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-lg transform hover:scale-105 transition-transform duration-300">
             <Link href="#timeline">
               Jelajahi Linimasa <ArrowDownCircleIcon className="ml-2 h-5 w-5" />
             </Link>
           </Button>
-          <Button size="lg" variant="outline" asChild className="border-accent text-accent hover:bg-accent/10 hover:text-accent font-semibold shadow-lg transform hover:scale-105 transition-transform duration-300">
+          <Button size="lg" variant="outline" asChild className="w-full sm:w-auto border-accent text-accent hover:bg-accent/10 hover:text-accent font-semibold shadow-lg transform hover:scale-105 transition-transform duration-300">
             <Link href="#quiz">
               Ikuti Kuis
             </Link>

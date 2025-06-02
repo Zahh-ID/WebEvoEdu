@@ -84,7 +84,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
   };
 
   return (
-    <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full flex flex-col h-[42rem]">
+    <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full flex flex-col h-[46rem]">
       <CardHeader>
         <div className="flex items-center gap-4 mb-4">
           <div className={cn("p-3 rounded-lg bg-primary/20", item.colorClass)}>
@@ -96,7 +96,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
           </div>
         </div>
       </CardHeader>
-      <CardContent ref={contentRef} className="space-y-6 flex-grow overflow-y-auto scrollbar-hide"> {/* Added overflow-y-auto and scrollbar-hide */}
+      <CardContent ref={contentRef} className="space-y-6 flex-grow overflow-y-auto scrollbar-hide">
         <div>
           <h3 className="text-xl font-semibold mb-3 text-primary-foreground/90">Konsep Kunci</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -220,7 +220,7 @@ export function AnimatedExplanationsSection() {
               key={item.id} 
               value={item.id} 
               className={cn(
-                "py-3 text-base sm:text-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg tab-trigger-item w-full", // text-base sm:text-lg
+                "py-3 text-base sm:text-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg tab-trigger-item w-full",
                  item.id === 'web1' && 'data-[state=active]:bg-blue-600 data-[state=active]:text-white focus-visible:ring-blue-500',
                  item.id === 'web2' && 'data-[state=active]:bg-purple-600 data-[state=active]:text-white focus-visible:ring-purple-500',
                  item.id === 'web3' && 'data-[state=active]:bg-green-600 data-[state=active]:text-white focus-visible:ring-green-500',

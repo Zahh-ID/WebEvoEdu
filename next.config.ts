@@ -1,8 +1,7 @@
 
 import type {NextConfig} from 'next';
 
-// GANTI 'NAMA_REPOSITORY_ANDA' DENGAN NAMA REPOSITORY GITHUB ANDA
-const repoName = process.env.GITHUB_PAGES_REPO_NAME || 'NAMA_REPOSITORY_ANDA';
+const repoName = process.env.GITHUB_PAGES_REPO_NAME || 'WebEvoEdu';
 
 const isGithubActions = process.env.GITHUB_ACTIONS === 'true'
 

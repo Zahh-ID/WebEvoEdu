@@ -1,0 +1,47 @@
+
+name: Deploy Next.js to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Atau branch utama Anda jika bukan 'main'
+  workflow_dispatch: # Memungkinkan menjalankan workflow secara manual dari tab Actions GitHub
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    # Atur environment variable untuk nama repository, jika berbeda dari nama repo aktual di GitHub
+    # Anda bisa mengatur ini di Secrets repository jika nama repo Anda mengandung karakter khusus atau Anda ingin fleksibilitas
+    env:
+      GITHUB_PAGES_REPO_NAME: ${{ github.event.repository.name }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Gunakan versi Node.js yang sesuai dengan proyek Anda
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js app
+        run: npm run build
+        # Environment variable basePath dan assetPrefix di next.config.js akan menggunakan GITHUB_PAGES_REPO_NAME
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out # Folder output dari static export Next.js
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -96,7 +96,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
           </div>
         </div>
       </CardHeader>
-      <CardContent ref={contentRef} className="space-y-6 flex-grow overflow-y-auto scrollbar-hide">
+      <CardContent ref={contentRef} className="space-y-6 flex-grow overflow-y-auto"> {/* Removed scrollbar-hide */}
         <div>
           <h3 className="text-xl font-semibold mb-3 text-primary-foreground/90">Konsep Kunci</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -140,7 +140,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
 
         <div>
           <h3 className="text-xl font-semibold mb-2 text-primary-foreground/90">Dampak & Visi</h3>
-          <p className="text-muted-foreground impact-paragraph">{item.impact}</p>
+          <p className="text-muted-foreground impact-paragraph whitespace-pre-line">{item.impact}</p>
         </div>
         <div className="mt-6 p-4 border border-dashed border-border rounded-lg text-center text-muted-foreground placeholder-anim">
           <p>Placeholder animasi masa depan untuk {item.title}</p>
@@ -240,3 +240,4 @@ export function AnimatedExplanationsSection() {
     </Section>
   );
 }
+

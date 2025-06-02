@@ -21,15 +21,30 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
   useEffect(() => {
     let cardTween: gsap.core.Tween | null = null;
     let contentTweens: gsap.core.Tween[] = [];
+    let iconTween: gsap.core.Tween | null = null;
 
     if (cardRef.current) {
-      gsap.set(cardRef.current, { opacity: 0, y: 60, scale: 0.95 }); 
+      gsap.set(cardRef.current, { opacity: 0, y: 60, scale: 0.95 });
       cardTween = gsap.to(cardRef.current, {
         opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out", delay: 0.1,
         onComplete: () => {
           if (contentRef.current) {
-            const animatedElements = [
-              contentRef.current.querySelector('div.flex.items-center.gap-4.mb-4'), 
+            const iconWrapper = contentRef.current.querySelector('.expl-section-icon-wrapper');
+            if (iconWrapper) {
+              gsap.set(iconWrapper, { scale: 0.3, opacity: 0, y: 20, rotation: -45 });
+              iconTween = gsap.to(iconWrapper, {
+                scale: 1,
+                opacity: 1,
+                y: 0,
+                rotation: 0,
+                duration: 0.7,
+                ease: 'back.out(2)',
+                delay: 0.1, // Delay relative to card onComplete
+              });
+            }
+
+            const textElements = [
+              contentRef.current.querySelector('div.flex.items-center.gap-4.mb-4 > div:not(.expl-section-icon-wrapper)'), // The title part
               ...Array.from(contentRef.current.querySelectorAll('h3')),
               ...Array.from(contentRef.current.querySelectorAll('.concept-card-item')),
               ...(item.technologies && item.technologies.length > 0 ? Array.from(contentRef.current.querySelectorAll('.tech-list-item')) : []),
@@ -37,14 +52,14 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
               contentRef.current.querySelector('.placeholder-anim')
             ].filter(el => el) as HTMLElement[];
 
-            gsap.set(animatedElements, { opacity: 0, y: 30 }); 
-            contentTweens = animatedElements.map((el, index) => 
-              gsap.to(el, { 
-                opacity: 1, 
-                y: 0, 
-                duration: 0.5, 
-                ease: 'power3.out', 
-                delay: 0.1 + (index * 0.07),
+            gsap.set(textElements, { opacity: 0, y: 30 });
+            contentTweens = textElements.map((el, index) =>
+              gsap.to(el, {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: 'power3.out',
+                delay: 0.2 + (index * 0.07), // Stagger after icon starts
               })
             );
           }
@@ -54,17 +69,20 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
 
     return () => {
       cardTween?.kill();
+      iconTween?.kill();
       contentTweens.forEach(tween => tween.kill());
       if (cardRef.current) gsap.set(cardRef.current, { clearProps: "all" });
       if (contentRef.current) {
-         const animatedElements = [
-              contentRef.current.querySelector('div.flex.items-center.gap-4.mb-4'),
-              ...Array.from(contentRef.current.querySelectorAll('h3')),
-              ...Array.from(contentRef.current.querySelectorAll('.concept-card-item')),
-              ...(item.technologies && item.technologies.length > 0 ? Array.from(contentRef.current.querySelectorAll('.tech-list-item')) : []),
-              ...Array.from(contentRef.current.querySelectorAll('.impact-paragraph')),
-              contentRef.current.querySelector('.placeholder-anim')
-            ].flat().filter(el => el) as HTMLElement[];
+        const iconWrapper = contentRef.current.querySelector('.expl-section-icon-wrapper');
+        if (iconWrapper) gsap.set(iconWrapper, { clearProps: "all" });
+        const animatedElements = [
+          contentRef.current.querySelector('div.flex.items-center.gap-4.mb-4 > div:not(.expl-section-icon-wrapper)'),
+          ...Array.from(contentRef.current.querySelectorAll('h3')),
+          ...Array.from(contentRef.current.querySelectorAll('.concept-card-item')),
+          ...(item.technologies && item.technologies.length > 0 ? Array.from(contentRef.current.querySelectorAll('.tech-list-item')) : []),
+          ...Array.from(contentRef.current.querySelectorAll('.impact-paragraph')),
+          contentRef.current.querySelector('.placeholder-anim')
+        ].flat().filter(el => el) as HTMLElement[];
         gsap.set(animatedElements, { clearProps: "all" });
       }
     };
@@ -87,7 +105,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
     <Card ref={cardRef} className="bg-card/70 backdrop-blur-sm border-border shadow-lg w-full flex flex-col">
       <CardHeader>
         <div className="flex items-center gap-4 mb-4">
-          <div className={cn("p-3 rounded-lg bg-primary/20", item.colorClass)}>
+          <div className={cn("p-3 rounded-lg bg-primary/20 expl-section-icon-wrapper", item.colorClass)}>
             <SectionIcon className="w-10 h-10" />
           </div>
           <div>
@@ -124,7 +142,7 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
             })}
           </div>
         </div>
-        
+
         {item.technologies && item.technologies.length > 0 && (
           <div>
             <h3 className="text-xl font-semibold mb-2 text-primary-foreground/90">Teknologi Inti</h3>
@@ -147,8 +165,8 @@ const ExplanationDetailCard: React.FC<{ item: ExplanationContent }> = ({ item })
         </div>
       </CardContent>
       <CardFooter className="pt-6 mt-auto">
-        <Button 
-            asChild 
+        <Button
+            asChild
             className={cn(
                 "w-full font-semibold text-primary-foreground",
                 getButtonBgColor(item.id)
@@ -175,13 +193,13 @@ export function AnimatedExplanationsSection() {
         const tabTriggers = Array.from(tabsRef.current.querySelectorAll('.tab-trigger-item')) as HTMLElement[];
 
         if (tabsListContainer) {
-          gsap.set(tabsListContainer, { opacity: 0, y: 20 }); 
+          gsap.set(tabsListContainer, { opacity: 0, y: 20 });
           gsap.to(tabsListContainer, {
             opacity: 1,
             y: 0,
             duration: 0.6,
             ease: 'power3.out',
-            delay: 0.3, 
+            delay: 0.3,
             scrollTrigger: {
               trigger: tabsRef.current,
               start: "top 80%",
@@ -191,19 +209,19 @@ export function AnimatedExplanationsSection() {
         }
 
         if (tabTriggers && tabTriggers.length > 0) {
-          gsap.set(tabTriggers, { opacity: 0, y: 20 }); 
+          gsap.set(tabTriggers, { opacity: 0, y: 20 });
           gsap.to(tabTriggers, {
             opacity: 1,
             y: 0,
             duration: 0.5,
-            stagger: 0.15, 
+            stagger: 0.15,
             ease: 'power3.out',
             scrollTrigger: {
-              trigger: tabsRef.current, 
-              start: "top 75%", 
+              trigger: tabsRef.current,
+              start: "top 75%",
               toggleActions: "play pause resume reverse",
             },
-            delay: 0.5 
+            delay: 0.5
           });
         }
       }
@@ -214,11 +232,11 @@ export function AnimatedExplanationsSection() {
   return (
     <Section id="concepts" title="Memahami Era Web" className="bg-background/60">
       <Tabs defaultValue="web1" className="w-full max-w-4xl mx-auto" ref={tabsRef}>
-        <TabsList className="grid grid-cols-1 gap-1 sm:grid-cols-3 sm:gap-2 bg-card/50 backdrop-blur-sm border border-border mb-8 tabs-list-anim p-1 rounded-md"> 
+        <TabsList className="grid grid-cols-1 gap-1 sm:grid-cols-3 sm:gap-2 bg-card/50 backdrop-blur-sm border border-border mb-8 tabs-list-anim p-1 rounded-md">
           {explanationsData.map((item) => (
-            <TabsTrigger 
-              key={item.id} 
-              value={item.id} 
+            <TabsTrigger
+              key={item.id}
+              value={item.id}
               className={cn(
                 "py-3 text-base sm:text-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg tab-trigger-item w-full",
                  item.id === 'web1' && 'data-[state=active]:bg-blue-600 data-[state=active]:text-white focus-visible:ring-blue-500',
@@ -240,4 +258,3 @@ export function AnimatedExplanationsSection() {
     </Section>
   );
 }
-
